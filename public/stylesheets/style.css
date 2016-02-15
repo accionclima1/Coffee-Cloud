@@ -10,6 +10,7 @@ body {
   font-size: 14px;
   background-color: #E9E9E9;
   color: #666666;
+  overflow-x: hidden;
 }
 
 h1,h2,h3,h4,h5,h6 {
@@ -445,6 +446,12 @@ a {
   font-size: 15px;
   padding-bottom: 22px;
   font-family: 'Lato', sans-serif;
+  text-transform: uppercase;
+}
+
+.section-header small {
+  color:#fff;
+  text-transform: capitalize;
 }
 
 .roya-wrap .container h2 {
@@ -470,8 +477,196 @@ a {
 
 .roya-wrap .btn-primary {
   margin-top: 48px;
+  display: block;
+  width: 100%;
+  margin-bottom: 4px;
 }
 
+.roya-wrap.initiated .intro {
+  display: none;
+}
+
+.plantContainer {
+  display: none;
+}
+.initiated .plantContainer {
+  display: block;
+}
+.bandolas {
+  background-color: #82D335;
+  color: #fff;
+  padding: 15px 15px 5px;
+}
+.bandolas:focus,
+.bandolas:active
+ {
+  background-color: #58931F;
+}
+
+.plantList {
+  min-height: 104px;
+}
+
+.plantListItem {
+  background-color: #C3C3C3;
+  text-align: right;
+  border-bottom: 1px solid transparent;
+}
+
+.plantListItem:nth-child(odd) {
+  background-color: #DCDCDC;
+}
+
+.plantListItem span {
+  float: left;
+  text-align: left;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.plantListItem .btn {
+  border-radius: 0;
+  margin: 0 0 0 -4px;
+  padding: 15px;
+}
+.plantControls .remove {
+  background-color: #E88C8C;
+  font-weight: bold;
+  visibility: hidden;
+}
+.plantListItem:last-child .remove {
+  visibility: visible;
+}
+.btn.leaf {
+  background-color: #525252;
+  color: #82D335;
+}
+
+.testControls .btn {
+  margin: 0;
+  width: 50%;
+  float: left;
+}
+
+.testControls .btn:last-child {
+  background-color: #FE852D;
+  border-color: transparent;
+}
+
+.plant-editor {
+  position: fixed;
+  top: 60px;
+  bottom: 0;
+  left: 0;
+  right:0;
+  background-color: #fff;
+  overflow: auto;
+  padding: 15px;
+  display: none;
+}
+.plant-editor.active {
+  display: block;
+}
+.plant-editor > a {
+  position: absolute;
+  left: 15px;
+  font-size: 24px;
+}
+.plant-editor h3 {
+  margin-top: 0;
+}
+.plant-editor .btn {
+  float: none;
+  display: inline-block;
+  width: auto;
+  margin: 0;
+}
+
+.leaf-item {
+  background-color: #D8D8D8;
+  /* padding: 15px; */
+  /* border-bottom: 1px solid  transparent; */
+}
+.leaf-item > span {
+  float: left;
+  font-weight: bold;
+  padding: 15px;
+}
+.leaf-item:nth-child(odd) {
+  background-color: #C3C3C3;
+}
+.leaf-control {
+  text-align: right;
+  display: block;
+}
+.leaf-control .remove {
+  background-color: #DC7272;
+  display: inline-block;
+  padding: 15px;
+  color: #fff;
+  margin-left: 15px;
+  visibility: hidden;
+}
+.leaf-item:last-child .remove {
+  visibility: visible
+}
+.plant-editor-control {
+  background-color: #7FD321;
+  color: #fff;
+  text-align: right;
+}
+.plant-editor-control > span {
+  float: left;
+  font-size: 24px;
+  padding: 6px 15px;
+}
+.plant-editor-control input {
+  background: transparent;
+  border: 0;
+  display: inline-block;
+  width: 45px;
+  border-bottom: 1px solid #fff;
+  text-align: right;
+}
+.severity-list {
+  position: absolute;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  /* width: 100%; */
+  list-style: none;
+  padding: 0 15px;
+  display: none;
+}
+.severity-list.active {
+  display: block;
+}
+.severity-list li {
+  width: 49%;
+  display: inline-block;
+  background-color: #E4E4E4;
+  font-size: 24px;
+  padding: 24px 15px;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+.severity-list li:first-child {
+  display: block;
+  background-color: #fff;
+  width: 100%;
+  font-size: 18px;
+}
+.severity-list li .fa {
+  display: block;
+  font-size: 48px;
+}
+
+.results {
+  display: none;
+}
 /* weather screen */
 
 .section-weather {
@@ -491,4 +686,77 @@ a {
 
 .home-wrap.weather .degree {
   background-image: url(../images/cloudy02.png);
+}
+
+/* Support Chat  */
+
+.support-wrap {
+  background-color: #DCDCDC;
+  min-height: 100%;
+  padding-top: 60px;
+}
+
+.support-wrap .section-header {
+  text-align: center;
+  background-color: #7FD321;
+}
+.chatbox {
+  height: 76%;
+  overflow: auto;
+}
+
+.message {
+  background-color: #CECECE;
+  padding: 15px;
+  margin: 15px;
+  border-radius: 10px;
+  clear: both;
+  width: 70%;
+}
+
+.message[style*=left] {
+  margin-right: 20%;
+  background-color: 00ABFF;
+  color: #fff;
+}
+
+.message.right {
+  margin-left: 20%;
+
+}
+
+.type-sink {
+  /* margin-top: -60px; */
+  position: fixed;
+  bottom: 0;
+  /* width: 100%; */
+  /* padding: 15px; */
+  left: 15px;
+  right: 15px;
+}
+
+.type-sink input {
+  height: 54px;
+  margin-top: -10px;
+  border: 0;
+  box-shadow: 1px 1px 2px 0px rgba(0, 0, 0, 0.14);
+  width: 100% !important;
+}
+
+.type-sink .form-group {
+  display: inline-block;
+  width: 100%;
+  padding-right: 84px;
+}
+
+.type-sink button {
+  float: right;
+  border-radius: 360px;
+  padding: 25px 10px;
+  margin-top: -77px;
+  background-color: #7FD321;
+  color: #fff;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 10;
 }

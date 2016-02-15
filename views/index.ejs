@@ -1,6 +1,10 @@
 <html>
 <head>
 	<title>Coffee Cloud</title>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
 	<link href="/bower_components/angular-snap/angular-snap.min.css" rel="stylesheet">
@@ -10,6 +14,9 @@
 	<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js"></script>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
+	<script src="bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
+	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+	<script src="/bower_components/angular-socket-io/socket.min.js"></script>
 	<script src="/bower_components/snapjs/snap.min.js"></script>
 	<script src="/bower_components/angular-snap/angular-snap.min.js"></script>
 	<script src="/javascripts/angularApp.js"></script>
@@ -31,7 +38,8 @@
 	      <li><a href="#" snap-toggle><i class="fa fa-calculator"></i> Cálculo de cosecha</a></li>
 	      <li><a href="#" snap-toggle><i class="fa fa-shopping-cart"></i> Proveedores</a></li>
 	      <li><a href="#" snap-toggle><i class="fa fa-bell"></i> Noticias</a></li>
-	      <li><a href="#" snap-toggle><i class="fa fa-comment"></i> Comunicación</a></li>
+	      <li><a href="/#/support" snap-toggle><i class="fa fa-comment"></i> Comunicación</a></li>
+	      <li><a href="/" ng-click="logOut()"><i class="fa fa-user"></i> Log out</a></li>
 	    </ul>
 	  </nav>
 	  <div class="pushbox" snap-content snap-opt-disable="'right'">
@@ -271,24 +279,92 @@
 				</div>
 			</div>
 	  </script>
+	  
 	  <script type="text/ng-template" id="/roya.html">
 	  		<div class="roya-wrap">
 	  			<h2 class="section-header">
-	  				CÁLCULO DE ROYA
+	  				CÁLCULO DE ROYA <small ng-show="test.advMode">(avanzado)</small>
 	  			</h2>
 				<div class="container">
-					<div class="row">
+					<div class="row intro">
 						<div class="col-lg-6 col-lg-offset-3">
 							<h2>BIENVENIDO <span>{{ currentUser() }}</span></h2>
 							<img src="/images/blight01.jpg" alt=""/>
 							<p>Para llevar a cabo el Cálculo de Roya</p>
 							<p>es necesario que elija 30 plantas al azar</p>
-							<button class="btn btn-primary">Comencemos</button>
+							<button class="btn btn-primary" ng-click="startTest($event)">Basico</button>
+							<button class="btn btn-primary adv" ng-click="startTest($event)">Avanzado</button>
+							<small>(Incluye cálculo de severidad)</small>
+						</div>
+					</div>
+					<div class="row test">
+						<div class="col-lg-6 col-lg-offset-3">
+							<div class="plantContainer">
+								<div class="bandolas" ng-click="bandolas()">
+									
+									<p ng-hide="test.bandolas"><strong>1</strong> Bándola</p>
+									<p ng-show="test.bandolas"><strong>2</strong> Bándolas</p>
+								</div>
+								<div class="plantList">
+									<div class="plantListItem" ng-repeat="plantas in test.plantas">
+										<span>Planta {{ $index + 1 }}</span>
+										<div class="plantControls">
+											<button class="btn leaf" ng-click="editPlant($index)">{{plantas.length}}x <i class="fa fa-leaf"></i></button>
+											<button class="btn remove" ng-click="removePlant($index)">X</button>
+										</div>
+									</div>
+								</div>
+								<div class="testControls">
+									<button class="btn btn-primary" ng-click="addPlant()">Agregar Planta</button>
+									<button class="btn btn-primary" ng-click="calculateTest()">Calcular</button>
+								</div>
+								<div class="plant-editor">
+									<a ng-click="closePlant()"><i class="fa fa-chevron-left"></i></a>
+									<h3>Planta {{plantname}}</h3>
+									<p>Divida las hojas de cada planta en grupos por severidad.</p>
+									<div class="leaf-list">
+										<div class="leaf-item" ng-repeat="leaf in leafList">
+											<span>{{leaf[0]}} Hojas</span>
+											<div class="leaf-control">
+												<span class="severity">{{leaf[1]}}</span>
+												<span class="remove" ng-click="removeLeaf($index)">X</span>
+												</div>
+											</div>
+										</div>
+									<div class="plant-editor-control">
+										<span><input type="number" name="amount" value="1"> Hojas</span>
+										<button class="btn btn-primary" ng-click="initLeaf()">Agregar</button>
+									</div>
+									<ul class="severity-list">
+										<li>Seleccione la severidad para el grupo de hojas:</li>
+										<li ng-click="addLeaf('0%')" style="color:lime"><i class="fa fa-leaf"></i><span>0%</span></li>
+										<li ng-click="addLeaf('10%')" style="color:green"><i class="fa fa-leaf"></i><span>10%</span></li>
+										<li ng-click="addLeaf('20%')" style="color:yellow"><i class="fa fa-leaf"></i><span>20%</span></li>
+										<li ng-click="addLeaf('30%')" style="color:rgba(192, 151, 29, 1)"><i class="fa fa-leaf"></i><span>30%</span></li>
+										<li ng-click="addLeaf('40%')" style="color:orange"><i class="fa fa-leaf"></i><span>40%</span></li>
+										<li ng-click="addLeaf('80%')" style="color:red"><i class="fa fa-leaf"></i><span>80%</span></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row results">
+						<div class="col-lg-6 col-lg-offset-3">
+							<h2>Resultados</h2>
+							<p><strong>Plantas:</strong><br> {{totalPlants}}</p>
+							<p><strong>Incidencia promedio</strong><br>{{avgplnt}} / Planta</p>
+							<p><strong>Severidad promedio</strong><br>{{avgplntDmgPct}}%</p>
+							<p><strong>Recomendación</strong><br>
+								Nullam condimentum lorem at magna posuere, vel volutpat magna blandit. Vivamus mi nulla, laoreet ac lectus eget, sollicitudin aliquam orci.
+Nullam condimentum lorem at magna posuere, vel volutpat magna blandit. Vivamus mi nulla, laoreet ac lectus eget, sollicitudin aliquam orci.
+							</p>
+							<a href="/#/support" class="btn btn-primary" ng-click="getHelp(totalPlants,avgplnt,avgplntDmgPct,currentUser())">Solicitar Asesoría Técnica</a>
 						</div>
 					</div>
 				</div>
 			</div>
 	  </script>
+	  
 	  <script type="text/ng-template" id="/weather.html">
 		<div class="home-wrap weather">
 		 <div class="container">
@@ -323,11 +399,44 @@
 
 		</div>
 	</script>
+	
+	<script type="text/ng-template" id="/support.html">
+		<div class="support-wrap" ng-controller="SupportCtrl">
+			<h2 class="section-header">
+	  				<i class="fa fa-comment"></i> Soporte
+	  		</h2>
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6 col-md-offset-3">
+						<div class="chatbox" scroll-glue>
+							<div class="message" ng-repeat="message in chatLog" ng-style="{
+					   			        'float': loggedUser==message.sender ? 'right' :'left'
+					   			    }">
+								<div class="message-wrap">
+									<div class="message-body">{{ message.bodyMsg }}</div>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<form class="type-sink form-inline" ng-submit="sendMessage()" ng-controller="SupportCtrl">
+							<div class="form-group">
+								<label class="sr-only" for="chatMsg">Chat message</label>
+							    <input type="text" class="form-control" name="chatMsg" id="chatMsg">								<input type="hidden" name="fromId" value="{{ currentUser() }}">
+							    <input type="hidden" name="toId" value="admin">
+							  </div>
+							  <button type="submit" class="btn btn-default">Enviar</button>
+						</form>
+	</script>
 
 
 	  <!-- Latest compiled and minified JavaScript -->
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script src = "bower_components/angular-scroll-glue/src/scrollglue.js"></script>
 
 </body>
 </html>

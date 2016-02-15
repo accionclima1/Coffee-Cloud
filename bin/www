@@ -7,7 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('coffee-cloud:server');
 var http = require('http');
-
+var socketio = require('socket.io');
 /**
  * Get port from environment and store in Express.
  */
@@ -28,6 +28,118 @@ console.log('frontend running at 3000');
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+// Attach Socket.io
+var io = socketio.listen(server);
+app.set('socketio', io);
+app.set('server', server);
+
+/*  initiate Socket connection  */
+io.on('connection',function(socket){ 
+	var mongoose = require('mongoose'); 
+	var Chat = mongoose.model('Chat');
+	var Message = mongoose.model('Message');  
+    socket.on('get msg',function(data){
+      console.log('Socketazo Received');
+      sendMsg(data,function(result){
+        	io.emit('set msg',JSON.stringify({chat:result,to_user:data.to_user,from_id:data.from_id}));
+        	pushChats();
+      });
+      
+    });
+    socket.on('load msg',function(data){
+	  //console.log(data);
+	  Chat.findOne({sender: data.from_id},function (err, chat){ 
+		  //console.log(chat);
+		  if(chat){
+			  chat.populate('messages', function(err, chat) {
+	   	       if (err) { return next(err); }
+	   	       	io.emit('set msg only',JSON.stringify(chat));
+	   	     });
+		  }
+	   	  
+	   	})
+				
+	});
+	socket.on('dlt chat',function(data){
+		Chat.findOneAndRemove({chatid: data.chatid},function (err, chat){ 
+		  //console.log(chat);
+		  pushChats();
+	   	  
+	   	})
+	});
+	var pushChats = function() {
+		Chat.find(function(err, chats){
+		    if(err){ return next(err); }
+				io.emit('push chats',JSON.stringify(chats));
+		});
+	}
+      
+});
+var sendMsg = function (data,callback_result) {
+	var mongoose = require('mongoose'); 
+	var Chat = mongoose.model('Chat');
+	var Message = mongoose.model('Message');
+	var timestamp=new Date();
+	var from_id=data.from_id;
+	var to_user=data.to_user;
+	var peers = [data.from_id,data.to_user];
+	var peersort = peers.sort();
+	var peerbound = 'pre-'+peersort[0]+peersort[1];
+	var chatId = new Buffer(String(peerbound), 'ascii').toString('hex');
+	//console.log(peerbound,chatId);
+	Chat.count({chatid: chatId}, function (err, count){ 
+	    if(!count>0){
+	          var chat = new Chat();
+			  chat.timestamp = timestamp;
+			  chat.sender = from_id;
+			  chat.reciber = to_user;
+			  chat.chatid = chatId;
+			
+			  chat.save(function(err, chat){
+			    if(err){ return next(err); }
+			    	
+			    	getMessages(data.message,chat,function(conversation){
+						callback_result(conversation)
+					})
+			  });
+			  
+	    } else {
+		    	Chat.findOne({chatid: chatId},function (err, chat){ 
+			    	//console.log(chat._id);
+					getMessages(data.message,chat,function(conversation){
+						callback_result(conversation)
+						//console.log(conversation);
+					})
+				
+				  });
+			};
+		    
+	});
+	
+var getMessages = function(messageBody,chat,callback) {
+	 var message = new Message();
+	 message.chat = chat._id;
+	 message.timestamp = timestamp;
+	 message.sender = from_id;
+	 message.reciber = to_user;
+	 message.bodyMsg = messageBody;
+	
+	 message.save(function(err, message){
+	   	if(err){ return next(err); }
+	   	
+	   	chat.messages.push(message);
+	       chat.save(function(err, chat) {
+	         if(err){ return next(err); }
+	         	chat.populate('messages', function(err, chat) {
+	   		    if (err) { return next(err); }
+	   		    	callback(chat);
+	   		  });
+	         	
+	       });
+	   });
+	};
+}
 
 /**
  * Normalize a port into a number, string, or false.

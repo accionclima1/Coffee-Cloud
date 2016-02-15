@@ -8,6 +8,8 @@ var mongoose = require('mongoose');
 require('./models/Posts');
 require('./models/Comments');
 require('./models/Users');
+require('./models/Chats');
+require('./models/Messages');
 require('./config/passport');
 mongoose.connect('mongodb://cafenube:Sec03lP1nt0@ec2-54-68-110-187.us-west-2.compute.amazonaws.com/dummyDB');
 //WC5OBLfIbWNj
@@ -22,6 +24,7 @@ var passport = require('passport');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var admin = require('./routes/admin');
 
 var app = express();
 
@@ -40,6 +43,9 @@ app.use(passport.initialize());
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/admin/', admin);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
