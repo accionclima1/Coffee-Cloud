@@ -25,6 +25,7 @@ var passport = require('passport');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var admin = require('./routes/admin');
+var instituto = require('./routes/instituto');
 
 var app = express();
 
@@ -44,6 +45,7 @@ app.use(passport.initialize());
 app.use('/', routes);
 app.use('/users', users);
 app.use('/admin/', admin);
+app.use('/instituto/', instituto);
 
 
 
