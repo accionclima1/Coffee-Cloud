@@ -1,8 +1,8 @@
 var app = angular.module('coffeeScriptAdmin', ['btford.socket-io','ui.router','luegg.directives']);
 
 // Main controller 
-app.controller('MainCtrl',['$scope', 'auth',
-function($scope, auth){
+app.controller('MainCtrl',['$scope', 'auth', '$rootScope',
+function($scope, auth, $rootScope){
 	$scope.isLoggedIn = auth.isLoggedIn;
 	$scope.currentUser = auth.currentUser;
 	$scope.logOut = auth.logOut;
@@ -14,6 +14,71 @@ function($scope, auth){
 		$('body').removeClass('loggedin');
 		$('body').addClass('loggedOff');
 	}
+	
+	$rootScope.$on('$viewContentLoaded', function (event) {
+		Morris.Area({
+        element: 'morris-area-chart',
+        data: [{
+            period: '2010 Q1',
+            iphone: 2666,
+            ipad: null,
+            itouch: 2647
+        }, {
+            period: '2010 Q2',
+            iphone: 2778,
+            ipad: 2294,
+            itouch: 2441
+        }, {
+            period: '2010 Q3',
+            iphone: 4912,
+            ipad: 1969,
+            itouch: 2501
+        }, {
+            period: '2010 Q4',
+            iphone: 3767,
+            ipad: 3597,
+            itouch: 5689
+        }, {
+            period: '2011 Q1',
+            iphone: 6810,
+            ipad: 1914,
+            itouch: 2293
+        }, {
+            period: '2011 Q2',
+            iphone: 5670,
+            ipad: 4293,
+            itouch: 1881
+        }, {
+            period: '2011 Q3',
+            iphone: 4820,
+            ipad: 3795,
+            itouch: 1588
+        }, {
+            period: '2011 Q4',
+            iphone: 15073,
+            ipad: 5967,
+            itouch: 5175
+        }, {
+            period: '2012 Q1',
+            iphone: 10687,
+            ipad: 4460,
+            itouch: 2028
+        }, {
+            period: '2012 Q2',
+            iphone: 8432,
+            ipad: 5713,
+            itouch: 1791
+        }],
+        xkey: 'period',
+        ykeys: ['iphone', 'ipad', 'itouch'],
+        labels: ['iPhone', 'iPad', 'iPod Touch'],
+        pointSize: 2,
+        hideHover: 'auto',
+        resize: true
+    });
+	
+            console.log('lock & loaded')
+    })
 }]);
 
 // Authorize controller
@@ -56,7 +121,7 @@ app.factory('socket', ['socketFactory',
 ]);
 
 //authorize service
-app.factory('auth', ['$http', '$window', function($http, $window){
+app.factory('auth', ['$http','$window','$state', function($http, $window, $state){
    var auth = {};
 
    auth.saveToken = function (token){
@@ -101,7 +166,7 @@ app.factory('auth', ['$http', '$window', function($http, $window){
 	};
 	auth.logOut = function(){
 	  $window.localStorage.removeItem('flapper-news-token');
-	  $state.go('home');
+	  $state.go('login');
 	};
 
   return auth;
@@ -219,6 +284,7 @@ function($stateProvider, $urlRouterProvider) {
 	    } else if(curUser != 'admin' && curUser != 'administrador') {
 		   window.location.href = '/'; 
 	    }
+	    
 	  }]
     })
     .state('login', {
