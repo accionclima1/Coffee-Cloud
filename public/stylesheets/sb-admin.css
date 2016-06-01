@@ -75,6 +75,11 @@ body {
     color: #fff;
 }
 
+.navbar-inverse .navbar-brand img {
+    height: 100%;
+    display:inline;
+}
+
 .navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:focus, .navbar-inverse .navbar-nav>.active>a:hover {
     background-color:#FE8515;
 }
@@ -406,4 +411,83 @@ ul.alert-dropdown {
 
 .messenger .col-md-9 {
     height: 100%; 
+}
+
+.adaptacion-wrap {
+
+}
+
+.adaptacion-wrap .table textarea {
+    width: 100%;
+    height: 144px;
+}
+
+.container-fluid.ng-scope {
+    margin-bottom: 48px;
+}
+
+.users-wrap {
+
+}
+
+.users-wrap .user-editor {
+
+}
+
+.users-wrap .user-item {
+    background-color: #E3E1E1;
+    padding: 4px 15px;
+    text-align: right;
+}
+
+.users-wrap .user-item:nth-child(even) {
+     background-color: #CACACA;
+}
+
+.users-wrap .user-item span {
+    float: left;
+    font-size: 18px;
+    margin: 4px 8px;
+}
+
+.users-wrap .user-item .username {
+    font-weight: bolder;
+    margin-left: 0;
+}
+
+.users-wrap .user-item .role:before {
+    content:"Role: ";
+    font-size: 14px;
+    color: #8D8D8D;
+}
+
+.noticas-wrap .news-editor {
+    margin-top: 24px;
+}
+
+.noticas-wrap .news-item {
+    background-color: #E3E1E1;
+    padding: 4px 15px;
+    text-align: right;
+}
+
+.noticas-wrap .news-item:nth-child(even) {
+     background-color: #CACACA;
+}
+
+.noticas-wrap .news-item span {
+    float: left;
+    font-size: 18px;
+    margin: 4px 8px;
+}
+
+.noticas-wrap .news-item .title {
+    font-weight: bolder;
+    margin-left: 0;
+}
+
+.noticas-wrap .news-item .date:before {
+    content:"publicado el: ";
+    font-size: 14px;
+    color: #8D8D8D;
 }

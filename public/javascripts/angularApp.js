@@ -1,4 +1,4 @@
-var app = angular.module('coffeeScript', ['btford.socket-io','ui.router','snap','luegg.directives','LocalStorageModule']);
+var app = angular.module('coffeeScript', ['btford.socket-io','ui.router','snap','luegg.directives','LocalStorageModule','ngSanitize']);
 
 app.config(['localStorageServiceProvider', function(localStorageServiceProvider){
   localStorageServiceProvider.setPrefix('ls');
@@ -63,7 +63,7 @@ app.controller('AuthCtrl', [
 'auth',
 function($scope, $state, auth){
   $scope.user = {};
-
+  
   $scope.register = function(){
     auth.register($scope.user).error(function(error){
       $scope.error = error;
@@ -83,6 +83,35 @@ function($scope, $state, auth){
       $state.go('home');
     });
   };
+}]);
+
+//Units Controller
+app.controller('UnitCtrl', [
+'$scope',
+'$state',
+'unit',
+'auth',
+function($scope, $state, unit, auth){
+  $scope.unit = {
+	  sombra: true,
+	  muestreo: true,
+	  fertilizaSuelo: true,
+	  fertilizaFollaje: true,
+	  enmiendasSuelo: true,
+	  manejoTejido: true,
+	  fungicidasRoya: true,
+	  verificaAgua: true,
+  };
+  $( ".date-field" ).datepicker();
+  $scope.saveUnit = function(){
+    unit.create($scope.unit,auth.userId()).error(function(error){
+      $scope.error = error;
+    }).then(function(){
+      $state.go('location');
+    });
+  };
+
+  
 }])
 
 app.controller('NavCtrl', [
@@ -97,6 +126,39 @@ function($scope, auth){
      return active;
 	};
 }]);
+
+app.controller('NewsCtrl', [
+'$scope',
+'auth',
+'$filter',
+'$sce',
+'posts',
+function($scope, auth, $filter, $sce, posts){
+  $scope.isLoggedIn = auth.isLoggedIn;
+  $scope.currentUser = auth.currentUser;
+  $scope.currentPage = 0;
+  $scope.pageSize = 9;
+  $scope.data = posts.posts;
+  $scope.q = '';
+  console.log(posts);
+  $scope.getData = function () {
+      return $filter('filter')($scope.data, $scope.q)
+     
+    }
+    
+    $scope.numberOfPages=function(){
+        return Math.ceil($scope.getData().length/$scope.pageSize);                
+    }
+   
+ 
+}]);
+
+app.filter('startFrom', function() {
+    return function(input, start) {
+        start = +start; //parse to int
+        return input.slice(start);
+    }
+});
 
 app.controller('LocationCtrl', [
 '$scope',
@@ -116,7 +178,10 @@ app.controller('RoyaCtrl', [
 'auth',
 'localStorageService',
 'socket',
-function($scope, $state, auth, localStorageService, socket){
+'unit',
+'user',
+'methods',
+function($scope, $state, auth, localStorageService, socket, unit, user, methods){
   $scope.currentUser = auth.currentUser;
   var currentId = auth.currentUser();
   var testInStore = localStorageService.get('localTest');
@@ -125,27 +190,67 @@ function($scope, $state, auth, localStorageService, socket){
 	  $scope.leafList = $scope.test.plantas[plant - 1];
 	  //console.log($scope.leafList);
 	  $('.plant-editor').addClass('active');
-  }
-  if(testInStore) {
-	  $('.roya-wrap').addClass('initiated');
-  }
-  $scope.test = testInStore || {
+  };
+  $scope.affect = 1;
+  user.get(auth.userId()).then(function(user){
+		 $scope.units = user.units;
+    });
+    
+     $scope.test = testInStore || {
 	  	advMode : false,
 	  	bandolas : false,
+	  	resolved: false,
 	  	user : currentId,
-	  	plantas: []	  
+	  	plantas: [],
+	  	unidad: {},
+	  	incidencia: 0
 	  };
-  $scope.$watch('test', function () {
+	methods.get().then(function(methods){
+		 var meth = methods.data[0];
+		 var date = new Date();
+		 var currentMonth = date.getMonth();
+		if(currentMonth < 6 ){
+		   var methodsAvail = {};
+		   methodsAvail.grade1 = meth.caseInidence10.abrilJunio;
+		   methodsAvail.grade2 = meth.caseInidence1120.abrilJunio;
+		   methodsAvail.grade3 = meth.caseInidence2150.abrilJunio;
+		   methodsAvail.grade4 = meth.caseInidence50.abrilJunio;
+		   $scope.methodsMonth = methodsAvail;
+		   
+		} else if(currentMonth > 5 && currentMonth < 9) {
+		   var methodsAvail = {};
+		   methodsAvail.grade1 = meth.caseInidence10.julioSetiembre;
+		   methodsAvail.grade2 = meth.caseInidence1120.julioSetiembre;
+		   methodsAvail.grade3 = meth.caseInidence2150.julioSetiembre;
+		   methodsAvail.grade4 = meth.caseInidence50.julioSetiembre;
+		   $scope.methodsMonth = methodsAvail;
+		} else if(currentMonth > 8) {
+		   var methodsAvail = {};
+		   methodsAvail.grade1 = meth.caseInidence10.octubreDiciembre;
+		   methodsAvail.grade2 = meth.caseInidence1120.octubreDiciembre;
+		   methodsAvail.grade3 = meth.caseInidence2150.octubreDiciembre;
+		   methodsAvail.grade4 = meth.caseInidence50.octubreDiciembre;
+		   $scope.methodsMonth = methodsAvail;
+		}
+    });
+
+  
+   $scope.$watch('test', function () {
       localStorageService.set('localTest', $scope.test);
     }, true);
+ 
+  
+  if(testInStore && Object.keys(testInStore.unidad).length > 1) {
+	  $('.roya-wrap').addClass('initiated');
+  }
+  
+  if(testInStore && testInStore.resolved) {
+	  $('.test').hide();
+	  $('.results').show();
+  }
 	
-  $scope.startTest = function($event) {
-	  var eventTarget = $event.currentTarget;
-	  if($(eventTarget).hasClass('adv')) {
-		  $scope.test.advMode = true;
-	  } else {
-		  $scope.test.advMode = false;
-	  }
+  $scope.startTest = function(selectedUnit) {
+	  $scope.test.unidad = selectedUnit;
 	  $('.roya-wrap').addClass('initiated');
    }
    $scope.bandolas = function() {
@@ -180,6 +285,7 @@ function($scope, $state, auth, localStorageService, socket){
 		$scope.test.plantas[plantIndex].push([amount,severity]);
 		$scope.leafList = $scope.test.plantas[plantIndex];
 		$('[name=amount]').val(1);
+		$scope.affect = 1;
 		$('.severity-list').removeClass('active');
 	};
 
@@ -193,49 +299,97 @@ function($scope, $state, auth, localStorageService, socket){
     };  
     
     $scope.calculateTest = function() {
-	
-		$scope.totalPlants = $scope.test.plantas.length;
-		var totalPlantitas = $scope.totalPlants;	
-		var totalLeaf = 0;
-		var totalIncidencePlant = [];
-		var totalDamagePlant = [];
-		var avgInc = 0;
-		var avgPct = 0;
-		
-		for(var i = 0, len = $scope.totalPlants; i < len; i++) {
-			var affected = 0;
-			var avgDmg = 0;
-			var Dmg = [];
-			$.each($scope.test.plantas[i], function( index, value ) {
-				  totalLeaf += parseInt(value[0]);
-				  	if (value[1] !='0%') {
-					   affected += parseInt(value[0]);
-					   Dmg.push(parseInt(value[1]));
-				  	} 
-			});	
-			totalIncidencePlant.push(affected);
-			$.each(Dmg, function( index, value ) {
-				  
-				  avgDmg += parseInt(Dmg[index]);
-			});
-			var curAvgDmg = avgDmg / Dmg.length;
-			totalDamagePlant.push(curAvgDmg);
+	    
+	    if ($scope.test.advMode) {
+		    $scope.totalPlants = $scope.test.plantas.length;
+			var totalPlantitas = $scope.totalPlants;	
+			var totalLeaf = 0;
+			var totalIncidencePlant = [];
+			var totalDamagePlant = [];
+			var avgInc = 0;
+			var avgPct = 0;
 			
-		}
-		var incidenceLength = totalIncidencePlant.length;
-		for(var i = 0; i < incidenceLength; i++) {
-		    avgInc += totalIncidencePlant[i];
-		}
-		var avg = avgInc / incidenceLength;
-		var damageLength = totalDamagePlant.length;
-		for(var i = 0; i < damageLength; i++) {
-		    avgPct += totalDamagePlant[i];
-		}
-		var avgDmgPct = avgPct / damageLength;
-		$scope.avgplnt = avg;
-		$scope.avgplntDmgPct = avgDmgPct;
-		$('.test').hide();
-		$('.results').show();;
+			for(var i = 0, len = $scope.totalPlants; i < len; i++) {
+				var affected = 0;
+				var avgDmg = 0;
+				var Dmg = [];
+				$.each($scope.test.plantas[i], function( index, value ) {
+					  totalLeaf += parseInt(value[0]);
+					  	if (value[1] !='0%') {
+						   affected += parseInt(value[0]);
+						   Dmg.push(parseInt(value[1]));
+					  	} 
+				});	
+				totalIncidencePlant.push(affected);
+				$.each(Dmg, function( index, value ) {
+					  
+					  avgDmg += parseInt(Dmg[index]);
+				});
+				var curAvgDmg = avgDmg / Dmg.length;
+				totalDamagePlant.push(curAvgDmg);
+				
+			}
+			var incidenceLength = totalIncidencePlant.length;
+			for(var i = 0; i < incidenceLength; i++) {
+			    avgInc += totalIncidencePlant[i];
+			}
+			var avg = avgInc / incidenceLength;
+			var damageLength = totalDamagePlant.length;
+			for(var i = 0; i < damageLength; i++) {
+			    avgPct += totalDamagePlant[i];
+			}
+			var avgDmgPct = avgPct / damageLength;
+			$scope.avgIncidence = (avgInc/totalLeaf)*100;
+			$scope.avgplnt = avg;
+			$scope.avgplntDmgPct = avgDmgPct;
+			$scope.test.resolved = true;
+			$scope.test.incidencia = $scope.avgIncidence;
+			$('.test').hide();
+			$('.results').show();
+	    } else {
+		   
+		  
+		   var plants = $scope.test.plantas,
+		   	   totalPlants = plants.length,
+		   	   affectedLeaf = [];
+		   	   affectedTotal = 0;
+		   	   allLeaf = [];
+		   	   totalLeaf = 0;
+		   	    $scope.totalPlantis = plants.length;
+		   
+		   	   $.each($scope.test.plantas, function( index, value ) {	
+			   		var count = value[0][1].split(":"),
+			   			affectedCnt = parseInt(count[1]);
+			   			affectedLeaf.push(affectedCnt);
+				});
+				
+				$.each($scope.test.plantas, function( index, value ) {	
+			   		var totalCnt = parseInt(value[0][0]);
+			   			allLeaf.push(totalCnt);
+				});
+				
+			   for(var i = 0; i < affectedLeaf.length; i++) {
+				    affectedTotal += affectedLeaf[i];
+				}
+				
+				for(var i = 0; i < allLeaf.length; i++) {
+					
+				    totalLeaf += parseInt(allLeaf[i]);
+				}
+				
+			   var avgAffected = affectedTotal / affectedLeaf.length,
+			       avgLeaf = totalLeaf / totalPlants,
+			       percent = (avgAffected/avgLeaf)*100;
+			       
+			   $scope.test.incidencia = percent;
+			   $scope.test.resolved = true;
+			   $('.test').hide();
+			   $('.results').show();
+			  
+		   
+	    }
+	
+		
     };
     
     $scope.getHelp = function(plants,incidence,damage,currentUser) { 
@@ -302,6 +456,80 @@ function($scope, auth, socket){
 	//});
 }]);
 
+app.controller('ProfileCtrl',['$http','$scope', 'auth', 'unit', 'user',
+function($http, $scope, auth, unit, user){
+	$scope.isLoggedIn = auth.isLoggedIn;
+	$scope.currentUser = auth.currentUser;
+	$scope.userId = auth.userId;
+	$scope.user_Ided = auth.userId();
+	var userO = {};
+	$scope.newUnit = {
+	  sombra: true,
+	  muestreo: true,
+	  fertilizaSuelo: true,
+	  fertilizaFollaje: true,
+	  enmiendasSuelo: true,
+	  manejoTejido: true,
+	  fungicidasRoya: true,
+	  verificaAgua: true,
+	};
+	$scope.editUnit = {};
+	user.get($scope.user_Ided).then(function(user){
+		 $scope.userO = user;
+		 $scope.units = $scope.userO.units;
+    });
+    $( ".date-field" ).datepicker();
+     $scope.update = function(){
+    user.update($scope.userO).error(function(error){
+	      $scope.error = error;
+	    }).then(function(data){
+	      $scope.message = data.data.message;
+	    });
+	  };
+	$scope.deleteUnit = function(e,id) {
+		
+		unit.deleteUnit(id, auth.userId()).then(function(user){
+			 $('#'+id).remove();
+			});		
+	}
+	
+	$scope.updateUnit = function(e,id) {
+		$scope.sucMsg = null;
+		unit.get(auth.userId(),id).then(function(unitD){
+			$scope.editUnit = unitD;
+			$scope.updateUnitForm = function(){
+				unit.update(id, auth.userId(), $scope.editUnit).then(function(unitN){
+					
+					$scope.editUnit = unitN.config.data;
+					$scope.sucMsg = unitN.data.message;
+				});
+			}
+		});
+	}
+	
+	$scope.saveUnit = function(){
+	    unit.create($scope.newUnit,auth.userId()).error(function(error){
+	      $scope.error = error;
+	    }).then(function(data){
+			$scope.userO.units.push(data.config.data);
+			$('#myModal2').modal('hide');
+			$scope.newUnit = {
+			  sombra: true,
+			  muestreo: true,
+			  fertilizaSuelo: true,
+			  fertilizaFollaje: true,
+			  enmiendasSuelo: true,
+			  manejoTejido: true,
+			  fungicidasRoya: true,
+			  verificaAgua: true,
+			};
+			
+	    });
+	  };
+  
+    
+}]);
+
 app.factory('posts', ['$http', 'auth', function($http, auth){
 	  var o = {
 	  		posts : []
@@ -346,6 +574,40 @@ app.factory('posts', ['$http', 'auth', function($http, auth){
 		};
   return o;
 }]);
+// User profile service
+app.factory('user', ['$http', 'auth', function($http, auth){
+	  var o = {
+	  };
+	  /*o.create = function(post) {
+		  return $http.post('/posts', post, {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  }).success(function(data){
+		    o.posts.push(data);
+		  });
+		};*/
+		o.getAll = function() {
+		  return $http.get('/users', {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  }).then(function(res){
+		    return res.data;
+		  });
+		};
+		o.get = function(id) {
+		  return $http.get('/users/' + id).then(function(res){
+		    return res.data;
+		  });
+		};
+		
+		o.update = function(user){
+	  return $http.put('/users/' + user._id, user, {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  }).success(function(data){
+	    return data
+	  });
+	};
+		
+  return o;
+}]);
 //authorize service
 app.factory('auth', ['$http', '$window', function($http, $window){
    var auth = {};
@@ -374,8 +636,17 @@ app.factory('auth', ['$http', '$window', function($http, $window){
 	  if(auth.isLoggedIn()){
 	    var token = auth.getToken();
 	    var payload = JSON.parse($window.atob(token.split('.')[1]));
-
+		
 	    return payload.username;
+	  }
+	};
+	
+	auth.userId = function(){
+	  if(auth.isLoggedIn()){
+	    var token = auth.getToken();
+	    var payload = JSON.parse($window.atob(token.split('.')[1]));
+		
+	    return payload._id;
 	  }
 	};
 
@@ -397,6 +668,74 @@ app.factory('auth', ['$http', '$window', function($http, $window){
 
   return auth;
 }]);
+//units service
+app.factory('unit', ['$http', 'auth','$window', function($http, auth, $window){
+   var o = {};
+   o.getAll = function(id) {
+	    return $http.get('/users/'+ id +'/units').success(function(data){
+	      return data;
+	    });
+	  };
+   o.get = function(userId,id) {
+		  return $http.get('/users/'+ userId +'/units/'+ id).then(function(res){
+		    return res.data;
+		  });
+		};
+   
+	o.create = function(unit, id){
+	  return $http.post('/users/'+ id +'/units', unit, {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  }).success(function(data){
+		    return data;
+		  });
+	};
+	
+	o.update = function(unit, id, unitData){
+	  return $http.put('/users/'+ id +'/units/'+ unit, unitData, {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  }).success(function(data){
+	    return data
+	  });
+	};
+	
+	o.deleteUnit = function(unitId, userId){
+	  return $http.delete('/users/'+ userId +'/units/'+ unitId, {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  }).success(function(data){
+		    return unitId;
+		  });
+	};
+
+  return o;
+}]);
+
+app.factory('methods', ['$http', 'auth', function($http, auth){
+	  var o = {
+	  		chats : []
+	  };
+	  o.get = function() {
+	    return $http.get('/admin/methods/').success(function(data){
+	      return data;
+	    });
+	  };
+	  o.create = function(method) {
+		  return $http.post('/admin/methods', method, {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  }).success(function(data){
+		    return data;
+		  });
+		};
+		o.update = function(method) {
+		  return $http.put('/admin/methods', method, {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  }).success(function(data){
+		    return data;
+		  });
+		};
+		
+  return o;
+}]);
+
 //pre loader animation controller
 app.run(function($rootScope){
     $rootScope
@@ -472,7 +811,7 @@ function($stateProvider, $urlRouterProvider) {
 	.state('register-profile', {
 	  url: '/register-profile',
 	  templateUrl: '/register-profile.html',
-	  controller: 'AuthCtrl',
+	  controller: 'UnitCtrl',
 	  onEnter: ['$state', 'auth', function($state, auth){
 	    if(auth.isLoggedIn()){
 	      //$state.go('home');
@@ -524,6 +863,36 @@ function($stateProvider, $urlRouterProvider) {
 	    //console.log(data_server);
 	    socket.emit('load msg',data_server);
 	  }]
+	})
+	.state('profile', {
+	  url: '/profile',
+	  templateUrl: '/profile.html',
+	  controller: 'ProfileCtrl',
+	  onEnter: ['$state', 'auth', function($state, auth){
+	    if(!auth.isLoggedIn()){
+	      $state.go('login');
+	    }
+	    var currentUser = auth.currentUser();
+	    
+	    
+	  }]
+	}).state('news', {
+	  url: '/news',
+	  templateUrl: '/news.html',
+	  controller: 'NewsCtrl',
+	  onEnter: ['$state', 'auth', function($state, auth){
+	    if(!auth.isLoggedIn()){
+	      $state.go('login');
+	    }
+	    var currentUser = auth.currentUser();
+	    
+	    
+	  }],
+	  resolve: {
+	    postPromise: ['posts', function(posts){
+	      return posts.getAll();
+	    }]
+  	   }
 	});
 
   $urlRouterProvider.otherwise('home');

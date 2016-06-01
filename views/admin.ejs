@@ -28,6 +28,8 @@
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
 	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 	<script src="/bower_components/angular-socket-io/socket.min.js"></script>
+	<script type="text/javascript" src="bower_components/tinymce-dist/tinymce.js"></script>
+	 <script type="text/javascript" src="bower_components/angular-ui-tinymce/src/tinymce.js"></script>
 	<script src="/javascripts/adminApp.js"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -53,7 +55,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/admin#/">Coffee Cloud <small>Admin</small></a>
+                <a class="navbar-brand" href="/admin#/"> <img src="images/pages-logo-light.png" alt="" class="login-img"> Coffee Cloud <small>Admin</small></a>
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav" ng-show="isLoggedIn()">
@@ -162,8 +164,26 @@
                     <li ng-class="{ active: isActive('/home') }">
                         <a href="/admin#/"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
+                    <li ng-class="{ active: isActive('/adaptacion') }">
+                        <a href="/admin#/adaptacion"><i class="fa fa-fw fa-shield"></i> Adaptación Climática </a>
+                    </li>
+                    <li ng-class="{ active: isActive('/users') }">
+                        <a href="/admin#/users"><i class="fa fa-fw fa-users"></i> Usuarios  </a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-fw fa-umbrella"></i> Perspectiva Climática</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-fw fa-map"></i> Mapa Incidencia</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-fw fa-map-o"></i> Mapa Severidad</a>
+                    </li>
+                    <li ng-class="{ active: isActive('/noticias') }">
+                        <a href="/admin#/noticias"><i class="fa fa-fw fa-newspaper-o"></i> Noticias</a>
+                    </li>
                     <li ng-class="{ active: isActive('/messenger') }">
-                        <a href="/admin#/messenger"><i class="fa fa-fw fa-comment"></i>  Chats</a>
+                        <a href="/admin#/messenger"><i class="fa fa-fw fa-comment"></i>  Consultas</a>
                     </li>
                     
                 </ul>
@@ -192,7 +212,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Dashboard <small>Statistics Overview</small>
+                            Dashboard
                         </h1>
                         <ol class="breadcrumb">
                             <li class="active">
@@ -205,93 +225,30 @@
                 <!-- /.row -->
 
                 <div class="row">
-                    <div class="col-lg-3 col-md-6">
-                        <div class="panel panel-primary">
+                    <div class="col-md-6">
+	                     <div class="panel panel-default">
                             <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <i class="fa fa-comments fa-5x"></i>
-                                    </div>
-                                    <div class="col-xs-9 text-right">
-                                        <div class="huge">26</div>
-                                        <div>New Comments!</div>
-                                    </div>
-                                </div>
+                                <h3 class="panel-title">Precipitación 
+                                </h3>
                             </div>
-                            <a href="#">
-                                <div class="panel-footer">
-                                    <span class="pull-left">View Details</span>
-                                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="panel panel-green">
+                            <div class="panel-body">
+	                            <iframe width="100%" height="500px" frameBorder="0" src="https://a.tiles.mapbox.com/v4/accionclima.5b439af8.html?access_token=pk.eyJ1IjoiYWNjaW9uY2xpbWEiLCJhIjoiY2lrazVhd2lhMGE1cnRpajdxZzFlZjd5cyJ9.LSfg1Cjc1LaBYJFt4Rlj8w"></iframe>
+
+                            </div>
+	                     </div>
+	                                        </div>
+                    <div class="col-md-6">
+	                    <div class="panel panel-default">
                             <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <i class="fa fa-tasks fa-5x"></i>
-                                    </div>
-                                    <div class="col-xs-9 text-right">
-                                        <div class="huge">12</div>
-                                        <div>New Tasks!</div>
-                                    </div>
-                                </div>
+                                <h3 class="panel-title">Mapa Incidencia  
+                                </h3>
                             </div>
-                            <a href="#">
-                                <div class="panel-footer">
-                                    <span class="pull-left">View Details</span>
-                                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="panel panel-yellow">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <i class="fa fa-shopping-cart fa-5x"></i>
-                                    </div>
-                                    <div class="col-xs-9 text-right">
-                                        <div class="huge">124</div>
-                                        <div>New Orders!</div>
-                                    </div>
-                                </div>
+                            <div class="panel-body">
+	                           <iframe width="100%" height="500px" frameBorder="0" src="https://a.tiles.mapbox.com/v4/accionclima.9f02fd72.html?access_token=pk.eyJ1IjoiYWNjaW9uY2xpbWEiLCJhIjoiY2lrazVhd2lhMGE1cnRpajdxZzFlZjd5cyJ9.LSfg1Cjc1LaBYJFt4Rlj8w"></iframe>
+
                             </div>
-                            <a href="#">
-                                <div class="panel-footer">
-                                    <span class="pull-left">View Details</span>
-                                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="panel panel-red">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <i class="fa fa-support fa-5x"></i>
-                                    </div>
-                                    <div class="col-xs-9 text-right">
-                                        <div class="huge">13</div>
-                                        <div>Support Tickets!</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <a href="#">
-                                <div class="panel-footer">
-                                    <span class="pull-left">View Details</span>
-                                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </a>
-                        </div>
+	                     </div>
+	                    
                     </div>
                 </div>
                 <!-- /.row -->
@@ -300,7 +257,7 @@
                     <div class="col-lg-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-bar-chart-o fa-fw"></i> Area Chart</h3>
+                                <h3 class="panel-title"><i class="fa fa-bar-chart-o fa-fw"></i> Consultas</h3>
                             </div>
                             <div class="panel-body">
                                 <div id="morris-area-chart"></div>
@@ -465,16 +422,31 @@
 				    <div class="form-group">
 				      <input type="text"
 				      class="form-control"
-				      placeholder="Correo Electrónico"
-				      ng-model="user.username"></input>
+				      placeholder="Nombre de usuario"
+				      ng-model="user.username" required></input>
 				    </div>
 				    <div class="form-group">
-				      <input type="password"
+				      <input type="text"
 				      class="form-control"
-				      placeholder="Contraseña"
-				      ng-model="user.password"></input>
+				      placeholder="Numero Telefonico"
+				      ng-model="user.phone" required></input>
 				    </div>
-				    <button type="submit" class="btn btn-primary">Registrarse</button>
+				    <div class="form-group">
+				      <input type="email"
+				      class="form-control"
+				      placeholder="Correo Electrónico"
+				      ng-model="user.email" required></input>
+				    </div>
+				   <div class="form-group">
+							    <div class="form-group">
+							      <input type="password" data-minlength="6" class="form-control" id="inputPassword" placeholder="Contraseña" required>
+							    </div>
+							    <div class="form-group">
+							      <input type="password" class="form-control" id="inputPasswordConfirm" data-match="#inputPassword" data-match-error="Whoops, these don't match" placeholder="Confirmar Contraseña" ng-model="user.password" required>
+							      <div class="help-block with-errors"></div>
+							    </div>
+							</div>
+				    				    <button type="submit" class="btn btn-primary">Registrarse</button>
 				  </form>
 				  </div>
 			</div>
@@ -553,17 +525,224 @@
 		
 						
 	</script>
+    <script type="text/ng-template" id="/adaptacion.html">
+	     <div class="container-fluid adaptacion-wrap">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Adaptación Climática
+                        </h1>
+                        <p class="lead">Recomendaciones </p>
+                    </div>
+                </div>
+              
+                <!-- /.row -->
+
+                <div class="row">
+                    <div class="col-md-12">
+	                   <form ng-submit="saveTable()">
+	                    <div class="table-responsive">
+	                    <table class="table table-bordered">
+						  <tr>
+						    <th>Incidencia (%)</th>
+						    <th>abril - junio</th>
+						    <th>julio-setiembre</th>
+						    <th>octubre-diciembre</th>
+						  </tr>
+						  <tr>
+						    <td>&lt; 10</td>
+						    <td><textarea ng-model="table.caseInidence10.abrilJunio"></textarea></td>
+						    <td><textarea ng-model="table.caseInidence10.julioSetiembre"></textarea></td>
+						    <td><textarea ng-model="table.caseInidence10.octubreDiciembre"></textarea></td>
+						  </tr>
+						  <tr>
+						    <td>11 - 20</td>
+						    <td><textarea ng-model="table.caseInidence1120.abrilJunio"></textarea></td>
+						    <td><textarea ng-model="table.caseInidence1120.julioSetiembre"></textarea></td>
+						    <td><textarea ng-model="table.caseInidence1120.octubreDiciembre"></textarea></td>
+						  </tr>
+						  <tr>
+						    <td>21 - 50</td>
+						    <td><textarea ng-model="table.caseInidence2150.abrilJunio"></textarea></td>
+						    <td><textarea ng-model="table.caseInidence2150.julioSetiembre"></textarea></td>
+						    <td><textarea ng-model="table.caseInidence2150.octubreDiciembre"></textarea></td>
+						  </tr>
+						  <tr>
+						    <td>&gt; 50</td>
+						    <td><textarea ng-model="table.caseInidence50.abrilJunio"></textarea></td>
+						    <td><textarea ng-model="table.caseInidence50.julioSetiembre"></textarea></td>
+						    <td><textarea ng-model="table.caseInidence50.octubreDiciembre"></textarea></td>
+						  </tr>
+						</table>
+	                    </div>
+	                    <button class="btn btn-primary">Guardar Camabios</button>
+	                   </form>
+                    </div>
+                </div>
+                
+
+            </div>
+    </script>
+    <script type="text/ng-template" id="/users.html">
+	     <div class="container-fluid users-wrap">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Administración de Usuarios
+                        </h1>
+                        <p class="lead col-md-4">Creación y Roles </p><div class="col-md-8 text-right"><button class="btn btn-primary" data-toggle="modal" data-target="#myModal">Nuevo Usuario</button></div>
+                    </div>
+                </div>
+              
+                <!-- /.row -->
+
+                <div class="row">
+                    <div class="col-md-12">
+	                   <div class="user-editor">
+		                   <div class="user-item" ng-repeat="user in userList">
+			                   <span class="username">{{user.username}}</span> <span class="role">{{user.role}}</span>
+			                   <button class="btn btn-default">Editar</button>
+			                   <button class="btn btn-danger">X</button>
+			                </div>
+			            </div>
+                    </div>
+                </div>
+
+				<!-- Modal -->
+				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				  <div class="modal-dialog" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" id="myModalLabel">Crear Usuario</h4>
+				      </div>
+				      <div class="modal-body">
+						        <div ng-show="error" class="alert alert-danger row">
+								    <span>{{ error.message }}</span>
+								  </div>
+				
+								  <form ng-submit="register()">
+				
+								    <div class="form-group">
+								      <input type="text"
+								      class="form-control"
+								      placeholder="Nombre de usuario"
+								      ng-model="user.username" required></input>
+								    </div>
+								    <div class="form-group">
+								      <input type="text"
+								      class="form-control"
+								      placeholder="Numero Telefonico"
+								      ng-model="user.phone" required></input>
+								    </div>
+								    <div class="form-group">
+								      <label>Rol:</label>
+								      <select class="form-control" >
+										  <option>Cliente</option>
+										  <option>Extensionista</option>
+										  <option>Admin</option>
+										</select>
+								    </div>
+								    <div class="form-group">
+								      <input type="email"
+								      class="form-control"
+								      placeholder="Correo Electrónico"
+								      ng-model="user.email" required></input>
+								    </div>
+								   <div class="form-group">
+											    <div class="form-group">
+											      <input type="password" data-minlength="6" class="form-control" id="inputPassword" placeholder="Contraseña" required>
+											    </div>
+											    <div class="form-group">
+											      <input type="password" class="form-control" id="inputPasswordConfirm" data-match="#inputPassword" data-match-error="Whoops, these don't match" placeholder="Confirmar Contraseña" ng-model="user.password" required>
+											      <div class="help-block with-errors"></div>
+											    </div>
+											</div>
+								    
+								  
+								  </form>
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        <button type="button" class="btn btn-primary"  ng-click="register()">Guardar Usuario</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+
+            </div>
+    </script>
+    <script type="text/ng-template" id="/noticias.html">
+	     <div class="container-fluid noticas-wrap">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Noticias
+                        </h1>
+                        <p class="lead col-md-4">Creación y Edicion </p><div class="col-md-8 text-right"><button class="btn btn-primary" data-toggle="modal" data-target="#myModal">Nueva Noticia</button></div>
+                    </div>
+                </div>
+              
+                <!-- /.row -->
+
+                <div class="row">
+                    <div class="col-md-12">
+	                   <div class="news-editor">
+		                   <div class="news-item" ng-repeat="post in posts | orderBy: '-createdAt'">
+			                   <span class="title">{{post.title}}</span> <span class="date">{{post.createdAt | date:'MM/dd/yyyy'}}</span>
+			                   <button class="btn btn-default">Editar</button>
+			                   <button class="btn btn-danger">X</button>
+			                </div>
+			            </div>
+                    </div>
+                </div>
+  				<!-- Modal -->
+				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				  <div class="modal-dialog" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" id="myModalLabel">Nueva Noticia </h4>
+				      </div>
+				      <div class="modal-body">
+				        <form ng-submit="publish()">
+					         <div class="form-group">
+							    <label for="title">Titulo</label>
+							    <input type="text" class="form-control" id="title"  ng-model="newPost.title">
+							  </div>
+							  <textarea ui-tinymce="tinymceOptions" ng-model="newPost.content"></textarea>
+				        </form>
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+				        <button type="button" class="btn btn-primary" ng-click="publish()">Publicar</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+                
+
+            </div>
+    </script>
 
     
 
     <!-- Bootstrap Core JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-
+    
+	
     <!-- Morris Charts JavaScript -->
     <script src = "bower_components/angular-scroll-glue/src/scrollglue.js"></script>
+    <!-- Morris Charts JavaScript
     <script src="javascripts/plugins/morris/raphael.min.js"></script>
     <script src="javascripts/plugins/morris/morris.min.js"></script>
-    <script src="javascripts/plugins/morris/morris-data.js"></script>
+    <script src="javascripts/plugins/morris/morris-data.js"></script> -->
 
 </body>
 

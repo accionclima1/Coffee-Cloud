@@ -1,4 +1,4 @@
-var app = angular.module('coffeeScriptAdmin', ['btford.socket-io','ui.router','luegg.directives']);
+var app = angular.module('coffeeScriptAdmin', ['btford.socket-io','ui.router','luegg.directives','ui.tinymce']);
 
 // Main controller 
 app.controller('MainCtrl',['$scope', 'auth',
@@ -43,7 +43,52 @@ function($scope, $state, auth){
       $state.go('home');
     });
   };
-}])
+}]);
+
+app.factory('posts', ['$http', 'auth', function($http, auth){
+	  var o = {
+	  		posts : []
+	  };
+	  o.getAll = function() {
+	    return $http.get('/posts').success(function(data){
+	      angular.copy(data, o.posts);
+	    });
+	  };
+	  o.create = function(post) {
+		  return $http.post('/posts', post, {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  }).success(function(data){
+		    o.posts.push(data);
+		  });
+		};
+		o.upvote = function(post) {
+		  return $http.put('/posts/' + post._id + '/upvote', null, {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  })
+		    .success(function(data){
+		      post.upvotes += 1;
+		    });
+		};
+		o.get = function(id) {
+		  return $http.get('/posts/' + id).then(function(res){
+		    return res.data;
+		  });
+		};
+		o.addComment = function(id, comment) {
+		  return $http.post('/posts/' + id + '/comments', comment, {
+		    headers: {Authorization: 'Bearer '+auth.getToken()}
+		  });
+		};
+		o.upvoteComment = function(post, comment) {
+		  return $http.put('/posts/' + post._id + '/comments/'+ comment._id + '/upvote', null, {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  })
+		    .success(function(data){
+		      comment.upvotes += 1;
+		    });
+		};
+  return o;
+}]);
 
 // Socket Factory service
 app.factory('socket', ['socketFactory',
@@ -120,6 +165,87 @@ function($scope, auth, $location){
      var active = (viewLocation === $location.path());
      return active;
 	};
+}]);
+
+//adaptation controller
+app.controller('AdaptacionCtrl', [
+'$scope',
+'auth',
+'$location',
+'methods',
+function($scope, auth, $location, methods){
+  $scope.isLoggedIn = auth.isLoggedIn;
+  $scope.currentUser = auth.currentUser;
+  $scope.logOut = auth.logOut;
+  $scope.isActive = function (viewLocation) {
+     var active = (viewLocation === $location.path());
+     return active;
+	};
+  var tableObject = {};
+  	
+  	methods.get().then(function(methods){ 
+	  	//console.log(methods.data[0]);
+	  	tableObject = methods.data[0];
+	  	$scope.table = tableObject;
+  	})
+  
+	
+	
+	$scope.saveTable = function() {
+			methods.update($scope.table);
+			
+	};
+	
+}]);
+
+//USers editor controller
+app.controller('UsersCtrl', [
+'$scope',
+'auth',
+'$location',
+'user',
+function($scope, auth, $location, user){
+  $scope.isLoggedIn = auth.isLoggedIn;
+  $scope.currentUser = auth.currentUser;
+  $scope.logOut = auth.logOut;
+  $scope.isActive = function (viewLocation) {
+     var active = (viewLocation === $location.path());
+     return active;
+	};
+	user.getAll().then(function(users) {
+		$scope.userList = users;
+	})
+   
+}]);
+
+//NewsCtrl editor controller
+app.controller('NewsCtrl', [
+'$scope',
+'auth',
+'$location',
+'user',
+'posts',
+function($scope, auth, $location, user, posts){
+  $scope.isLoggedIn = auth.isLoggedIn;
+  $scope.currentUser = auth.currentUser;
+  $scope.tinymceOptions = {
+    plugins: 'link image code',
+    toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code | image'
+  };
+  $scope.newPost = {
+	  title: "",
+	  content: ""
+  };
+  $scope.posts = posts.posts;
+  console.log(posts.posts);
+  $scope.publish = function() {
+	  posts.create($scope.newPost)
+	  $scope.newPost = {
+		  title: "",
+		  content: ""
+	  };
+  }
+   
 }]);
 
 // Support Chat Controller 
@@ -201,6 +327,67 @@ app.factory('chats', ['$http', 'auth', function($http, auth){
 		
   return o;
 }]);
+// User profile service
+app.factory('user', ['$http', 'auth', function($http, auth){
+	  var o = {
+	  };
+	  /*o.create = function(post) {
+		  return $http.post('/posts', post, {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  }).success(function(data){
+		    o.posts.push(data);
+		  });
+		};*/
+		o.getAll = function() {
+		  return $http.get('/users', {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  }).then(function(res){
+		    return res.data;
+		  });
+		};
+		o.get = function(id) {
+		  return $http.get('/users/' + id).then(function(res){
+		    return res.data;
+		  });
+		};
+		
+		o.update = function(user){
+	  return $http.put('/users/' + user._id, user, {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  }).success(function(data){
+	    return data
+	  });
+	};
+		
+  return o;
+}]);
+
+app.factory('methods', ['$http', 'auth', function($http, auth){
+	  var o = {
+	  		chats : []
+	  };
+	  o.get = function() {
+	    return $http.get('/admin/methods/').success(function(data){
+	      return data;
+	    });
+	  };
+	  o.create = function(method) {
+		  return $http.post('/admin/methods', method, {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  }).success(function(data){
+		    return data;
+		  });
+		};
+		o.update = function(method) {
+		  return $http.put('/admin/methods', method, {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  }).success(function(data){
+		    return data;
+		  });
+		};
+		
+  return o;
+}]);
 
 app.config([
 '$stateProvider',
@@ -253,6 +440,41 @@ function($stateProvider, $urlRouterProvider) {
 	  resolve: {
 	    chatPromise: ['chats', function(chats){
 	      return chats.getAll();
+	    }]
+  	   }
+	})
+	.state('adaptacion', {
+	  url: '/adaptacion',
+	  templateUrl: '/adaptacion.html',
+	  controller: 'AdaptacionCtrl',
+	  onEnter: ['$state', 'auth', function($state, auth){
+	    if(!auth.isLoggedIn()){
+	      $state.go('login');
+	    }
+	  }]
+	})
+	.state('users', {
+	  url: '/users',
+	  templateUrl: '/users.html',
+	  controller: 'UsersCtrl',
+	  onEnter: ['$state', 'auth', function($state, auth){
+	    if(!auth.isLoggedIn()){
+	      $state.go('login');
+	    }
+	  }]
+	})
+	.state('noticias', {
+	  url: '/noticias',
+	  templateUrl: '/noticias.html',
+	  controller: 'NewsCtrl',
+	  onEnter: ['$state', 'auth', function($state, auth){
+	    if(!auth.isLoggedIn()){
+	      $state.go('login');
+	    }
+	  }],
+	  resolve: {
+	    postPromise: ['posts', function(posts){
+	      return posts.getAll();
 	    }]
   	   }
 	});
