@@ -25,12 +25,15 @@ mongoose.connect('mongodb://cafenube:Sec03lP1nt0@ec2-54-68-110-187.us-west-2.com
 
 var passport = require('passport');
 
+
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var admin = require('./routes/admin');
 var instituto = require('./routes/instituto');
 
 var app = express();
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -58,6 +61,13 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 
 // error handlers
 
