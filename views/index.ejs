@@ -79,43 +79,30 @@
 		</div>
 	</script>
 	<script type="text/ng-template" id="/posts.html">
-	 		<span ng-show="post.author">
-			  posted by <a>{{post.author}}</a> |
-			</span>
-	  <div class="page-header">
-	    <h3>
-	      <a ng-show="post.link" href="{{post.link}}">
-	        {{post.title}}
-	      </a>
-	      <span ng-hide="post.link">
-	        {{post.title}}
-	      </span>
-	    </h3>
-	  </div>
+	 		
+			  
+			
+	  
 
-	  <div ng-repeat="comment in post.comments | orderBy:'-upvotes'">
-	    <span class="glyphicon glyphicon-thumbs-up"
-	      ng-click="incrementUpvotes(comment)"></span>
-	    {{comment.upvotes}} - by {{comment.author}}
-	    <span style="font-size:20px; margin-left:10px;">
-	      {{comment.body}}
-	    </span>
-	  </div>
-	  <div ng-hide="isLoggedIn()">
-		  <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can comment.</h3>
-		</div>
-	  <form ng-submit="addComment()" ng-show="isLoggedIn()"
-		    style="margin-top:30px;">
-		    <h3>Add a new comment</h3>
-
-		    <div class="form-group">
-		      <input type="text"
-		      class="form-control"
-		      placeholder="Comment"
-		      ng-model="body"></input>
-		    </div>
-		    <button type="submit" class="btn btn-primary">Post</button>
-		  </form>
+	  <div class="container blog-post">
+		  <div class="row">
+			  <div class="col-md-12">
+				  <div class="page-header">
+				    <h3>
+				      <a href="/#/news">
+				        <i class="fa fa-chevron-left"></i>
+				      </a>
+				      {{post.title}}
+				    </h3>
+				  </div>
+			  </div>
+		  </div>
+		  <div class="row">
+			  <div class="col-md-12" ng-bind-html="post.content">
+				  
+			  </div>
+		  </div>
+	   </div>
 
 	</script>
 	<script type="text/ng-template" id="/register.html">
@@ -167,7 +154,6 @@
 		</div>
 	</div>
 	</script>
-	
 	<script type="text/ng-template" id="/register-profile.html">
 	  <div class="register-profile-wrap profile">
 		<div class="container">
@@ -539,7 +525,6 @@
 		</div>
 	</div>
 	</script>
-	
 	<script type="text/ng-template" id="/login.html">
 		<div class="login-wrap">
 		<div class="container">
@@ -570,9 +555,8 @@
 			</div>
 		</div>
 	</div>
-	  </script>
-		
-	  <script type="text/ng-template" id="/location.html">
+	  </script>	
+	<script type="text/ng-template" id="/location.html">
 	  		<div class="location-wrap">
 				<div class="container">
 					<div class="row">
@@ -596,9 +580,8 @@
 					</div>
 				</div>
 			</div>
-	  </script>
-	  
-	  <script type="text/ng-template" id="/roya.html">
+	  </script>  
+	<script type="text/ng-template" id="/roya.html">
 	  		<div class="roya-wrap">
 	  			<h2 class="section-header">
 	  				CÁLCULO DE ROYA <small ng-show="test.advMode">(avanzado)</small>
@@ -675,12 +658,12 @@
 									</div>
 									<ul class="severity-list" ng-show="test.advMode">
 										<li>Seleccione la severidad para el grupo de hojas:</li>
-										<li ng-click="addLeaf('0%')" style="color:lime"><i class="fa fa-leaf"></i><span>0%</span></li>
-										<li ng-click="addLeaf('10%')" style="color:green"><i class="fa fa-leaf"></i><span>10%</span></li>
-										<li ng-click="addLeaf('20%')" style="color:yellow"><i class="fa fa-leaf"></i><span>20%</span></li>
-										<li ng-click="addLeaf('30%')" style="color:rgba(192, 151, 29, 1)"><i class="fa fa-leaf"></i><span>30%</span></li>
-										<li ng-click="addLeaf('40%')" style="color:orange"><i class="fa fa-leaf"></i><span>40%</span></li>
-										<li ng-click="addLeaf('80%')" style="color:red"><i class="fa fa-leaf"></i><span>80%</span></li>
+										<li ng-click="addLeaf('0%')" style="color:lime"><img src="/images/escala1.png" /> <span>0%</span></li>
+										<li ng-click="addLeaf('10%')" style="color:green"><img src="/images/escala2.png" /> 10%</span></li>
+										<li ng-click="addLeaf('20%')" style="color:yellow"><img src="/images/escala3.png" /> <span>20%</span></li>
+										<li ng-click="addLeaf('30%')" style="color:rgba(192, 151, 29, 1)"><img src="/images/escala4.png" /> <span>30%</span></li>
+										<li ng-click="addLeaf('40%')" style="color:orange"><img src="/images/escala5.png" /> <span>40%</span></li>
+										<li ng-click="addLeaf('80%')" style="color:red"><img src="/images/escala6.png" /> <span>80%</span></li>
 									</ul>
 									<ul class="severity-list" ng-hide="test.advMode">
 										<li>Indique el numero de hojas afectadas:</li>
@@ -696,8 +679,8 @@
 							<div ng-show="test.advMode">
 								<h2>Resultados</h2>
 								<p><strong>Plantas:</strong><br> {{totalPlants}}</p>
-								<p><strong>Incidencia promedio</strong><br>{{avgplnt}} / Planta ( {{(test.incidencia).toFixed(2)}}% )</p> 
-								<p><strong>Severidad promedio</strong><br>{{(avgplntDmgPct).toFixed(2)}}%</p>
+								<p><strong>Incidencia promedio</strong><br>{{(test.avgplnt).toFixed(2)}} / Planta ( {{(test.incidencia).toFixed(2)}}% )</p> 
+								<p><strong>Severidad promedio</strong><br>{{(test.avgplntDmgPct).toFixed()}}%</p>
 								<p><strong>Recomendación</strong><br>
 									<span ng-show="test.incidencia < 11">{{methodsMonth.grade1}}</span>
 									<span ng-show="test.incidencia > 10 && test.incidencia < 21 ">{{methodsMonth.grade2}}</span>
@@ -726,42 +709,40 @@
 				</div>
 			</div>
 	  </script>
-	  
-	  <script type="text/ng-template" id="/weather.html">
-		<div class="home-wrap weather">
-		 <div class="container">
-			   	<div class="row">
-			   		<div class="col-md-6 col-md-offset-3">
-			   		  <div class="page-header">
-				        <h3>NARANJO - ALAJUELA</h3>
-				      </div>
-
-				      <div class="weather-module">
-				      	<div class="degree">23º</div>
-				   		<div class="weather-module-meta">
-				   			<p>Nuboso 21º - 19º</p>
-				   			<p>Humedad: 68% | Viento: 21k/h ESE</p>
-				   		</div>
-				      </div>
-
-					</div>
-			   	</div>
-		   </div>
-
-			<div class="section-weather">
-				<div class="container">
-					<div class="row">
-						<div class="col-md-12">
-							<h3>28 JULIO - 2 DE AGOSTO</h3>
-							<h3>AGOSTO</h3>
+	<script type="text/ng-template" id="/weather.html">
+			<div class="home-wrap weather">
+			 <div class="container">
+				   	<div class="row">
+				   		<div class="col-md-6 col-md-offset-3">
+				   		  <div class="page-header">
+					        <h3>NARANJO - ALAJUELA</h3>
+					      </div>
+	
+					      <div class="weather-module">
+					      	<div class="degree">23º</div>
+					   		<div class="weather-module-meta">
+					   			<p>Nuboso 21º - 19º</p>
+					   			<p>Humedad: 68% | Viento: 21k/h ESE</p>
+					   		</div>
+					      </div>
+	
+						</div>
+				   	</div>
+			   </div>
+	
+				<div class="section-weather">
+					<div class="container">
+						<div class="row">
+							<div class="col-md-12">
+								<h3>28 JULIO - 2 DE AGOSTO</h3>
+								<h3>AGOSTO</h3>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-
-		</div>
-	</script>
 	
+			</div>
+		</script>
 	<script type="text/ng-template" id="/support.html">
 		<div class="support-wrap" ng-controller="SupportCtrl">
 			<h2 class="section-header">
@@ -793,7 +774,6 @@
 							  <button type="submit" class="btn btn-default">Enviar</button>
 						</form>
 	</script>
-	
 	<script type="text/ng-template" id="/profile.html">
 		<div class="home-wrap profile-wrap">
 		 <div class="container">
@@ -1623,7 +1603,7 @@
 						<div class="news-wrapper">
 							<div class="panel panel-default news-item" ng-repeat="post in posts | orderBy: '-createdAt' | filter:q | startFrom:currentPage*pageSize | limitTo:pageSize">
 							  <div class="panel-heading">
-							    <h3 class="panel-title">{{post.title}} <i class="glyphicon glyphicon-chevron-right"></i></h3>
+							    <h3 class="panel-title"><a href="#/posts/{{post._id}}"> {{post.title}} <i class="glyphicon glyphicon-chevron-right"></i> </a></h3>
 							  </div>
 							  <div class="panel-body" ng-bind-html="post.content">
 							    

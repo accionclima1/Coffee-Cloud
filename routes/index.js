@@ -7,6 +7,7 @@ var Comment = mongoose.model('Comment');
 var passport = require('passport');
 var User = mongoose.model('User');
 var Method = mongoose.model('Method');
+var Roya = mongoose.model('Roya');
 var jwt = require('express-jwt');
 var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
 /* GET home page. */
@@ -335,6 +336,26 @@ router.put('/users/:user', auth, function(req, res, next) {
 });
 
 
+//ROYA TEST ROUTES!
+router.post('/roya', auth, function(req, res, next) {
+	console.log(req);
+  var roya = new Roya(req.body);
+    roya.advMode = req.body.advMode;
+    roya.bandolas = req.body.bandolas;
+	roya.resolved = req.body.resolved;
+	roya.user = req.body.user;
+	roya.plantas = req.body.plantas;
+	roya.unidad = req.body.unidad;
+	roya.incidencia = req.body.incidencia;
+	roya.inideanciaPromedioPlanta = req.body.avgplnt;
+	roya.severidadPromedio = req.body.avgplntDmgPct;
+  
+  roya.save(function(err, roya){
+    if(err){ return next(err); }
+	console.log(roya);
+    res.json(roya);
+  });
+});
 
 module.exports = router;
 

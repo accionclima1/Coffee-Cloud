@@ -181,7 +181,8 @@ app.controller('RoyaCtrl', [
 'unit',
 'user',
 'methods',
-function($scope, $state, auth, localStorageService, socket, unit, user, methods){
+'roya',
+function($scope, $state, auth, localStorageService, socket, unit, user, methods, roya){
   $scope.currentUser = auth.currentUser;
   var currentId = auth.currentUser();
   var testInStore = localStorageService.get('localTest');
@@ -203,7 +204,10 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods)
 	  	user : currentId,
 	  	plantas: [],
 	  	unidad: {},
-	  	incidencia: 0
+	  	incidencia: 0,
+	  	avgplnt : "",
+		avgplntDmgPct : 0,
+		incidencia : 0
 	  };
 	methods.get().then(function(methods){
 		 var meth = methods.data[0];
@@ -340,8 +344,8 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods)
 			}
 			var avgDmgPct = avgPct / damageLength;
 			$scope.avgIncidence = (avgInc/totalLeaf)*100;
-			$scope.avgplnt = avg;
-			$scope.avgplntDmgPct = avgDmgPct;
+			$scope.test.avgplnt = avg;
+			$scope.test.avgplntDmgPct = avgDmgPct;
 			$scope.test.resolved = true;
 			$scope.test.incidencia = $scope.avgIncidence;
 			$('.test').hide();
@@ -388,7 +392,7 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods)
 			  
 		   
 	    }
-	
+		
 		
     };
     
@@ -400,7 +404,11 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods)
             from_id:currentUser
         };
         socket.emit('get msg',data_server);
-        localStorageService.remove('localTest');
+        
+        roya.create(testInStore).success(function(){
+	        localStorageService.remove('localTest');
+        });
+        
     };
     
 }]);
@@ -733,6 +741,30 @@ app.factory('methods', ['$http', 'auth', function($http, auth){
 		  });
 		};
 		
+  return o;
+}]);
+
+app.factory('roya', ['$http', 'auth', function($http, auth){
+	  var o = {
+	  		
+	  };
+	  o.getAll = function() {
+	    return $http.get('/roya').success(function(data){
+	      return data;
+	    });
+	  };
+	  o.create = function(roya) {
+		 return $http.post('/roya', roya, {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  }).success(function(data){
+		    return data;	
+		  });
+		};
+		/*o.get = function(id) {
+		  return $http.get('/roya/' + id).then(function(res){
+		    return res.data;
+		  });
+		};*/
   return o;
 }]);
 

@@ -705,6 +705,7 @@ a {
   background-color: #fff;
   list-style: none;
   padding: 0 15px;
+  max-width: 100vw;
 }
 .severity-list.active {
   left: 0;
@@ -724,6 +725,11 @@ a {
   background-color: #fff;
   width: 100%;
   font-size: 18px;
+}
+
+.severity-list li img {
+  width: 100%;
+  display: block;
 }
 .severity-list li .fa {
   display: block;
@@ -930,4 +936,34 @@ a {
 
 .home-wrap.blog  .panel-title {
   line-height: 1.4;
+  color: #FE8515;
+}
+
+.home-wrap.blog  .panel-title a {
+  color: #FE8515;  
+}
+
+.blog-post .page-header {
+  margin: 0 -15px 24px;
+  border-top: 58px solid #00ABFF;
+}
+
+.blog-post .page-header:before {
+  content: "Noticias";
+  position: absolute;
+  display: block;
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  top: 19px;
+}
+
+.blog-post .page-header h3 {
+  margin: 12px 15px; 
+}
+
+.blog-post .page-header a {
+  position: absolute;
+  top: 17px;
+  color: #fff;
 }
