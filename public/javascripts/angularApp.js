@@ -101,18 +101,46 @@ function($scope, $state, unit, auth){
 	  manejoTejido: true,
 	  fungicidasRoya: true,
 	  verificaAgua: true,
+	  variedad: {
+	  		caturra: false,
+			bourbon: false,
+			catuai: false,
+			maragogype: false		  
+	  },
+	  fungicidas: {
+		  contacto: true,
+	  	  bourbon: false,
+	  	  catuai: false
+		  
+	  },
+	  verificaAguaTipo: {
+		  ph: true,
+		  dureza: false
+	  },
+	  tipoCafe: {
+		  estrictamenteDuro: true,
+		  duro: false,
+		  semiduro: false,
+		  prime: false,
+		  extraprime: false
+	  }
+	  		
   };
   $( ".date-field" ).datepicker();
   $scope.saveUnit = function(){
+	$scope.unit.departamento = $("#departamentos option:selected").text();
+	$scope.unit.municipio = $("#departamentos-munis option:selected").text();
+	
     unit.create($scope.unit,auth.userId()).error(function(error){
       $scope.error = error;
     }).then(function(){
-      $state.go('location');
+      $state.go('home');
     });
   };
-
   
-}])
+  muni14.addDepts('departamentos');
+  
+}]);
 
 app.controller('NavCtrl', [
 '$scope',
@@ -480,6 +508,29 @@ function($http, $scope, auth, unit, user){
 	  manejoTejido: true,
 	  fungicidasRoya: true,
 	  verificaAgua: true,
+	  variedad: {
+	  		caturra: false,
+			bourbon: false,
+			catuai: false,
+			maragogype: false		  
+	  },
+	  fungicidas: {
+		  contacto: true,
+	  	  bourbon: false,
+	  	  catuai: false
+		  
+	  },
+	  verificaAguaTipo: {
+		  ph: true,
+		  dureza: false
+	  },
+	  tipoCafe: {
+		  estrictamenteDuro: true,
+		  duro: false,
+		  semiduro: false,
+		  prime: false,
+		  extraprime: false
+		  }
 	};
 	$scope.editUnit = {};
 	user.get($scope.user_Ided).then(function(user){
@@ -494,48 +545,85 @@ function($http, $scope, auth, unit, user){
 	      $scope.message = data.data.message;
 	    });
 	  };
-	$scope.deleteUnit = function(e,id) {
+	$scope.deleteUnit = function(e,id,index) {
 		
 		unit.deleteUnit(id, auth.userId()).then(function(user){
-			 $('#'+id).remove();
+				$scope.userO.units.splice(index, 1);
+				$scope.userO.units
 			});		
 	}
 	
 	$scope.updateUnit = function(e,id) {
+		
 		$scope.sucMsg = null;
 		unit.get(auth.userId(),id).then(function(unitD){
 			$scope.editUnit = unitD;
 			$scope.updateUnitForm = function(){
-				unit.update(id, auth.userId(), $scope.editUnit).then(function(unitN){
-					
-					$scope.editUnit = unitN.config.data;
-					$scope.sucMsg = unitN.data.message;
-				});
+				if ($scope.updateunitForm.$valid) {
+					unit.update(id, auth.userId(), $scope.editUnit).then(function(unitN){
+						user.get($scope.user_Ided).then(function(user){
+							 $scope.userO = user;
+							 $scope.units = $scope.userO.units;
+					    });
+						$scope.editUnit = unitN.data;
+						$scope.sucMsg = '¡Unidad Actualizada exitosamente!';
+					});
+				}
 			}
 		});
 	}
 	
 	$scope.saveUnit = function(){
+		if ($scope.newunitForm.$valid) {
+			
+		$scope.newUnit.departamento = $("#departamentos option:selected").text();
+		$scope.newUnit.municipio = $("#departamentos-munis option:selected").text();
+		
 	    unit.create($scope.newUnit,auth.userId()).error(function(error){
 	      $scope.error = error;
 	    }).then(function(data){
-			$scope.userO.units.push(data.config.data);
-			$('#myModal2').modal('hide');
-			$scope.newUnit = {
-			  sombra: true,
-			  muestreo: true,
-			  fertilizaSuelo: true,
-			  fertilizaFollaje: true,
-			  enmiendasSuelo: true,
-			  manejoTejido: true,
-			  fungicidasRoya: true,
-			  verificaAgua: true,
-			};
+				$scope.userO.units.push(data.data);
+				$('#myModal2').modal('hide');
+				$scope.newUnit = {
+				  sombra: true,
+				  muestreo: true,
+				  fertilizaSuelo: true,
+				  fertilizaFollaje: true,
+				  enmiendasSuelo: true,
+				  manejoTejido: true,
+				  fungicidasRoya: true,
+				  verificaAgua: true,
+				  variedad: {
+				  		caturra: false,
+						bourbon: false,
+						catuai: false,
+						maragogype: false		  
+				  },
+				  fungicidas: {
+					  contacto: true,
+				  	  bourbon: false,
+				  	  catuai: false
+					  
+				  },
+				  verificaAguaTipo: {
+					  ph: true,
+					  dureza: false
+				  },
+				  tipoCafe: {
+					  estrictamenteDuro: true,
+					  duro: false,
+					  semiduro: false,
+					  prime: false,
+					  extraprime: false
+					  }
+				}
+		    });
 			
-	    });
+		}
+		
 	  };
   
-    
+     muni14.addDepts('departamentos');
 }]);
 
 app.factory('posts', ['$http', 'auth', function($http, auth){

@@ -147,8 +147,13 @@ a {
 }
 
 .login-img {
-  margin: 0 auto 64px;
+  margin: 12px auto 12px;
   display: block;
+  width: 39px;
+}
+
+.login-ana {
+  margin: 0 auto 24px;
 }
 
 .login-wrap .form-group label {
@@ -194,6 +199,12 @@ a {
   color: #fff;
   text-align: center;
   display: block;
+}
+
+.signature {
+  color: #fff;
+  font-size: 12px;
+  margin-top: 48px;
 }
 
 /* Register Screen */
@@ -268,7 +279,7 @@ a {
 }
 
 .register-profile-wrap {
-  background: #f0f3f2;
+  background: #E4E4E4;
   min-height: 100%;
   text-align: center;
 }
@@ -277,6 +288,21 @@ a {
   border-color: #fff;
   box-shadow: 0 0;
   text-align: center;
+}
+
+.munis {
+  text-align: left;
+}
+
+.munis select {
+  width: 45%;
+  display: inline-block;
+  margin-right: 4%
+}
+
+.munis select:last-child {
+  float: right;
+  margin: 0;
 }
 
 .register-profile-wrap h3 {
@@ -856,10 +882,10 @@ a {
 }
 
 .profile-wrap .page-header {
-    position: fixed;
+    position: absolute;
     background: #FE8515;
     z-index: 1000;
-    top: 0;
+    top: -58px;
     margin: 0;
     left: 0;
     right: 0;

@@ -174,7 +174,8 @@ router.post('/users/:user/units', auth, function(req, res, next) {
   //post.author = req.payload.username;
   	 unit.nombre = req.body.nombre;
      unit.altitud = req.body.altitud; 
-     unit.georeferencia = req.body.georeferencia;
+     unit.departamento = req.body.departamento;
+	 unit.municipio = req.body.municipio;
      unit.ubicacion = req.body.ubicacion;
      unit.areaTotal = req.body.areaTotal;
      unit.areaCafe = req.body.areaCafe ;
@@ -213,7 +214,7 @@ router.post('/users/:user/units', auth, function(req, res, next) {
     req.user.save(function(err, post) {
       if(err){ return next(err); }
 
-      //console.log(unit);
+      console.log(unit);
 	  res.json(unit);
     });
   	
@@ -240,7 +241,8 @@ router.put('/users/:user/units/:unit', auth, function(req, res, next) {
 	  else {
 	     unit.nombre = req.body.nombre;
 	     unit.altitud = req.body.altitud; 
-	     unit.georeferencia = req.body.georeferencia;
+	     unit.departamento = req.body.departamento;
+		 unit.municipio = req.body.municipio;
 	     unit.ubicacion = req.body.ubicacion;
 	     unit.areaTotal = req.body.areaTotal;
 	     unit.areaCafe = req.body.areaCafe ;
@@ -270,11 +272,13 @@ router.put('/users/:user/units/:unit', auth, function(req, res, next) {
 	     unit.epocalluviosa = req.body.epocalluviosa;
 	     unit.FinEpocalluviosa = req.body.FinEpocalluviosa;
 	     unit.tipoCafe = req.body.tipoCafe;
+	      
 	    unit.save(function(err) {
 	      if (err)
 	        console.log('error');
 	      else
-	        res.json(unit,{message: '¡Unidad Actualizada exitosamente!'});
+	      	console.log(unit);
+	        res.json(unit);
 	    });
 	  }
 	});
@@ -342,6 +346,19 @@ router.put('/users/:user', auth, function(req, res, next) {
   }
 });
 });
+
+router.delete('/users/:user', auth, function (req, res) {
+	User.findByIdAndRemove(req.params.user, function (err,user){
+    if(err) { throw err; }
+		
+    	
+	    res.json({messageUnit: "Usuario eliminado!"});
+	    console.log("Usuario eliminado!");
+	});
+  
+});
+
+
 
 
 //ROYA TEST ROUTES!

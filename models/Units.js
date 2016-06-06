@@ -3,13 +3,19 @@ var mongoose = require('mongoose');
 var UnitSchema = new mongoose.Schema({
   nombre: String,
   altitud: String,
-  georeferencia: String,
+  departamento: String,
+  municipio: String,
   ubicacion: String,
   areaTotal: String,
   areaCafe: String,
   lote: String,
   edadLote: String,
-  variedad: String,
+  variedad: {
+	  	caturra: Boolean,
+	  	bourbon: Boolean,
+	  	catuai: Boolean,
+	  	maragogype: Boolean
+	  },
   distanciamiento: String,
   sombra: Boolean,
   muestreo: Boolean,
@@ -23,17 +29,30 @@ var UnitSchema = new mongoose.Schema({
   manejoTejido: Boolean,
   manejoTejidoMes: String,
   fungicidasRoya: Boolean,
-  fungicidas: String,
+  fungicidas: {
+	  	contacto: Boolean,
+	  	biologico: Boolean,
+	  	sistemico: Boolean
+	  },
   fungicidasFechas: String,
   verificaAgua: Boolean,
-  verificaAguaTipo: String,
+  verificaAguaTipo: {
+	  ph: Boolean,
+	  dureza: Boolean,
+  },
   rendimiento: String,
   floracionPrincipal: String,
   inicioCosecha:Date,
   finalCosecha:Date, 
   epocalluviosa:Date,
   FinEpocalluviosa:Date,
-  tipoCafe: String,
+  tipoCafe: {
+	  estrictamenteDuro: Boolean,
+	  duro: Boolean,
+	  semiduro: Boolean,
+	  prime: Boolean,
+	  extraprime: Boolean
+  },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 },
 {

@@ -9,6 +9,8 @@ var UserSchema = new mongoose.Schema({
 	hash: String,
 	salt: String,
 	role: { type: String, default: 'client' },
+	extemDepartamento: String,
+	exteMunicipio: String,
 	units: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Unit' }]
 });
 

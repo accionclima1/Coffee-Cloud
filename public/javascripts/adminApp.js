@@ -205,6 +205,7 @@ app.controller('UsersCtrl', [
 '$location',
 'user',
 function($scope, auth, $location, user){
+  muni14.addDepts('departamentos');
   $scope.isLoggedIn = auth.isLoggedIn;
   $scope.currentUser = auth.currentUser;
   $scope.logOut = auth.logOut;
@@ -214,7 +215,23 @@ function($scope, auth, $location, user){
 	};
 	user.getAll().then(function(users) {
 		$scope.userList = users;
-	})
+	});
+  $scope.newUser = {};
+  
+  $scope.createUser = function() {
+	  $scope.newUser.departamento = $("#departamentos option:selected").text();
+	  $scope.newUser.municipio = $("#departamentos-munis option:selected").text();
+	  
+	  console.log($scope.newUser);  
+  }
+  
+  $scope.removeUser = function(id,index) {
+		
+		user.delete(id).then(function(user){
+				$scope.userList.splice(index, 1);
+			});		
+	}
+  
    
 }]);
 
@@ -352,12 +369,20 @@ app.factory('user', ['$http', 'auth', function($http, auth){
 		};
 		
 		o.update = function(user){
-	  return $http.put('/users/' + user._id, user, {
-    headers: {Authorization: 'Bearer '+auth.getToken()}
-  }).success(function(data){
-	    return data
-	  });
-	};
+			  return $http.put('/users/' + user._id, user, {
+		    headers: {Authorization: 'Bearer '+auth.getToken()}
+		  }).success(function(data){
+			    return data
+			  });
+			};
+		o.delete = function(user){
+			  return $http.delete('/users/' + user, {
+		    headers: {Authorization: 'Bearer '+auth.getToken()}
+		  }).success(function(data){
+			    return data
+			  });
+			};
+	
 		
   return o;
 }]);
