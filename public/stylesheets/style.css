@@ -157,17 +157,18 @@ a {
 }
 
 .login-wrap .form-group label {
-  color: #fff;
+  color: #fe8515;
 }
 
 .login-wrap .form-control {
   background: transparent;
   border-color: transparent;
-  border-bottom-color: #fff;
-  color: #fff;
+  border-bottom-color: #8e6d57;
+  color: #4a2212;
   outline: none !important;
   border-radius: 0;
   margin-bottom: 28px;
+  box-shadow: 0 0 0;
 }
 
 .login-wrap .form-control:focus {
@@ -196,9 +197,10 @@ a {
 }
 
 .login-wrap form a {
-  color: #fff;
+  color: #693510;
   text-align: center;
   display: block;
+  font-weight: bold;
 }
 
 .signature {
