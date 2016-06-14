@@ -222,7 +222,17 @@ function($scope, auth, $location, user){
 	  $scope.newUser.departamento = $("#departamentos option:selected").text();
 	  $scope.newUser.municipio = $("#departamentos-munis option:selected").text();
 	  
-	  console.log($scope.newUser);  
+	  auth.register($scope.newUser).error(function(error){
+	      $scope.error = error;
+	    }).then(function(data){
+	     	 $('#myModal').modal('hide');
+	     	 user.getAll().then(function(users) {
+				$scope.userList = users;
+			});
+	    });
+	    
+	      
+	    
   }
   
   $scope.removeUser = function(id,index) {
@@ -231,6 +241,20 @@ function($scope, auth, $location, user){
 				$scope.userList.splice(index, 1);
 			});		
 	}
+  
+   
+}]);
+
+//Roya controller
+app.controller('RoyaCtrl', [
+'$scope',
+'auth',
+'$location',
+function($scope, auth, $location){
+ 
+	    
+	      
+	    
   
    
 }]);
@@ -502,6 +526,16 @@ function($stateProvider, $urlRouterProvider) {
 	      return posts.getAll();
 	    }]
   	   }
+	})
+	.state('roya', {
+	  url: '/roya',
+	  templateUrl: '/roya.html',
+	  controller: 'RoyaCtrl',
+	  onEnter: ['$state', 'auth', function($state, auth){
+	    if(!auth.isLoggedIn()){
+	      $state.go('login');
+	    }
+	  }]
 	});
 
   $urlRouterProvider.otherwise('home');

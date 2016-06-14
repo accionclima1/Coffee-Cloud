@@ -106,13 +106,11 @@ router.put('/posts/:post/comments/:comment/upvote', auth, function (req, res, ne
     });
 });
 
-
-
 router.post('/register', function(req, res, next){
   if(!req.body.username || !req.body.password || !req.body.email ){
     return res.status(400).json({message: 'Por favor, llene todos los campos'});
   }
-
+  
   var user = new User();
 
   user.username = req.body.username;
@@ -121,8 +119,14 @@ router.post('/register', function(req, res, next){
   
   user.phone = req.body.phone;
 
-  user.setPassword(req.body.password)
-
+  user.setPassword(req.body.password);
+  
+  user.extemDepartamento = req.body.departamento;
+  
+  user.exteMunicipio = req.body.municipio;
+  
+  user.role = req.body.role;
+  
   user.save(function (err){
     if(err){ return res.status(500).json({message: 'Usuario o Correo ya an sido registrados'}) }
 
@@ -167,7 +171,6 @@ router.param('unit', function(req, res, next, id) {
     return next();
   });
 });
-
 
 router.post('/users/:user/units', auth, function(req, res, next) {
   var unit = new Unit(req.body);
@@ -358,9 +361,6 @@ router.delete('/users/:user', auth, function (req, res) {
   
 });
 
-
-
-
 //ROYA TEST ROUTES!
 router.post('/roya', auth, function(req, res, next) {
 	console.log(req);
@@ -379,6 +379,14 @@ router.post('/roya', auth, function(req, res, next) {
     if(err){ return next(err); }
 	console.log(roya);
     res.json(roya);
+  });
+});
+
+router.get('/users', auth, function(req, res, next) {
+  Roya.find(function(err, royas){
+    if(err){ return next(err); }
+
+    res.json(royas);
   });
 });
 
