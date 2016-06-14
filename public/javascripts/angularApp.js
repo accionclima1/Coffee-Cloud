@@ -9,7 +9,7 @@ app.factory('socket', ['socketFactory',
     function(socketFactory) {
         return socketFactory({
             prefix: '',
-            ioSocket: io.connect('http://localhost:3000')
+            ioSocket: io.connect('http://ec2-54-68-110-187.us-west-2.compute.amazonaws.com:3000')
         });
     }
 ]);
