@@ -250,13 +250,46 @@ app.controller('RoyaCtrl', [
 '$scope',
 'auth',
 '$location',
-function($scope, auth, $location){
+'roya',
+function($scope, auth, $location, roya){
+	var currentTest = null;
  
-	    
-	      
-	    
-  
+	roya.getAll().then(function(tests) {
+				$scope.testsList = tests.data;
+			});
+    $scope.head = {
+        createdAt: "Fecha",
+        incidencia: "Inicidencia",
+        departamento: "Municipio"
+    };
    
+    
+    $scope.sort = {
+        column: 'createdAt',
+        descending: false
+    };
+
+    $scope.selectedCls = function(column) {
+        return column == $scope.sort.column && 'sort-' + $scope.sort.descending;
+    };
+    
+    $scope.changeSorting = function(column) {
+        var sort = $scope.sort;
+        if (sort.column == column) {
+            sort.descending = !sort.descending;
+        } else {
+            sort.column = column;
+            sort.descending = false;
+        }
+    };
+    
+    $scope.loadTest = function(test) {
+	   currentTest = test;
+	   $scope.detail = currentTest;
+	   console.log(currentTest);
+	   $('#detailModal').modal('show');
+	   
+    }
 }]);
 
 //NewsCtrl editor controller
@@ -435,6 +468,32 @@ app.factory('methods', ['$http', 'auth', function($http, auth){
 		  });
 		};
 		
+  return o;
+}]);
+
+
+
+app.factory('roya', ['$http', 'auth', function($http, auth){
+	  var o = {
+	  		
+	  };
+	  o.getAll = function() {
+	    return $http.get('/roya').success(function(data){
+	      return data;
+	    });
+	  };
+	  o.create = function(roya) {
+		 return $http.post('/roya', roya, {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  }).success(function(data){
+		    return data;	
+		  });
+		};
+		/*o.get = function(id) {
+		  return $http.get('/roya/' + id).then(function(res){
+		    return res.data;
+		  });
+		};*/
   return o;
 }]);
 

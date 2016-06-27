@@ -382,7 +382,7 @@ router.post('/roya', auth, function(req, res, next) {
   });
 });
 
-router.get('/users', auth, function(req, res, next) {
+router.get('/roya', function(req, res, next) {
   Roya.find(function(err, royas){
     if(err){ return next(err); }
 

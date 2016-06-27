@@ -105,7 +105,12 @@ function($scope, $state, unit, auth){
 	  		caturra: false,
 			bourbon: false,
 			catuai: false,
-			maragogype: false		  
+			maragogype: false,
+			typica: false,
+		  	pacamara: false,
+		  	pacheComun: false,
+		  	pacheColis: false,
+		  	mundoNovo: false	  
 	  },
 	  fungicidas: {
 		  contacto: true,
@@ -218,7 +223,7 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 	  $scope.plantname = plant;
 	  $scope.leafList = $scope.test.plantas[plant - 1];
 	  //console.log($scope.leafList);
-	  $('.plant-editor').addClass('active');
+	  $('#plantModal').modal('show');
   };
   $scope.affect = 1;
   user.get(auth.userId()).then(function(user){
@@ -424,18 +429,27 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 		
     };
     
-    $scope.getHelp = function(plants,incidence,damage,currentUser) { 
-	    var msg = 'Calculo De Roya: Plantas ' + plants + ', Incidencia ' + incidence + ', Severidad ' + damage ;
-	  	 var data_server={
-            message:msg,
-            to_user:'admin',
-            from_id:currentUser
-        };
-        socket.emit('get msg',data_server);
-        
-        roya.create(testInStore).success(function(){
+    $scope.getHelp = function(currentUser) { 
+	    
+	    
+	    roya.create(testInStore).success(function(data){
+		    
+		    
+		    
+		     var msg = 'Calculo De Roya Enviado: ID: ' + data._id + '.' ;
+		  	 var data_server={
+	            message:msg,
+	            to_user:'admin',
+	            from_id:currentUser
+	        };
+	        socket.emit('get msg',data_server);
+
+		    
 	        localStorageService.remove('localTest');
         });
+	    
+	           
+        
         
     };
     
@@ -512,7 +526,13 @@ function($http, $scope, auth, unit, user){
 	  		caturra: false,
 			bourbon: false,
 			catuai: false,
-			maragogype: false		  
+			maragogype: false,
+			typica: false,
+		  	pacamara: false,
+		  	pacheComun: false,
+		  	pacheColis: false,
+		  	mundoNovo: false
+					  
 	  },
 	  fungicidas: {
 		  contacto: true,
@@ -557,6 +577,7 @@ function($http, $scope, auth, unit, user){
 		
 		$scope.sucMsg = null;
 		unit.get(auth.userId(),id).then(function(unitD){
+			console.log(unitD);
 			$scope.editUnit = unitD;
 			$scope.updateUnitForm = function(){
 				if ($scope.updateunitForm.$valid) {
@@ -597,7 +618,12 @@ function($http, $scope, auth, unit, user){
 				  		caturra: false,
 						bourbon: false,
 						catuai: false,
-						maragogype: false		  
+						maragogype: false,
+						typica: false,
+					  	pacamara: false,
+					  	pacheComun: false,
+					  	pacheColis: false,
+					  	mundoNovo: false		  
 				  },
 				  fungicidas: {
 					  contacto: true,

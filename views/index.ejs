@@ -162,7 +162,7 @@
 			<div class="row">
 				<div class="col-lg-12">
 				  
-				  <h3>Datos de su propiedad (Unidad Productora)</h3>
+				  <h3>Datos de su propiedad (Unidad Productiva)</h3>
 				  <span class="glyphicon glyphicon-triangle-bottom"></span>
 				  <div ng-show="error" class="alert alert-danger row">
 				    <span>{{ error.message }}</span>
@@ -203,7 +203,7 @@
 							<div class="form-group">
 								<input type="text"
 								      class="form-control"
-								      placeholder="Ubicación"
+								      placeholder="Geo Referencia"
 								      ng-model="unit.ubicacion" required></input>
 							</div>
 						</div>
@@ -267,6 +267,31 @@
 							            <input type="checkbox" ng-model="unit.variedad.maragogype"> Maragogype
 							          </label>
 							        </div>
+							        <div class="col-xs-6">
+							         <label>
+							           <input type="checkbox" ng-model="unit.variedad.typica"> Typica
+							         </label>
+							       </div>
+							       <div class="col-xs-6">
+							         <label>
+							           <input type="checkbox" ng-model="unit.variedad.pacamara"> Pacamara
+							         </label>
+							       </div>
+							       <div class="col-xs-6">
+							         <label>
+							           <input type="checkbox" ng-model="unit.variedad.pacheComun"> Pache común
+							         </label>
+							       </div>
+							       <div class="col-xs-6">
+							         <label>
+							           <input type="checkbox" ng-model="unit.variedad.pacheColis"> Pache Colis
+							         </label>
+							       </div>
+							       <div class="col-xs-6">
+							         <label>
+							           <input type="checkbox" ng-model="unit.variedad.mundoNovo"> Mundo Novo
+							         </label>
+							       </div>
 								</div>
 							</div>
 						</div>
@@ -276,6 +301,7 @@
 								      class="form-control"
 								      placeholder="Distanciamiento"
 								      ng-model="unit.distanciamiento"></input>
+								      (Metros)
 							</div>
 						</div>
 						<div class="col-xs-12">
@@ -314,10 +340,22 @@
 						</div>
 						<div class="col-xs-12">
 							<div class="form-group">
-								<input type="text"
-								      class="form-control"
-								      placeholder="¿En que mes lo realiza?"
-								      ng-model="unit.muestreoMes"></input>
+								<label>¿En que mes lo realiza?</label>
+								<select multiple class="form-control" ng-model="unit.muestreoMes">
+								  <option>Enero</option>
+								  <option>Febrero</option>
+								  <option>Marzo</option>
+								  <option>Abril</option>
+								  <option>Mayo</option>
+								  <option>Junio</option>
+								  <option>Julio</option>
+								  <option>Agosto</option>
+								  <option>Septiembre</option>
+								  <option>Octubre</option>
+								  <option>Noviembre</option>
+								  <option>Diciembre</option>
+								</select>
+
 							</div>
 						</div>
 						<div class="col-xs-12">
@@ -339,10 +377,22 @@
 						</div>
 						<div class="col-xs-12">
 							<div class="form-group">
-								<input type="text"
-								      class="form-control"
-								      placeholder="¿En que mes lo realiza?"
-								      ng-model="unit.fertilizaSueloMes"></input>
+								<label>¿En que mes lo realiza?</label>
+								<select multiple class="form-control" ng-model="unit.fertilizaSueloMes">
+								  <option>Enero</option>
+								  <option>Febrero</option>
+								  <option>Marzo</option>
+								  <option>Abril</option>
+								  <option>Mayo</option>
+								  <option>Junio</option>
+								  <option>Julio</option>
+								  <option>Agosto</option>
+								  <option>Septiembre</option>
+								  <option>Octubre</option>
+								  <option>Noviembre</option>
+								  <option>Diciembre</option>
+								</select>
+								
 							</div>
 						</div>
 						<div class="col-xs-12">
@@ -364,10 +414,22 @@
 						</div>
 						<div class="col-xs-12">
 							<div class="form-group">
-								<input type="text"
-								      class="form-control"
-								      placeholder="¿En que mes lo realiza?"
-								      ng-model="unit.fertilizaFollajeMes"></input>
+								
+								<label>¿En que mes lo realiza?</label>
+								<select multiple class="form-control" ng-model="unit.fertilizaFollajeMes">
+								  <option>Enero</option>
+								  <option>Febrero</option>
+								  <option>Marzo</option>
+								  <option>Abril</option>
+								  <option>Mayo</option>
+								  <option>Junio</option>
+								  <option>Julio</option>
+								  <option>Agosto</option>
+								  <option>Septiembre</option>
+								  <option>Octubre</option>
+								  <option>Noviembre</option>
+								  <option>Diciembre</option>
+								</select>
 							</div>
 						</div>
 						<div class="col-xs-12">
@@ -389,10 +451,21 @@
 						</div>
 						<div class="col-xs-12">
 							<div class="form-group">
-								<input type="text"
-								      class="form-control"
-								      placeholder="¿En que mes lo realiza?"
-								      ng-model="unit.enmiendasSueloMes"></input>
+								<label>¿En que mes lo realiza?</label>
+								<select multiple class="form-control" ng-model="unit.enmiendasSueloMes">
+								  <option>Enero</option>
+								  <option>Febrero</option>
+								  <option>Marzo</option>
+								  <option>Abril</option>
+								  <option>Mayo</option>
+								  <option>Junio</option>
+								  <option>Julio</option>
+								  <option>Agosto</option>
+								  <option>Septiembre</option>
+								  <option>Octubre</option>
+								  <option>Noviembre</option>
+								  <option>Diciembre</option>
+								</select>
 							</div>
 						</div>
 						<div class="col-xs-12">
@@ -414,10 +487,21 @@
 						</div>
 						<div class="col-xs-12">
 							<div class="form-group">
-								<input type="text"
-								      class="form-control"
-								      placeholder="¿En que mes lo realiza?"
-								      ng-model="unit.manejoTejidoMes"></input>
+								<label>¿En que mes lo realiza?</label>
+								<select multiple class="form-control" ng-model="unit.manejoTejidoMes">
+								  <option>Enero</option>
+								  <option>Febrero</option>
+								  <option>Marzo</option>
+								  <option>Abril</option>
+								  <option>Mayo</option>
+								  <option>Junio</option>
+								  <option>Julio</option>
+								  <option>Agosto</option>
+								  <option>Septiembre</option>
+								  <option>Octubre</option>
+								  <option>Noviembre</option>
+								  <option>Diciembre</option>
+								</select>
 							</div>
 						</div>
 						<div class="col-xs-12">
@@ -508,8 +592,9 @@
 							<div class="form-group">
 								<input type="text"
 								      class="form-control"
-								      placeholder="Rendimiento"
+								      placeholder="Producción"
 								      ng-model="unit.rendimiento"></input>
+								      (cereza/manzana)
 							</div>
 						</div>
 						<div class="col-xs-12">
@@ -606,7 +691,7 @@
 
 				  <form ng-submit="logIn()">
 				    <img src="images/pages-logo-dark.png" alt="" class="login-img img-responsive"/>
-				    
+				    <img src="images/analogo.svg" alt="" class="ana-img img-responsive"/>
 				    <div class="form-group">
 				       <label for="email">Usuario</label>
 				      <input type="text" name="email"
@@ -714,41 +799,8 @@
 									</div>
 								</div>
 								<div class="testControls">
-									<button class="btn btn-primary" ng-click="addPlant()">Agregar Planta</button>
-									<button class="btn btn-primary" ng-click="calculateTest()">Calcular</button>
-								</div>
-								<div class="plant-editor">
-									<a ng-click="closePlant()"><i class="fa fa-chevron-left"></i></a>
-									<h3>Planta {{plantname}}</h3>
-									<p ng-show="test.advMode">Divida las hojas de cada planta en grupos por severidad.</p>
-									<p ng-hide="test.advMode">Agregue la cantidad total de hojas.</p>
-									<div class="leaf-list">
-										<div class="leaf-item" ng-repeat="leaf in leafList">
-											<span>Hojas: {{leaf[0]}}</span>
-											<div class="leaf-control">
-												<span class="severity">{{leaf[1]}}</span>
-												<span class="remove" ng-click="removeLeaf($index)">X</span>
-												</div>
-											</div>
-										</div>
-									<div class="plant-editor-control">
-										<span>Hojas: <input type="number" name="amount" value="1"> </span>
-										<button class="btn btn-primary" ng-click="initLeaf()">Agregar</button>
-									</div>
-									<ul class="severity-list" ng-show="test.advMode">
-										<li>Seleccione la severidad para el grupo de hojas:</li>
-										<li ng-click="addLeaf('0%')" style="color:lime"><img src="/images/escala1.png" /> <span>0%</span></li>
-										<li ng-click="addLeaf('10%')" style="color:green"><img src="/images/escala2.png" /> 10%</span></li>
-										<li ng-click="addLeaf('20%')" style="color:yellow"><img src="/images/escala3.png" /> <span>20%</span></li>
-										<li ng-click="addLeaf('30%')" style="color:rgba(192, 151, 29, 1)"><img src="/images/escala4.png" /> <span>30%</span></li>
-										<li ng-click="addLeaf('40%')" style="color:orange"><img src="/images/escala5.png" /> <span>40%</span></li>
-										<li ng-click="addLeaf('80%')" style="color:red"><img src="/images/escala6.png" /> <span>80%</span></li>
-									</ul>
-									<ul class="severity-list" ng-hide="test.advMode">
-										<li>Indique el numero de hojas afectadas:</li>
-									    <li><span><input type="number" ng-model="affect" > </span>
-										<button class="btn btn-primary" ng-click="addLeaf('afectadas: ' + affect)">Agregar</button></li>
-									</ul>
+									<button class="btn btn-primary" ng-click="addPlant()" ng-hide="test.plantas.length > 29 && test.bandolas || test.plantas.length > 59 && !test.bandolas">Agregar Planta</button>
+									<button class="btn btn-primary" ng-click="calculateTest()" ng-disabled="test.plantas.length < 30 && test.bandolas || test.plantas.length < 60 && !test.bandolas">Calcular</button>
 								</div>
 							</div>
 						</div>
@@ -780,13 +832,64 @@
 									<span ng-show="test.incidencia > 20 && test.incidencia < 51 ">{{methodsMonth.grade3}}</span>
 									<span ng-show="test.incidencia > 50 ">{{methodsMonth.grade3}}</span>
 								</p>
-								<a href="/#/support" class="btn btn-primary" ng-click="getHelp(totalPlants,avgplnt,avgplntDmgPct,currentUser())">Solicitar Asesoría Técnica</a>
+								<a href="/#/support" class="btn btn-primary" ng-click="getHelp(currentUser())">Solicitar Asesoría Técnica</a>
 							</div>
 							
 						</div>
 					</div>
+					
+					
+					<div class="modal fade" id="plantModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+					  <div class="modal-dialog" role="document">
+					    <div class="modal-content">
+					      <div class="modal-header">
+					        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					        <h4 class="modal-title" id="myModalLabel">Planta {{plantname}}</h4>
+					      </div>
+					      <div class="modal-body">
+					        <div class="plant-editor">
+									
+									
+									<p ng-show="test.advMode">Divida las hojas de cada planta en grupos por severidad.</p>
+									<p ng-hide="test.advMode">Agregue la cantidad total de hojas.</p>
+									<div class="leaf-list">
+										<div class="leaf-item" ng-repeat="leaf in leafList">
+											<span>Hojas: {{leaf[0]}}</span>
+											<div class="leaf-control">
+												<span class="severity">{{leaf[1]}}</span>
+												<span class="remove" ng-click="removeLeaf($index)">X</span>
+												</div>
+											</div>
+										</div>
+									<div class="plant-editor-control" ng-hide="leafList.length > 1 && !test.advMode">
+										<span>Hojas: <input type="number" name="amount" value="1"> </span>
+										<button class="btn btn-primary" ng-click="initLeaf()">Agregar</button>
+									</div>
+									<ul class="severity-list" ng-show="test.advMode">
+										<li>Seleccione la severidad para el grupo de hojas:</li>
+										<li ng-click="addLeaf('0%')" style="color:lime"><img src="/images/escala1.png" /> <span>0%</span></li>
+										<li ng-click="addLeaf('10%')" style="color:green"><img src="/images/escala2.png" /> 10%</span></li>
+										<li ng-click="addLeaf('20%')" style="color:yellow"><img src="/images/escala3.png" /> <span>20%</span></li>
+										<li ng-click="addLeaf('30%')" style="color:rgba(192, 151, 29, 1)"><img src="/images/escala4.png" /> <span>30%</span></li>
+										<li ng-click="addLeaf('40%')" style="color:orange"><img src="/images/escala5.png" /> <span>40%</span></li>
+										<li ng-click="addLeaf('80%')" style="color:red"><img src="/images/escala6.png" /> <span>80%</span></li>
+									</ul>
+									<ul class="severity-list" ng-hide="test.advMode">
+										<li>Indique el numero de hojas afectadas:</li>
+									    <li><span><input type="number" ng-model="affect" > </span>
+										<button class="btn btn-primary" ng-click="addLeaf('afectadas: ' + affect)">Agregar</button></li>
+									</ul>
+								</div>
+					      </div>
+					      
+					    </div>
+					  </div>
+					</div>
+					
+					
 				</div>
 			</div>
+			
 	  </script>
 	<script type="text/ng-template" id="/weather.html">
 			<div class="home-wrap weather">
@@ -905,7 +1008,7 @@
 			   	
 			   	<div class="row">
 				   	<div class="col-md-6 col-md-offset-3">
-				   			<h4>Unidades Productoras</h4>
+				   			<h4>Unidades Productivas</h4>
 				   			
 				   			<div class="unidades-wrap">
 					   			<div class="unidad" ng-repeat="unit in units" id="{{unit._id}}">
@@ -975,7 +1078,7 @@
 													<div class="form-group">
 														<input type="text"
 														      class="form-control"
-														      placeholder="Ubicación"
+														      placeholder="Geo Referencia"
 														      ng-model="editUnit.ubicacion" required></input>
 													</div>
 												</div>
@@ -1034,11 +1137,37 @@
 													            <input type="checkbox" ng-model="editUnit.variedad.catuai"> Catuai
 													          </label>
 													        </div>
-															 <div class="col-xs-6">
+															<div class="col-xs-6">
 													          <label>
 													            <input type="checkbox" ng-model="editUnit.variedad.maragogype"> Maragogype
 													          </label>
 													        </div>
+													        <div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" ng-model="editUnit.variedad.typica"> Typica
+													          </label>
+													        </div>
+													        <div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" ng-model="editUnit.variedad.pacamara"> Pacamara
+													          </label>
+													        </div>
+													        <div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" ng-model="editUnit.variedad.pacheComun"> Pache común
+													          </label>
+													        </div>
+													        <div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" ng-model="editUnit.variedad.pacheColis"> Pache Colis
+													          </label>
+													        </div>
+													        <div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" ng-model="editUnit.variedad.mundoNovo"> Mundo Novo
+													          </label>
+													        </div>
+													        
 														</div>
 													</div>
 												</div>
@@ -1048,6 +1177,7 @@
 														      class="form-control"
 														      placeholder="Distanciamiento"
 														      ng-model="editUnit.distanciamiento"></input>
+														      (Metros)
 													</div>
 												</div>
 												<div class="col-xs-12">
@@ -1279,9 +1409,10 @@
 												<div class="col-xs-12">
 													<div class="form-group">
 														<input type="text"
-														      class="form-control"
-														      placeholder="Rendimiento"
-														      ng-model="editUnit.rendimiento"></input>
+													      class="form-control"
+													      placeholder="Producción"
+													      ng-model="unit.rendimiento"></input>
+													      (cereza/manzana)
 													</div>
 												</div>
 												<div class="col-xs-12">
@@ -1419,7 +1550,7 @@
 													<div class="form-group">
 														<input type="text"
 														      class="form-control"
-														      placeholder="Ubicación"
+														      placeholder="Geo Referencia"
 														      ng-model="newUnit.ubicacion" required></input>
 													</div>
 												</div>
@@ -1483,6 +1614,31 @@
 													            <input type="checkbox" ng-model="newUnit.variedad.maragogype"> Maragogype
 													          </label>
 													        </div>
+													        <div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" ng-model="newUnit.variedad.typica"> Typica
+													          </label>
+													        </div>
+													        <div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" ng-model="newUnit.variedad.pacamara"> Pacamara
+													          </label>
+													        </div>
+													        <div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" ng-model="newUnit.variedad.pacheComun"> Pache común
+													          </label>
+													        </div>
+													        <div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" ng-model="newUnit.variedad.pacheColis"> Pache Colis
+													          </label>
+													        </div>
+													        <div class="col-xs-6">
+													          <label>
+													            <input type="checkbox" ng-model="newUnit.variedad.mundoNovo"> Mundo Novo
+													          </label>
+													        </div>
 														</div>
 													</div>
 												</div>
@@ -1492,6 +1648,7 @@
 														      class="form-control"
 														      placeholder="Distanciamiento"
 														      ng-model="newUnit.distanciamiento"></input>
+														      (Metros)
 													</div>
 												</div>
 												<div class="col-xs-12">
@@ -1530,10 +1687,21 @@
 												</div>
 												<div class="col-xs-12">
 													<div class="form-group">
-														<input type="text"
-														      class="form-control"
-														      placeholder="¿En que mes lo realiza?"
-														      ng-model="newUnit.muestreoMes"></input>
+														<label>¿En que mes lo realiza?</label>
+															<select multiple class="form-control" ng-model="newUnit.muestreoMes">
+															  <option>Enero</option>
+															  <option>Febrero</option>
+															  <option>Marzo</option>
+															  <option>Abril</option>
+															  <option>Mayo</option>
+															  <option>Junio</option>
+															  <option>Julio</option>
+															  <option>Agosto</option>
+															  <option>Septiembre</option>
+															  <option>Octubre</option>
+															  <option>Noviembre</option>
+															  <option>Diciembre</option>
+															</select>
 													</div>
 												</div>
 												<div class="col-xs-12">
@@ -1555,10 +1723,22 @@
 												</div>
 												<div class="col-xs-12">
 													<div class="form-group">
-														<input type="text"
-														      class="form-control"
-														      placeholder="¿En que mes lo realiza?"
-														      ng-model="newUnit.fertilizaSueloMes"></input>
+														<label>¿En que mes lo realiza?</label>
+															<select multiple class="form-control" ng-model="newUnit.fertilizaSueloMes">
+															  <option>Enero</option>
+															  <option>Febrero</option>
+															  <option>Marzo</option>
+															  <option>Abril</option>
+															  <option>Mayo</option>
+															  <option>Junio</option>
+															  <option>Julio</option>
+															  <option>Agosto</option>
+															  <option>Septiembre</option>
+															  <option>Octubre</option>
+															  <option>Noviembre</option>
+															  <option>Diciembre</option>
+															</select>
+														
 													</div>
 												</div>
 												<div class="col-xs-12">
@@ -1580,10 +1760,22 @@
 												</div>
 												<div class="col-xs-12">
 													<div class="form-group">
-														<input type="text"
-														      class="form-control"
-														      placeholder="¿En que mes lo realiza?"
-														      ng-model="newUnit.fertilizaFollajeMes"></input>
+														<label>¿En que mes lo realiza?</label>
+															<select multiple class="form-control" ng-model="newUnit.fertilizaFollajeMes">
+															  <option>Enero</option>
+															  <option>Febrero</option>
+															  <option>Marzo</option>
+															  <option>Abril</option>
+															  <option>Mayo</option>
+															  <option>Junio</option>
+															  <option>Julio</option>
+															  <option>Agosto</option>
+															  <option>Septiembre</option>
+															  <option>Octubre</option>
+															  <option>Noviembre</option>
+															  <option>Diciembre</option>
+															</select>
+														
 													</div>
 												</div>
 												<div class="col-xs-12">
@@ -1605,10 +1797,21 @@
 												</div>
 												<div class="col-xs-12">
 													<div class="form-group">
-														<input type="text"
-														      class="form-control"
-														      placeholder="¿En que mes lo realiza?"
-														      ng-model="newUnit.enmiendasSueloMes"></input>
+														<label>¿En que mes lo realiza?</label>
+															<select multiple class="form-control" ng-model="newUnit.enmiendasSueloMes">
+															  <option>Enero</option>
+															  <option>Febrero</option>
+															  <option>Marzo</option>
+															  <option>Abril</option>
+															  <option>Mayo</option>
+															  <option>Junio</option>
+															  <option>Julio</option>
+															  <option>Agosto</option>
+															  <option>Septiembre</option>
+															  <option>Octubre</option>
+															  <option>Noviembre</option>
+															  <option>Diciembre</option>
+															</select>
 													</div>
 												</div>
 												<div class="col-xs-12">
@@ -1630,10 +1833,21 @@
 												</div>
 												<div class="col-xs-12">
 													<div class="form-group">
-														<input type="text"
-														      class="form-control"
-														      placeholder="¿En que mes lo realiza?"
-														      ng-model="newUnit.manejoTejidoMes"></input>
+														<label>¿En que mes lo realiza?</label>
+															<select multiple class="form-control" ng-model="newUnit.manejoTejidoMes">
+															  <option>Enero</option>
+															  <option>Febrero</option>
+															  <option>Marzo</option>
+															  <option>Abril</option>
+															  <option>Mayo</option>
+															  <option>Junio</option>
+															  <option>Julio</option>
+															  <option>Agosto</option>
+															  <option>Septiembre</option>
+															  <option>Octubre</option>
+															  <option>Noviembre</option>
+															  <option>Diciembre</option>
+															</select>
 													</div>
 												</div>
 												<div class="col-xs-12">
@@ -1724,12 +1938,14 @@
 													<div class="form-group">
 														<input type="text"
 														      class="form-control"
-														      placeholder="Rendimiento"
-														      ng-model="newUnit.rendimiento"></input>
+														      placeholder="Producción"
+														      ng-model="unit.rendimiento"></input>
+														      (cereza/manzana)
 													</div>
 												</div>
 												<div class="col-xs-12">
 													<div class="form-group">
+														
 														<input type="text"
 														      class="form-control"
 														      placeholder="Floracion principal"

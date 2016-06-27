@@ -14,7 +14,12 @@ var UnitSchema = new mongoose.Schema({
 	  	caturra: Boolean,
 	  	bourbon: Boolean,
 	  	catuai: Boolean,
-	  	maragogype: Boolean
+	  	maragogype: Boolean,
+	  	typica: Boolean,
+	  	pacamara: Boolean,
+	  	pacheComun: Boolean,
+	  	pacheColis: Boolean,
+	  	mundoNovo: Boolean,
 	  },
   distanciamiento: String,
   sombra: Boolean,
