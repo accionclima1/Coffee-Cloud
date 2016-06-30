@@ -1,12 +1,23 @@
 var app = angular.module('coffeeScriptAdmin', ['btford.socket-io','ui.router','luegg.directives','ui.tinymce']);
 
 // Main controller 
-app.controller('MainCtrl',['$scope', 'auth',
-function($scope, auth){
+app.controller('MainCtrl',['$scope', 'auth','roya','chats', 'user',
+function($scope, auth, chats, roya, user){
 	$scope.isLoggedIn = auth.isLoggedIn;
 	$scope.currentUser = auth.currentUser;
 	$scope.logOut = auth.logOut;
+	user.getAll().then(function(users) {
+		$scope.userList = users;
+	});
 	
+	roya.getAll().then(function(tests) {
+				$scope.royaTests = tests.data;
+			});
+	chats.getAll().then(function(chats) {
+				$scope.chatsTotal = chats.data;
+			});
+	
+
 	if ($scope.isLoggedIn()) {
 		$('body').removeClass('loggedOff');
 		$('body').addClass('loggedIn');
@@ -233,6 +244,11 @@ function($scope, auth, $location, user){
 	    
 	      
 	    
+  }
+  
+  $scope.editUser = function(user) {
+	  $scope.editUserO = user; 
+	  $('#myModalEdit').modal('show');
   }
   
   $scope.removeUser = function(id,index) {
