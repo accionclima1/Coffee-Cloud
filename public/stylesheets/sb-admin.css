@@ -336,12 +336,18 @@ ul.alert-dropdown {
     overflow: auto;
 }
 
+.chatbox > div {
+    min-height: 36px;
+    margin-bottom: 12px;
+}
+
 .message span {
     font-weight: bold;
 }
 
 .message .message-body {
     display: inline-block;
+    max-width: 600px;
 }
 
 .chat-item {
@@ -510,4 +516,53 @@ ul.alert-dropdown {
 .roya-wrap .roya-editor tr:hover {
     background-color: #e3e3e3;
     cursor: pointer;
+}
+
+.chat-image {
+  background-repeat: no-repeat;
+  background-size:cover;
+  background-position: center top;
+  height: 35px;
+  width: 35px;
+  margin-top: 0;
+  float: left;
+}
+
+
+.chat-text {
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    display: inline-block;
+    margin: 0;
+    vertical-align: top;
+}
+
+.chat-button {
+    margin-bottom:2px;
+}
+
+.chat-Body {
+    bottom: 0;
+    position: relative;
+}
+
+.chat-BodyReceiver {
+    width: 74%;
+}
+.chat-lable {
+    /* width: 24%; */
+    float: left;
+    font-weight: bold;
+    margin-right: 6px;
+}
+.chat-text-bottom {
+    width: 15%;
+    word-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-top: 7px;
+    display: inline-flex;
+    font-weight: bold
 }

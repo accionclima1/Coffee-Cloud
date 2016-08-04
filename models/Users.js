@@ -11,6 +11,8 @@ var UserSchema = new mongoose.Schema({
 	role: { type: String, default: 'client' },
 	extemDepartamento: String,
 	exteMunicipio: String,
+	nickname: String,
+	image: String,
 	units: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Unit' }]
 });
 
@@ -36,6 +38,7 @@ UserSchema.methods.generateJWT = function() {
   return jwt.sign({
     _id: this._id,
     username: this.username,
+    role:this.role,
     exp: parseInt(exp.getTime() / 1000),
   }, 'SECRET');
 };

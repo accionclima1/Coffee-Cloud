@@ -13,7 +13,7 @@
 
     <!-- Bootstrap Core CSS -->
    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-
+   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <!-- Custom CSS -->
     <link href="stylesheets/sb-admin.css" rel="stylesheet">
 
@@ -169,8 +169,8 @@
                     <li ng-class="{ active: isActive('/adaptacion') }">
                         <a href="/admin#/adaptacion"><i class="fa fa-fw fa-shield"></i> Adaptación Climática </a>
                     </li>
-                    <li ng-class="{ active: isActive('/users') }">
-                        <a href="/admin#/users"><i class="fa fa-fw fa-users"></i> Usuarios  </a>
+                    <li ng-hide="curUserRole == 'Extensionista'" ng-class="{ active: isActive('/users') }">
+                        <a href="/admin#/users"><i class="fa fa-fw fa-users"></i> Usuarios  {{ curUserRole }}</a>
                     </li>
                    <!--  <li>
                         <a href="#"><i class="fa fa-fw fa-umbrella"></i> Perspectiva Climática</a>
@@ -220,19 +220,19 @@
                 <!-- /.row -->
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-8">
 	                     <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Precipitación 
+                                <h3 class="panel-title">Lluvia acumulada de un día (TRMM) 
                                 </h3>
                             </div>
                             <div class="panel-body">
-	                            <iframe width="100%" height="500px" frameBorder="0" src="https://a.tiles.mapbox.com/v4/accionclima.5b439af8.html?access_token=pk.eyJ1IjoiYWNjaW9uY2xpbWEiLCJhIjoiY2lrazVhd2lhMGE1cnRpajdxZzFlZjd5cyJ9.LSfg1Cjc1LaBYJFt4Rlj8w"></iframe>
+	                            <iframe width="100%" height="600px" frameBorder="0" src="http://centroclima.org/lluvia-acumulada-de-un-dia-trmm/"></iframe>
 
                             </div>
 	                     </div>
-	                                        </div>
-                    <div class="col-md-6">
+	                </div>
+	                <div class="col-md-4">
 	                    <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h3 class="panel-title">Estadisticas  
@@ -241,7 +241,7 @@
                             <div class="panel-body">
 	                          
 	                          <div class="row">
-		                          <div class="col-md-6">
+		                          <div class="col-md-12">
 			                          <div class="panel panel-green">
 			                            <div class="panel-heading">
 			                                <div class="row">
@@ -263,7 +263,7 @@
 			                            </a>
 			                        </div>
 		                          </div>
-		                          <div class="col-md-6">
+		                          <div class="col-md-12">
 			                          <div class="panel panel-primary">
 			                            <div class="panel-heading">
 			                                <div class="row">
@@ -285,8 +285,8 @@
 			                            </a>
 			                        </div>
 		                          </div>
-		                          <div class="col-md-6">
-			                          <div class="panel panel-yellow">
+		                          <div class="col-md-12">
+			                          <div class="panel panel-yellow" ng-hide="curUserRole == 'Extensionista'">
 			                            <div class="panel-heading">
 			                                <div class="row">
 			                                    <div class="col-xs-3">
@@ -313,6 +313,19 @@
 	                     </div>
 	                    
                     </div>
+	                <div class="col-md-8">
+	                     <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Lluvia acumulada (GPM)
+                                </h3>
+                            </div>
+                            <div class="panel-body">
+	                            <iframe width="100%" height="600px" frameBorder="0" src="http://centroclima.org/lluvia-acumulada-de-un-dia-gpm/"></iframe>
+
+                            </div>
+	                     </div>
+	                </div>
+                    
                 </div>
                 <!-- /.row -->
             </div>
@@ -397,6 +410,46 @@
 	  </script>
     <script type="text/ng-template" id="/messenger.html">
 	    <div class="container-fluid messenger" ng-controller="MessengerCtrl">
+		<!-- Modal -->
+			<div class="modal fade" id="myModalUserImage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+					
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title" id="myModalLabel">Imagen de Usuario</h4>
+						</div>
+						<div class="modal-body">
+							<div ng-show="error" class="alert alert-danger row">
+								<span>{{ error.message }}</span>
+							</div>
+							<div class="form-group">
+								<label>Nombre:</label>
+								<input type="text" class="form-control" ng-model="UserName"/>
+							</div>	
+							<div class="form-group">
+								<label>Image:</label>
+								<input type="file" id="userImage" file-model="myFile" />
+							</div>	
+							<div class="form-group">
+								<div ng-show="message" class="bg-success ">
+									<span>{{ message }}</span>
+								</div>
+								<div ng-show="error" class="alert alert-danger ">
+									<span>{{ error.message }}</span>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<button type="button" ng-click="uploadPhoto()" class="btn btn-primary">Save</button>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+			<!-- Modal -->
+
 		    <div class="row">
 			    <div class="col-md-3">
 				    <div class="chat-list">
@@ -414,27 +467,26 @@
 				    	<div class="chatbox" scroll-glue>
 							<div class="message" ng-repeat="message in chatLog">
 								<div>
-									<span class="name">>{{ message.sender }}: </span>
-								 <div class="message-body">{{ message.bodyMsg }}</div></div>
+									<img class="userImage chat-image" ng-src="{{ message.imageurl }}" />&nbsp;<label class="chat-text" >{{ message.sender }}:</label>
+									<div class="message-body chat-Body" >{{ message.bodyMsg }}</div>
+								</div>
 							</div>
-							
 						</div>
 						
 						<form class="type-sink form-inline" ng-submit="sendMessage()">
 								<div class="form-group">
+									<a ng-click="openImagePopup()"><img style="margin-top:0" class="userImage chat-image" src="{{ UserImageBottom }}" /></a>
+									<label class="chat-text-bottom">{{ nickname }}</label>
 									<label class="sr-only" for="chatMsg">Chat message</label>
-									<input type="text" class="form-control" name="chatMsg" id="chatMsg">						
+									<input type="text" class="form-control" style="float:right;width:75%" name="chatMsg" id="chatMsg">						
 									<input type="hidden" name="fromId" value="admin">
 									<input type="hidden" name="toId" value="">
 								</div>
-							<button type="submit" class="btn btn-default">Enviar</button>
+							<button type="submit" class="btn btn-default chat-button">Enviar</button>
 						</form>
 			    </div>
 			</div>
 		</div>
-	    
-		
-						
 	</script>
     <script type="text/ng-template" id="/adaptacion.html">
 	     <div class="container-fluid adaptacion-wrap">
@@ -618,11 +670,11 @@
 								    </div>
 								    <div class="form-group">
 								      <label>Rol:</label>
-								      <input type="text"
-								      class="form-control"
-								      placeholder="Nombre de usuario"
-								      ng-model="editUserO.role" disabled></input>
-								      
+								      <select class="form-control" ng-model="editUserO.role">
+										  <option>Cliente</option>
+										  <option>Extensionista</option>
+										  <option>Admin</option>
+										</select>
 								    </div>
 								   
 								    <div class="form-group">
@@ -633,16 +685,25 @@
 								    </div>
 								   <div class="form-group">
 											    <div class="form-group">
-											      <input type="password" data-minlength="6" class="form-control" id="inputPassword" placeholder="Contraseña" required>
+											      <input type="password" data-minlength="6" class="form-control" id="inputPasswordEdit" placeholder="Contraseña" >
 											    </div>
 											    <div class="form-group">
-											      <input type="password" class="form-control" id="inputPasswordConfirm" data-match="#inputPassword" data-match-error="No coinciden! " placeholder="Confirmar Contraseña" ng-model="editUserO.password" required>
+											      <input type="password" class="form-control" id="inputPasswordConfirmEdit" data-match="#inputPasswordEdit" data-match-error="No coinciden! " placeholder="Confirmar Contraseña" ng-model="editUserO.password" >
 											      <div class="help-block with-errors"></div>
 											    </div>
 											</div>
-								    
+											
+								   <div class="form-group">
+								  <div ng-show="message" class="bg-success ">
+					    				<span>{{ message }}</span>
+					  				</div>
+								 <div ng-show="error" class="alert alert-danger ">
+				  						<span>{{ error.message }}</span>
+				 				 </div>
+									</div>
 								  
 								  </form>
+								  
 				      </div>
 				      <div class="modal-footer">
 				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -674,7 +735,7 @@
 	                   <div class="news-editor">
 		                   <div class="news-item" ng-repeat="post in posts | orderBy: '-createdAt'">
 			                   <span class="title">{{post.title}}</span> <span class="date">{{post.createdAt | date:'MM/dd/yyyy'}}</span>
-			                   <button class="btn btn-default">Editar</button>
+			                   <button class="btn btn-default"  ng-click="editPost(post)">Editar</button>
 			                   <button class="btn btn-danger">X</button>
 			                </div>
 			            </div>
@@ -692,7 +753,7 @@
 				        <form ng-submit="publish()">
 					         <div class="form-group">
 							    <label for="title">Titulo</label>
-							    <input type="text" class="form-control" id="title"  ng-model="newPost.title">
+							    <input type="text" class="form-control" id="title"  ng-model="newPost.title" required>
 							  </div>
 							  <textarea ui-tinymce="tinymceOptions" ng-model="newPost.content"></textarea>
 				        </form>
@@ -705,6 +766,49 @@
 				  </div>
 				</div>
                 
+				
+					<div class="modal fade" id="myModalPostEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				  <div class="modal-dialog" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" id="myModalLabel">Editar Noticia</h4>
+				      </div>
+				      <div class="modal-body">
+						        <div ng-show="error" class="alert alert-danger row">
+								    <span>{{ error.message }}</span>
+								  </div>
+				
+								  <form ng-submit="savePost()" name="editnewsForm" id="editnewsForm" data-toggle="validator">
+				
+								  <div class="form-group">
+							    <label for="title">Titulo</label>
+							    <input type="text" class="form-control" id="title"  ng-model="editPostO.title" required>
+							  </div>
+							  <textarea ui-tinymce="tinymceOptions" ng-model="editPostO.content"></textarea>
+											
+								   <div class="form-group">
+								  <div ng-show="message" class="bg-success ">
+					    				<span>{{ message }}</span>
+					  				</div>
+								 <div ng-show="error" class="alert alert-danger ">
+				  						<span>{{ error.message }}</span>
+				 				 </div>
+									</div>
+								  
+								  </form>
+								  
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				        <button type="button" class="btn btn-primary"  form="editnewsForm" ng-disabled="editnewsForm.$invalid" ng-click="savePost()" disabled>Guardar Noticia</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+
+            </div>
+			
 
             </div>
     </script>
@@ -717,12 +821,50 @@
                         <h1 class="page-header">
                             Reportes de Roya
                         </h1>
-                        <p class="lead col-md-4">Reportes: </p><div class="col-md-8 text-right"></div>
-                    </div>
-                </div>
-              
-                <!-- /.row -->
+                        
+						<div class="col-md-12">
 
+						<div class=" form-inline">
+							<label>Fecha inicio:</label>
+							<input type="text" class="form-control date-field" placeholder="Fecha inicio" ng-model="search.dateFrom"></input>
+						    
+							<label>fecha final</label>
+							<input type="text" class="form-control date-field" placeholder="Fecha final" ng-model="search.dateTo"></input>
+						</div>
+						</div>
+						<div class="col-md-12">
+						<div class="form-inline">
+						<br/>	
+							<label>Buscar por ID:</label> 
+							<input type="text"  class="form-control" ng-model="search._id" placeholder="Buscar por ID" />
+						</div>
+						</div>                
+						<br/>
+						<br/>
+						<p class="lead col-md-4">resultados: </p>
+							<div class="col-md-8 text-right">  
+								<button ng-click="exportData()" >Exportar</button>
+							</div>
+                <!-- /.row -->
+			<table class="table table-striped" style="display:none;" id='exportable'>
+				<thead>
+					<tr>
+						<th ng-repeat="(i,th) in head" >{{th}}</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="row in testsList | orderBy : sort.column : sort.descending | myfilter:search">
+						<td ng-click="loadTest(row);">{{row.createdAt}}</td>
+						<td ng-click="loadTest(row);">{{row.departamento}}</td> 
+						<td ng-click="loadTest(row);">{{row.incidencia}}%</td>
+						<td ng-click="loadTest(row);">{{row.nombre}}</td> 
+						<td ng-click="loadTest(row);">{{row.tipoCafe}}</td> 
+						<td ng-click="loadTest(row);">{{row.user}}</td>
+						</tr>
+					</tr>
+				</tbody>
+			</table>
                 <div class="row">
                     <div class="col-md-12">
 	                   <div class="roya-editor">
@@ -730,17 +872,25 @@
 							    <thead>
 							        <tr>
 							            <th ng-repeat="(i,th) in head" ng-class="selectedCls(i)" ng-click="changeSorting(i)">{{th}}</th>
+							            <th></th>
 							        </tr>
 							    </thead>
 							    <tbody>
-							        <tr ng-repeat="row in testsList | orderBy : sort.column : sort.descending" ng-click="loadTest(row);">
-							            <td>{{row.createdAt}}</td>
-							            <td>{{row.unidad.departamento}}</td> 
-							            <td>{{row.incidencia}}%</td>
-							            
+							        <tr ng-repeat="row in testsList | orderBy : sort.column : sort.descending | myfilter:search | startFrom:(currentPage-1)*pageSize | limitTo:pageSize">
+							            <td ng-click="loadTest(row);">{{row.createdAt}}</td>
+							            <td ng-click="loadTest(row);">{{row.departamento}}</td> 
+							            <td ng-click="loadTest(row);">{{row.incidencia}}%</td>
+							            <td ng-click="loadTest(row);">{{row.nombre}}</td> 
+							            <td ng-click="loadTest(row);">{{row.tipoCafe}}</td> 
+							            <td ng-click="loadTest(row);">{{row.user}}</td>
+							            <td> <button class="btn btn-danger" ng-click="removeTest(row._id)">X</button></td> 
+								        </tr>
 							        </tr>
 							    </tbody>
 							</table>
+							<div class="text-center">
+								<pagination page="currentPage" max-size="noOfPages" previous-text="<" next-text=">" first-text="<<" last-text=">>" boundary-link-numbers="true" total-items="totalItems" items-per-page="pageSize"></pagination>
+							</div>
 							<!-- Modal -->
 								<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 								  <div class="modal-dialog" role="document">
@@ -753,7 +903,7 @@
 									      <dl>
 											  <dt>ID:</dt>
 											  <dd>{{detail._id}}</dd>
-											  <dt>User:</dt>
+										  	  <dt>User:</dt>
 											  <dd>{{detail.user}}</dd>
 											  <dt>Creación:</dt>
 											  <dd>{{detail.createdAt}}</dd>
@@ -906,7 +1056,8 @@
     <script src="javascripts/plugins/morris/raphael.min.js"></script>
     <script src="javascripts/plugins/morris/morris.min.js"></script>
     <script src="javascripts/plugins/morris/morris-data.js"></script> -->
-
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.10.0.js" type="text/javascript"></script>
 </body>
 
 </html>

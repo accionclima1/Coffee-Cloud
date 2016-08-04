@@ -123,8 +123,15 @@ var getMessages = function(messageBody,chat,callback) {
 	 message.timestamp = timestamp;
 	 message.sender = from_id;
 	 message.reciber = to_user;
-	 message.bodyMsg = messageBody;
-	
+	 if(messageBody.bodyMsg == undefined) {
+	    message.bodyMsg = messageBody;
+	 }
+	 else {
+	    message.bodyMsg = messageBody.bodyMsg;
+		message.sender_id = messageBody.sender_id;
+	 }			
+	 
+
 	 message.save(function(err, message){
 	   	if(err){ return next(err); }
 	   	

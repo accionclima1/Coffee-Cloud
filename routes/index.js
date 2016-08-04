@@ -9,7 +9,19 @@ var User = mongoose.model('User');
 var Method = mongoose.model('Method');
 var Roya = mongoose.model('Roya');
 var jwt = require('express-jwt');
-var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
+var auth = jwt({ secret: 'SECRET', userProperty: 'payload' });
+
+var multer = require('multer')
+var storage = multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, './public/images');
+    },
+    filename: function (req, file, callback) {
+        callback(null, file.fieldname + '-' + Date.now());
+    }
+});
+var upload = multer({ storage: storage }).single('userPhoto');
+
 
 router.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -45,6 +57,34 @@ router.post('/posts', auth, function(req, res, next) {
   });
 });
 
+router.post('/upload/photo',  function (req, res) {
+    upload(req, res, function (err) {
+        if (err) {
+            return res.end("Error uploading file.");
+        }
+        res.end("File is uploaded");
+    });
+});
+
+router.put('/posts/:post', auth, function(req, res, next) {
+  var update = req.body;
+  Post.findById(req.body._id, function(err, post ) {
+  if (!Post)
+    return next(new Error('Could not load Document'));
+  else {
+    post.title = req.body.title;
+    post.content = req.body.content;
+    post.save(function(err) {
+      if (err)
+        console.log('error');
+      else
+        res.json({message: '¡Noticia Actualizado exitosamente!'});
+    });
+  }
+});
+});
+
+
 router.param('post', function(req, res, next, id) {
   var query = Post.findById(id);
   query.exec(function (err, post){
@@ -55,6 +95,7 @@ router.param('post', function(req, res, next, id) {
     return next();
   });
 });
+
 
 router.param('comment', function (req, res, next, id) {
     var query = Comment.findById(id);
@@ -168,6 +209,17 @@ router.param('unit', function(req, res, next, id) {
     if (!unit) { return next(new Error('can\'t find unit')); }
     
     req.unit = unit;
+    return next();
+  });
+});
+
+router.param('test', function(req, res, next, id) {
+  var query = Roya.findById(id);
+  query.exec(function (err, test){
+    if (err) { return next(err); }
+    if (!test) { return next(new Error('can\'t find test')); }
+    
+    req.test = test;
     return next();
   });
 });
@@ -325,29 +377,32 @@ router.get('/users/:user', function(req, res, next) {
   });
 });
 
-router.put('/users/:user', auth, function(req, res, next) {
-  var update = req.body;
-  User.findById(req.body._id, function(err, user ) {
-  if (!user)
-    return next(new Error('Could not load Document'));
-  else {
-    // do your updates here
-    user.email = req.body.email;
-  
-	user.phone = req.body.phone;
+router.put('/users/:user', auth, function (req, res, next) {
+    var update = req.body;
+    User.findById(req.body._id, function(err, user ) {
+        if (!user)
+            return next(new Error('Could not load Document'));
+        else {
+            // do your updates here
+            user.email = req.body.email;
+	        user.phone = req.body.phone;
+	        user.role = req.body.role;
+
+	        user.nickname = req.body.nickname;
+	        user.image = req.body.image;
+
+            if (req.body.password) {
+                user.setPassword(req.body.password);
+	        };
 	
-	if (req.body.password) {
-		user.setPassword(req.body.password);
-	};
-	
-    user.save(function(err) {
-      if (err)
-        console.log('error');
-      else
-        res.json({message: '¡Perfil Actualizado exitosamente!'});
+	        user.save(function (err) {
+                if (err)
+                    console.log('error');
+                else
+                    res.json({message: '¡Perfil Actualizado exitosamente!'});
+            });
+        }
     });
-  }
-});
 });
 
 router.delete('/users/:user', auth, function (req, res) {
@@ -388,6 +443,15 @@ router.get('/roya', function(req, res, next) {
 
     res.json(royas);
   });
+});
+
+router.delete('/roya/:test', auth, function (req, res) {
+	Roya.findByIdAndRemove(req.params.test, function (err,test){
+    if(err) { throw err; }
+	    res.json({messageUnit: "Test eliminado!"});
+	    console.log("Test eliminado!");
+	});
+  
 });
 
 module.exports = router;

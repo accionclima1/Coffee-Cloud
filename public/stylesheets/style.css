@@ -860,7 +860,7 @@ a {
   margin-top: -10px;
   border: 0;
   box-shadow: 1px 1px 2px 0px rgba(0, 0, 0, 0.14);
-  width: 100% !important;
+  width: 80% !important;
 }
 
 .type-sink .form-group {
@@ -873,7 +873,7 @@ a {
   float: right;
   border-radius: 360px;
   padding: 25px 10px;
-  margin-top: -77px;
+  margin-top: -65px;
   background-color: #7FD321;
   color: #fff;
   text-transform: uppercase;
@@ -1008,4 +1008,39 @@ a {
   position: absolute;
   top: 17px;
   color: #fff;
+}
+
+.chat-image {
+  background-repeat: no-repeat;
+  background-size:cover;
+  background-position: center top;
+  height: 35px;
+  width: 35px;
+  float:left;
+}
+
+
+.chat-text {
+    margin: 7px 0 0 5px; 
+    float:left;
+    font-weight:bold;
+    /*width:20%;*/
+}
+.chat-Body {
+    margin: 7px 0 0 5px; 
+    float:left;
+    width:55%
+}
+.chat-BodyReceiver {
+    width: 74%;
+}
+.chat-text-bottom {
+    width: 15%;
+    word-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin: 7px 0 0 5px;
+    display: inline-flex;
+    font-weight: bold
 }

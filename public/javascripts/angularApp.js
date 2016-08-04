@@ -225,8 +225,8 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 	  //console.log($scope.leafList);
 	  $('#plantModal').modal('show');
   };
-  $scope.affect = 1;
-  user.get(auth.userId()).then(function(user){
+    $scope.affect = 1;
+    user.get(auth.userId()).then(function(user){
 		 $scope.units = user.units;
     });
     
@@ -301,6 +301,7 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 		$scope.test.plantas.push([]);
 		var plantName = $scope.test.plantas.length;
 		plantEditor(plantName);
+		setTimeout(function () { $('[name=amount]').val(''); }, 100);
 	};
 	
 	$scope.editPlant = function($index) {
@@ -321,7 +322,7 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 		var plantIndex = $scope.plantname - 1;
 		$scope.test.plantas[plantIndex].push([amount,severity]);
 		$scope.leafList = $scope.test.plantas[plantIndex];
-		$('[name=amount]').val(1);
+		$('[name=amount]').val('');
 		$scope.affect = 1;
 		$('.severity-list').removeClass('active');
 	};
@@ -455,6 +456,18 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
     
 }]);
 
+app.filter('sumLeafFilter', function () {
+    return function (leafArray) {
+        var leafTotals = 0;
+        for (var i = 0; i < leafArray.length; i++) {
+            if (leafArray[i][0] == "") {
+                leafArray[i][0] = "0";
+            }
+            leafTotals += parseInt(leafArray[i][0]);
+        }
+        return leafTotals;
+    };
+});
 app.controller('WeatherCtrl', [
 '$scope',
 '$state',
@@ -464,11 +477,95 @@ function($scope, $state, auth){
 }]);
 
 // Support Chat Controller 
-app.controller('SupportCtrl',['$scope','auth', 'socket',
-function($scope, auth, socket){
+app.controller('SupportCtrl',['$scope','auth', 'socket', 'user',
+function ($scope, auth, socket, user) {
+
 	$scope.isLoggedIn = auth.isLoggedIn;
 	$scope.currentUser = auth.currentUser;
 	$scope.loggedUser = auth.currentUser();
+	$scope.userImageList = [];
+	$scope.currentUserObj = auth.currentUserObject();
+	$scope.adminImage='';
+	$scope.adminName='';
+	//$scope.UserName = 'User';
+	$scope.UserImage = '../images/ChatUser.png';
+	$scope.UserImageBottom = '../images/ChatUser.png';
+	// $scope.UserNameDisplay = 'User';
+	$scope.IsCall = false;
+
+	$('#userImage').change(function (e) {
+	    var file = e.target.files[0],
+            imageType = /image.*/;
+	    if (!file.type.match(imageType))
+	        return;
+	    var reader = new FileReader();
+	    reader.onload = $scope.saveImage;
+	    reader.readAsDataURL(file);
+	});
+	$scope.saveImage = function (e) {
+	    $scope.UserImage = e.target.result;
+	}
+
+	$scope.getUserImage = function (userId) {
+	    var result = $.grep($scope.userImageList, function (item) {
+	        return item._id == userId;
+	    });
+	    
+	    if (result.length == 0) {
+	        $scope.userImageList.push({ _id: userId, nickname: '', image: '' });
+	        user.get(userId).then(function (userObj) {
+	            if (userObj.nickname == "") {
+	                userObj.nickname = null;
+	            }
+	            if (userObj.image == "") {
+	                userObj.image = null;
+	            }
+	            var nickName = userObj.nickname || userObj.username;
+	            var userImage = userObj.image || '../images/ChatUser.png';
+	            var res = $.grep($scope.userImageList, function (item) {
+	                return item._id == userObj._id;
+	            });
+	            res[0].nickname = nickName;
+	            res[0].image = userImage;
+	            $.each($scope.chatLog, function (i, v) {
+	                if (userObj._id == v.sender_id) {
+	                    v.imageurl = userImage;
+						$scope.adminName = nickName;
+						if($scope.adminImage == '')
+						{
+							$scope.adminImage = userImage;
+						}
+	                    v.sender = nickName;
+	                }
+	            });
+	        });
+	    }
+	    else {
+	        if ($scope.chatLog != undefined) {
+	            $.each($scope.chatLog, function (i, v) {
+	                
+	                    v.imageurl = result[0].image;
+	                    v.sender = result[0].nickname;
+								
+	            });
+	        }
+	    }
+	}
+
+	$scope.openImagePopup = function () {
+	    $('#myModalUserImage').modal('show');
+	}
+
+	$scope.setCurrentUserImage = function (messageList) {
+	    for (var i = 0; i < messageList.length; i++) {
+	      if (messageList[i].sender_id != undefined) {
+	            $scope.getUserImage(messageList[i].sender_id);
+	      }
+	    }
+	    $scope.chatLog = messageList;
+	}
+
+	
 	$scope.sendMessage = function() {
 		var f = $('.type-sink');
         var msg = f.find('[name=chatMsg]').val();
@@ -485,7 +582,7 @@ function($scope, auth, socket){
         data=JSON.parse(data);
         var user = data.sender;
         if (user == $scope.loggedUser) {
-	        $scope.chatLog = data.messages;
+            $scope.setCurrentUserImage(data.messages);
 	        $scope.$apply();
 	    }
     });
@@ -494,16 +591,59 @@ function($scope, auth, socket){
         var usera = data.to_user;
         var userb = data.from_id;
         if (usera == $scope.loggedUser || userb == $scope.loggedUser) {
-	        $scope.chatLog = data.chat.messages;
-			$scope.$apply();
+            $scope.setCurrentUserImage(data.chat.messages);
+			      $scope.$apply();
         }
         
     });
-
+	if (!$scope.IsCall) {
+	    $scope.IsCall = true;
 	
-	//socket.on('greeting', function(greeting) {
-	  //  console.log(greeting);
-	//});
+	    user.get($scope.currentUserObj._id).then(function (userObj) {
+	        if (userObj.nickname == "") {
+	            userObj.nickname = null;
+	        }
+	        if (userObj.image == "") {
+	            userObj.image = null;
+	        }
+	        //$scope.UserNameDisplay = userObj.nickname || userObj.username;
+					if($scope.UserName!='admin')
+					{
+					    //$scope.UserImage = userObj.image || '../images/ChatUser.png';
+					    $scope.UserImageBottom = userObj.image || '../images/ChatUser.png';
+						$scope.UserName=userObj.username;
+					}
+					else	
+					{
+						$scope.UserName = userObj.nickname || userObj.username;
+						//$scope.UserImage = userObj.imageurl || '../images/ChatUser.png';
+						$scope.UserImageBottom = userObj.image || '../images/ChatUser.png';
+					}
+	    });
+	}
+	
+	$scope.uploadPhoto = function () {
+	    var userObj = auth.currentUserObject();
+	    if (userObj != null) {
+	        user.get(userObj._id).then(function (userObj) {
+	            if ($scope.UserImage != null) {
+	                userObj.image = $scope.UserImage;
+	            }
+	            //if ($scope.UserName != null) {
+	            //    userObj.nickname = $scope.UserName;
+	            //}
+	            user.update(userObj).error(function (error) {
+	                $scope.error = error;
+	            }).then(function (data) {
+	                $scope.message = data.data.message;
+	                location.reload();
+	            });
+	        });
+	    }
+	    $('#myModalUserImage').modal('hide');
+	    
+	}
+
 }]);
 
 app.controller('ProfileCtrl',['$http','$scope', 'auth', 'unit', 'user',
@@ -762,6 +902,16 @@ app.factory('auth', ['$http', '$window', function($http, $window){
 	    return payload.username;
 	  }
 	};
+
+	auth.currentUserObject = function () {
+	    if (auth.isLoggedIn()) {
+	        var token = auth.getToken();
+	        return JSON.parse($window.atob(token.split('.')[1]));
+	    }
+	    else {
+	        return null;
+	    }
+	}
 	
 	auth.userId = function(){
 	  if(auth.isLoggedIn()){
