@@ -78,6 +78,7 @@ body {
 .right-logo img{
     width: 92px;
     margin-top: 4px;
+    margin-right: 15px;
 }
 
 .navbar-inverse .navbar-nav>li>a {
@@ -274,10 +275,10 @@ ul.alert-dropdown {
 /* Login Screen */
 
 .login-wrap {
-    height: 100vh;
+    /* height: 100vh; */
     background-color: #EDEDED;
     padding-top: 88px;
-
+    min-height: 703px;
 }
 
 .login-wrap form {
@@ -574,4 +575,165 @@ ul.alert-dropdown {
     margin-top: 7px;
     display: inline-flex;
     font-weight: bold
+}
+
+
+/* ================================
+ Footer styles 
+================================ */
+.site-footer {
+	background-color: #f2f2f2;
+	background-image: url(http://centroclima.org/wp-content/uploads/2015/12/xfoobg.png.pagespeed.ic.lp6okmi7I1.png);
+	background-size: cover;
+	padding-top: 72px;
+	border-top: 4px solid #E3E3E5;
+
+}
+
+.site-footer-inner {
+	text-align: center;
+}
+
+.site-footer-inner .widget {
+	margin-bottom: 72px;
+}
+
+.site-footer-inner .widget>a>i {
+	font-size: 18px;
+	background-color: #333;
+	padding: 8px;
+	color: #fff;
+	border-radius: 360px;
+	min-width: 34px;
+	margin: 0 6px;
+}
+
+.site-footer-inner .slide img {
+	width: auto;
+	height: 38px;
+}
+
+.site-footer-inner img {
+    height: 38px;
+    margin: 0 15px;
+    float: left;
+}
+
+.site-footer-inner h2 {
+	font-size: 18px;
+    margin-bottom: 24px;
+}
+    
+
+#carousel-logos .carousel-control {
+	background: none;
+	opacity: 1;
+	width: auto;
+}
+
+#carousel-logos .carousel-control.left {
+	left: -12px;
+}
+
+#carousel-logos .carousel-control.right {
+	right: -12px;
+}
+
+#carousel-logos .carousel-control i {
+	color: #333;
+	font-size: 42px;
+	text-shadow: 0 0;
+}
+
+.site-footer-inner input[type=email] {
+	border: 0;
+	font-size: 12px;
+	min-width: 206px;
+	padding: 22px 24px;
+	border-radius: 10px;
+	margin-right: 12px;
+}
+
+.site-footer-inner input[type=submit] {
+	font-size: 12px;
+	padding: 12px 24px;
+}
+
+.site-footer-inner form {
+	margin-top: 24px;
+}
+
+.copyright {
+	text-align: center;
+	background-color: #4A4A4A !important;
+	padding-top: 10px;
+	color: #fff;
+	margin-top: 48px;
+
+}
+
+.copyright ul {
+	margin: 0;
+	float: none;
+}
+
+.copyright li {
+	display: inline-block;
+	position: relative;
+}
+
+.copyright li:after {
+	content:"";
+	width: 1px;
+	display: block;
+	height: 12px;
+	background-color: #fff;
+	position: absolute;
+	top: 14px;
+}
+
+.copyright li:first-child:after {
+	content: none;
+}
+
+.copyright li a {
+	color: #fff;
+	font-weight: 100;
+	text-transform: uppercase;
+}
+div.wpcf7 .form-inline .form-group {
+	margin-left: auto;
+    margin-right: auto;
+}
+@media (min-width: 768px) {
+	.site-footer-inner .slide img {
+	    height: 50px;
+	}
+
+	.copyright {
+		text-align:left;
+		padding: 12px 15px 8px;
+	}
+
+	.copyright .right {
+		display: inline-block;
+		padding-top: 5px;
+	}
+
+	.copyright .left {
+		display: inline-block;
+		text-align: right;
+		position: absolute;
+		right: 0;
+		padding-top: 5px;
+	}
+
+	.copyright li:after {
+		top: 4px;
+	}
+
+	.copyright li a {
+		padding: 0 15px;
+		background: transparent !important;
+	}
 }
