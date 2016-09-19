@@ -797,19 +797,19 @@ app.factory('posts', ['$http', 'auth', function($http, auth){
 	  		posts : []
 	  };
 	  o.getAll = function() {
-	    return $http.get('http://coffeecloud.centroclima.org/posts').success(function(data){
+	    return $http.get('/posts').success(function(data){
 	      angular.copy(data, o.posts);
 	    });
 	  };
 	  o.create = function(post) {
-		  return $http.post('http://coffeecloud.centroclima.org/posts', post, {
+		  return $http.post('/posts', post, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    o.posts.push(data);
 		  });
 		};
 		o.upvote = function(post) {
-		  return $http.put('http://coffeecloud.centroclima.org/posts/' + post._id + '/upvote', null, {
+		  return $http.put('/posts/' + post._id + '/upvote', null, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   })
 		    .success(function(data){
@@ -817,17 +817,17 @@ app.factory('posts', ['$http', 'auth', function($http, auth){
 		    });
 		};
 		o.get = function(id) {
-		  return $http.get('http://coffeecloud.centroclima.org/posts/' + id).then(function(res){
+		  return $http.get('/posts/' + id).then(function(res){
 		    return res.data;
 		  });
 		};
 		o.addComment = function(id, comment) {
-		  return $http.post('http://coffeecloud.centroclima.org/posts/' + id + '/comments', comment, {
+		  return $http.post('/posts/' + id + '/comments', comment, {
 		    headers: {Authorization: 'Bearer '+auth.getToken()}
 		  });
 		};
 		o.upvoteComment = function(post, comment) {
-		  return $http.put('http://coffeecloud.centroclima.org/posts/' + post._id + '/comments/'+ comment._id + '/upvote', null, {
+		  return $http.put('/posts/' + post._id + '/comments/'+ comment._id + '/upvote', null, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   })
 		    .success(function(data){
@@ -848,20 +848,20 @@ app.factory('user', ['$http', 'auth', function($http, auth){
 		  });
 		};*/
 		o.getAll = function() {
-		  return $http.get('http://coffeecloud.centroclima.org/users', {
+		  return $http.get('/users', {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).then(function(res){
 		    return res.data;
 		  });
 		};
 		o.get = function(id) {
-		  return $http.get('http://coffeecloud.centroclima.org/users/' + id).then(function(res){
+		  return $http.get('/users/' + id).then(function(res){
 		    return res.data;
 		  });
 		};
 		
 		o.update = function(user){
-	  return $http.put('http://coffeecloud.centroclima.org/users/' + user._id, user, {
+	  return $http.put('/users/' + user._id, user, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 	    return data
@@ -923,13 +923,13 @@ app.factory('auth', ['$http', '$window', function($http, $window){
 	};
 
 	auth.register = function(user){
-	  return $http.post('http://coffeecloud.centroclima.org/register', user).success(function(data){
+	  return $http.post('/register', user).success(function(data){
 	    auth.saveToken(data.token);
 	  });
 	};
 
 	auth.logIn = function(user){
-	  return $http.post('http://coffeecloud.centroclima.org/login', user).success(function(data){
+	  return $http.post('/login', user).success(function(data){
 	    auth.saveToken(data.token);
 	  });
 	};
@@ -944,18 +944,18 @@ app.factory('auth', ['$http', '$window', function($http, $window){
 app.factory('unit', ['$http', 'auth','$window', function($http, auth, $window){
    var o = {};
    o.getAll = function(id) {
-	    return $http.get('http://coffeecloud.centroclima.org/users/'+ id +'/units').success(function(data){
+	    return $http.get('/users/'+ id +'/units').success(function(data){
 	      return data;
 	    });
 	  };
    o.get = function(userId,id) {
-		  return $http.get('http://coffeecloud.centroclima.org/users/'+ userId +'/units/'+ id).then(function(res){
+		  return $http.get('/users/'+ userId +'/units/'+ id).then(function(res){
 		    return res.data;
 		  });
 		};
    
 	o.create = function(unit, id){
-	  return $http.post('http://coffeecloud.centroclima.org/users/'+ id +'/units', unit, {
+	  return $http.post('/users/'+ id +'/units', unit, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return data;
@@ -963,7 +963,7 @@ app.factory('unit', ['$http', 'auth','$window', function($http, auth, $window){
 	};
 	
 	o.update = function(unit, id, unitData){
-	  return $http.put('http://coffeecloud.centroclima.org/users/'+ id +'/units/'+ unit, unitData, {
+	  return $http.put('/users/'+ id +'/units/'+ unit, unitData, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 	    return data
@@ -971,7 +971,7 @@ app.factory('unit', ['$http', 'auth','$window', function($http, auth, $window){
 	};
 	
 	o.deleteUnit = function(unitId, userId){
-	  return $http.delete('http://coffeecloud.centroclima.org/users/'+ userId +'/units/'+ unitId, {
+	  return $http.delete('/users/'+ userId +'/units/'+ unitId, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return unitId;
@@ -986,19 +986,19 @@ app.factory('methods', ['$http', 'auth', function($http, auth){
 	  		chats : []
 	  };
 	  o.get = function() {
-	    return $http.get('http://coffeecloud.centroclima.org/admin/methods/').success(function(data){
+	    return $http.get('/admin/methods/').success(function(data){
 	      return data;
 	    });
 	  };
 	  o.create = function(method) {
-		  return $http.post('http://coffeecloud.centroclima.org/admin/methods', method, {
+		  return $http.post('/admin/methods', method, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return data;
 		  });
 		};
 		o.update = function(method) {
-		  return $http.put('http://coffeecloud.centroclima.org/admin/methods', method, {
+		  return $http.put('/admin/methods', method, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return data;
@@ -1013,12 +1013,12 @@ app.factory('roya', ['$http', 'auth', function($http, auth){
 	  		
 	  };
 	  o.getAll = function() {
-	    return $http.get('http://coffeecloud.centroclima.org/roya').success(function(data){
+	    return $http.get('/roya').success(function(data){
 	      return data;
 	    });
 	  };
 	  o.create = function(roya) {
-		 return $http.post('http://coffeecloud.centroclima.org/roya', roya, {
+		 return $http.post('/roya', roya, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return data;	
