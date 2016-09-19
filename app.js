@@ -14,7 +14,7 @@ require('./models/Methods');
 require('./models/Messages');
 require('./models/Roya');
 require('./config/passport');
-mongoose.connect('mongodb://cafenube:Sec03lP1nt0@ec2-54-68-110-187.us-west-2.compute.amazonaws.com/dummyDB');
+mongoose.connect('mongodb://cafenube:Sec03lP1nt0@coffeecloud.centroclima.org/dummyDB');
 //WC5OBLfIbWNj
 //{
 //      user: "admin",

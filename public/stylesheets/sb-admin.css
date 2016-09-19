@@ -66,11 +66,20 @@ body {
 }
 
 .navbar-fixed-top.navbar-inverse {
-    background-color: #00ABFF;
+    background-color: #fff;
     border-color: #00ABFF;
 }
 
-.navbar-inverse .navbar-brand,
+.navbar-inverse .navbar-brand {
+    color: #00abff !important;
+    padding: 4px;
+}
+
+.right-logo img{
+    width: 92px;
+    margin-top: 4px;
+}
+
 .navbar-inverse .navbar-nav>li>a {
     color: #fff;
 }
@@ -93,7 +102,7 @@ body {
     padding-top: 15px;
     padding-bottom: 15px;
     line-height: 20px;
-    color: #fff;
+    color: #00abff;
 }
 
 .top-nav>li>a:hover,
