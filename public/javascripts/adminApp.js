@@ -772,7 +772,7 @@ app.factory('user', ['$http', 'auth', function ($http, auth) {
     };
     /*o.create = function(post) {
 		return $http.post('/posts', post, {
-	headers: {Authorization: 'Bearer '+auth.getToken()}
+	headers: {Authorization: 'Bearer  '+auth.getToken()}
 }).success(function(data){
 			o.posts.push(data);
 		});
