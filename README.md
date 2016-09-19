@@ -6,4 +6,7 @@ node ./bin/www to launch express app
 nodemon --debug ./bin/www
 node-inspector
 
-ssh -i ~/.ssh/coffeecloud.pem ubuntu@ec2-54-68-110-187.us-west-2.compute.amazonaws.com
+ssh -i ~/.ssh/coffeecloud.pem ubuntu@coffeecloud.centroclima.org
+
+forever start bin/www
+forever stopall
