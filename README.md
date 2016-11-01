@@ -19,3 +19,5 @@ pwd: "Sec03lP1nt0"
 db name: dummyDB
 ssh -N -L 8888:127.0.0.1:80 -i ~/.ssh/coffeecloud.pem bitnami@ec2-35-162-54-166.us-west-2.compute.amazonaws.com
 
+
+
