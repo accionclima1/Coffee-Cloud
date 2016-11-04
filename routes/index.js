@@ -151,7 +151,7 @@ router.post('/register', function(req, res, next){
   if(!req.body.username || !req.body.password || !req.body.email ){
     return res.status(400).json({message: 'Por favor, llene todos los campos'});
   }
-  
+    console.log(req.body)
   var user = new User();
 
   user.username = req.body.username;
@@ -166,8 +166,11 @@ router.post('/register', function(req, res, next){
   
   user.exteMunicipio = req.body.municipio;
   
-  user.role = req.body.role;
+  user.recomendaciontecnica = req.body.recomendaciontecnica;
   
+  user.role = req.body.role;
+
+ 
   user.save(function (err){
     if(err){ return res.status(500).json({message: 'Usuario o Correo ya an sido registrados'}) }
 
@@ -379,6 +382,8 @@ router.get('/users/:user', function(req, res, next) {
 
 router.put('/users/:user', auth, function (req, res, next) {
     var update = req.body;
+    console.log("sasdad")
+    console.log(update)
     User.findById(req.body._id, function(err, user ) {
         if (!user)
             return next(new Error('Could not load Document'));
@@ -388,7 +393,8 @@ router.put('/users/:user', auth, function (req, res, next) {
 	        user.phone = req.body.phone;
 	        user.role = req.body.role;
 
-	        user.nickname = req.body.nickname;
+          user.nickname = req.body.nickname;
+	        user.recomendaciontecnica = req.body.recomendaciontecnica;
 	        user.image = req.body.image;
 
             if (req.body.password) {

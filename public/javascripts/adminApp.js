@@ -78,6 +78,7 @@ app.controller('AuthCtrl', [
 	            $scope.error = error;
 	        }).then(function () {
 	            $state.go('home');
+	            $state.reload();
 	        });
 	    };
 	}]);
@@ -147,7 +148,7 @@ app.factory('socket', ['socketFactory',
 ]);
 
 //authorize service
-app.factory('auth', ['$http', '$window', function ($http, $window) {
+app.factory('auth', ['$http','$state', '$window', function ($http, $state, $window) {
     var auth = {};
 
     auth.saveToken = function (token) {
@@ -335,6 +336,38 @@ app.controller('UsersCtrl', [
 
 
 	}]);
+	
+	
+//adaptation controller
+app.controller('CampoCtrl', [
+	'$scope',
+	'auth',
+	'$location',
+	'methods',
+	function ($scope, auth, $location, methods) {
+	    $scope.isLoggedIn = auth.isLoggedIn;
+	    $scope.currentUser = auth.currentUser;
+	    $scope.logOut = auth.logOut;
+	    $scope.isActive = function (viewLocation) {
+	        var active = (viewLocation === $location.path());
+	        return active;
+	    };
+	    var tableObject = {};
+
+	    methods.get().then(function (methods) {
+	        //console.log(methods.data[0]);
+	        tableObject = methods.data[0];
+	        $scope.table = tableObject;
+	    })
+
+
+
+	    $scope.saveTable = function () {
+	        methods.create($scope.table);
+
+	    };
+
+	}]);
 
 
 app.filter('startFrom', function () {
@@ -381,6 +414,160 @@ app.filter("myfilter", function () {
 });
 //Roya controller
 app.controller('RoyaCtrl', [
+	'$scope',
+	'auth',
+	'$location',
+	'roya',
+    '$window',
+    'user',
+	function ($scope, auth, $location, roya, $window, user) {
+	    var currentTest = null;
+	    var loadAll = function () {
+	        roya.getAll().then(function (tests) {
+	            //debugger;
+	            //var token = auth.getToken();
+	            //var result = JSON.parse($window.atob(token.split('.')[1]));
+	            //user.get(result._id).then(function (userData) {
+	            //    userData.extemDepartamento
+	            //});
+	            
+	            if (auth.currentUserRole() == 'Extensionista') {
+	                var department = auth.currentUserDepartamento();
+	                tests.data = $.grep(tests.data, function (item) {
+	                    return item.unidad.departamento == department;
+	                });
+	            }
+	            $scope.testsList = tests.data;
+	            $scope.currentPage = 1;
+	            $scope.pageSize = 9;
+	            $scope.noOfPages = Math.ceil($scope.testsList / $scope.pageSize);
+	            $scope.totalItems = $scope.testsList.length;
+	            
+	            for (var k in tests.data) {
+	                if (tests.data[k].unidad) {
+	                    $scope.testsList[k].nombre = tests.data[k].unidad.nombre;
+	                    $scope.testsList[k].departamento = tests.data[k].unidad.departamento;
+	                    if (tests.data[k].unidad.tipoCafe) {
+	                        var cafeValue = "";
+	                        if (tests.data[k].unidad.tipoCafe.duro) {
+	                            cafeValue = "duro";
+	                        }
+	                        if (tests.data[k].unidad.tipoCafe.estrictamenteDuro) {
+	                            cafeValue = cafeValue + " estrictamenteDuro";
+	                        }
+	                        if (tests.data[k].unidad.tipoCafe.extraprime) {
+	                            cafeValue = cafeValue + " extraprime";
+	                        }
+	                        if (tests.data[k].unidad.tipoCafe.prime) {
+	                            cafeValue = cafeValue + " prime";
+	                        }
+	                        if (tests.data[k].unidad.tipoCafe.semiduro) {
+	                            cafeValue = cafeValue + " semiduro";
+	                        }
+	                        if (cafeValue != "")
+	                            $scope.testsList[k].tipoCafe = cafeValue;
+	                    }
+	                }
+	            }
+                
+
+	        });
+	    };
+
+	    loadAll();
+	    $(".date-field").datepicker();
+
+	    $scope.head = {
+	        createdAt: "Fecha",
+	        incidencia: "Inicidencia",
+	        departamento: "Municipio",
+	        nombre: "Nombre",
+	        tipoCafe: "Tipo de café",
+	        user: "User"
+	    };
+
+
+	    $scope.sort = {
+	        column: 'createdAt',
+	        descending: false
+	    };
+
+	    $scope.selectedCls = function (column) {
+	        return column == $scope.sort.column && 'sort-' + $scope.sort.descending;
+	    };
+
+	    $scope.changeSorting = function (column) {
+	        var sort = $scope.sort;
+	        if (sort.column == column) {
+	            sort.descending = !sort.descending;
+	        } else {
+	            sort.column = column;
+	            sort.descending = false;
+	        }
+	    };
+
+	    $scope.loadTest = function (test) {
+	        currentTest = test;
+	        $scope.detail = currentTest;
+	        console.log(currentTest);
+	        $('#detailModal').modal('show');
+
+	    }
+
+	    $scope.removeTest = function (id) {
+
+	        roya.delete(id).then(function (user) {
+	            loadAll();
+	        });
+	    }
+	    $scope.exportData = function () {
+	        var table = document.getElementById('exportable');
+	        var html = table.outerHTML;
+	        window.open('data:application/vnd.ms-excel,' + encodeURIComponent(html));
+	    };
+	    $scope.search = {};
+	    //$watch search to update pagination
+	    $scope.$watch('search', function (newVal, oldVal) {
+	        if ($scope.testsList != undefined) {
+	            $scope.filtered = $scope.testsList;
+	            var arrayToReturn = [];
+	            for (var i = 0; i < $scope.testsList.length; i++) {
+	                if (newVal._id != undefined && newVal._id != "") {
+	                    if ($scope.testsList[i] == newVal._id) {
+	                        arrayToReturn.push($scope.testsList[i]);
+	                    }
+	                }
+	                if (newVal.dateFrom != undefined && newVal.dateFrom != "" && newVal.dateTo != "" && newVal.dateTo != undefined) {
+	                    var startDate = parseDate(newVal.dateFrom);
+	                    var endDate = parseDate(newVal.dateTo);
+	                    var createDate = new Date($scope.testsList[i].createdAt);
+	                    if (createDate >= startDate && createDate <= endDate) {
+	                        arrayToReturn.push($scope.testsList[i]);
+	                    }
+	                }
+	                if (newVal.dateFrom == undefined && newVal.dateTo == undefined && newVal._id == undefined) {
+	                    arrayToReturn.push($scope.testsList[i]);
+	                }
+	            }
+	            $scope.filtered = arrayToReturn;
+	            $scope.totalItems = $scope.filtered == undefined ? 0 : $scope.filtered.length;
+	            //$scope.pageSize = 9;
+	            $scope.noOfPages = Math.ceil($scope.totalItems / $scope.pageSize);
+	            $scope.currentPage = 1;
+	        }
+	        else {
+	            var arrayToReturn = [];
+	            $scope.filtered = arrayToReturn;
+	            $scope.totalItems = 0;
+	            $scope.noOfPages = Math.ceil($scope.totalItems / $scope.pageSize);
+	            $scope.currentPage = 1;
+
+	        }
+	    }, true);
+	}]);
+
+//Roya controller
+app.controller('TechRecCtrl', [
 	'$scope',
 	'auth',
 	'$location',
@@ -878,7 +1065,7 @@ app.config([
 			        var curUserRole = auth.currentUserRole();
 			        if (!auth.isLoggedIn()) {
 			            $state.go('login');
-			        } else if (curUserRole != 'admin' && curUserRole != 'Admin' && curUserRole != 'Extensionista') {
+			        } else if (curUserRole != 'admin' && curUserRole != 'Admin' && curUserRole != 'Extensionista' && curUserRole != 'Tecnico') {
 			            window.location.href = '/';
 			        }
 			    }]
@@ -890,7 +1077,7 @@ app.config([
 			    onEnter: ['$state', 'auth', function ($state, auth) {
 			        if (auth.isLoggedIn()) {
 			            var curUserRole = auth.currentUserRole();
-			            if (curUserRole != 'admin' && curUserRole != 'Admin' && curUserRole != 'Extensionista') {
+			            if (curUserRole != 'admin' && curUserRole != 'Admin' && curUserRole != 'Extensionista' && curUserRole != 'Tecnico') {
 			                window.location.href = '/';
 			            }
 			            else {
@@ -991,6 +1178,36 @@ app.config([
 			            $state.go('login');
 			        }
 			        else if (curUserRole != 'admin' && curUserRole != 'Admin' && curUserRole != 'Extensionista') {
+			            window.location.href = '/';
+			        }
+			    }]
+			})
+			.state('recomendaciontecnica', {
+			    url: '/technical-recommendation',
+			    templateUrl: '/tech_recom.html',
+			    controller: 'TechRecCtrl',
+			    onEnter: ['$state', 'auth', function ($state, auth) {
+			        var curUserRole = auth.currentUserRole();
+			        console.log(curUserRole)
+			        if (!auth.isLoggedIn()) {
+			            $state.go('login');
+			        }
+			        else if (curUserRole != 'admin' && curUserRole != 'Admin' && curUserRole != 'Extensionista' && curUserRole != 'Tecnico') {
+			            window.location.href = '/';
+			        }
+			    }]
+			})
+			.state('campo', {
+			    url: '/campo',
+			    templateUrl: '/campo.html',
+			    controller: 'CampoCtrl',
+			    onEnter: ['$state', 'auth', function ($state, auth) {
+			        var curUserRole = auth.currentUserRole();
+			        console.log(curUserRole)
+			        if (!auth.isLoggedIn()) {
+			            $state.go('login');
+			        }
+			        else if (curUserRole != 'admin' && curUserRole != 'Admin' && curUserRole != 'Extensionista' && curUserRole != 'Tecnico') {
 			            window.location.href = '/';
 			        }
 			    }]

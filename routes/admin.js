@@ -57,6 +57,7 @@ router.get('/methods', function(req, res, next) {
 });
 
 router.put('/methods', auth, function(req, res, next) {
+	
    var update = req.body;
   Method.findById(req.body._id, function(err, method ) {
   if (!method)

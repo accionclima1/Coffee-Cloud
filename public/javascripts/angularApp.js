@@ -662,6 +662,7 @@ function($http, $scope, auth, unit, user){
 	  manejoTejido: true,
 	  fungicidasRoya: true,
 	  verificaAgua: true,
+	  recomendaciontecnica: true,
 	  variedad: {
 	  		caturra: false,
 			bourbon: false,
@@ -754,6 +755,7 @@ function($http, $scope, auth, unit, user){
 				  manejoTejido: true,
 				  fungicidasRoya: true,
 				  verificaAgua: true,
+				  recomendaciontecnica: true,
 				  variedad: {
 				  		caturra: false,
 						bourbon: false,
