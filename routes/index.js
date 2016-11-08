@@ -456,10 +456,10 @@ router.get('/roya', function(req, res, next) {
 });
 
 router.post('/gallo', auth, function(req, res, next) {
-	console.log(req);
+
   var gallo = new Gallo(req.body);
-    gallo.advMode = req.body.advMode;
-    gallo.bandolas = req.body.bandolas;
+  gallo.advMode = req.body.advMode;
+  gallo.bandolas = req.body.bandolas;
 	gallo.resolved = req.body.resolved;
 	gallo.user = req.body.user;
 	gallo.plantas = req.body.plantas;
@@ -468,9 +468,9 @@ router.post('/gallo', auth, function(req, res, next) {
 	gallo.inideanciaPromedioPlanta = req.body.avgplnt;
 	gallo.severidadPromedio = req.body.avgplntDmgPct;
   
-  roya.save(function(err, gallo){
+  gallo.save(function(err, gallo){
     if(err){ return next(err); }
-	console.log(gallo);
+
     res.json(gallo);
   });
 });

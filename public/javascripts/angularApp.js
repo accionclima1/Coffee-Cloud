@@ -647,6 +647,7 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 		   	    $scope.totalPlantis = plants.length;
 		   
 		   	   $.each($scope.test.plantas, function( index, value ) {	
+		   	   		
 			   		var count = value[0][1].split(":"),
 			   			affectedCnt = parseInt(count[1]);
 			   			affectedLeaf.push(affectedCnt);

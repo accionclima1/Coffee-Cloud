@@ -1586,12 +1586,12 @@
                         <br/>
                         <br/>
                         <p class="lead col-md-4">resultados: </p>
-                            <!-- <div class="col-md-8 text-right">  
+                            <div class="col-md-8 text-right">  
                                 <button ng-click="exportData()" >Exportar</button>
-                            </div> -->
+                            </div>
                 <!-- /.row -->
                 
-            <!-- <table class="table table-striped" style="display:none;" id='exportable'>
+            <table class="table table-striped" style="display:none;" id='exportable'>
                 <thead>
                     <tr>
                         <th ng-repeat="(i,th) in head" >{{th}}</th>
@@ -1600,12 +1600,92 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="row in testsList | orderBy : sort.column : sort.descending | myfilter:search">
+                        <td >{{row.bandolas}}</td>
+                        <td >{{row.chasparria}}</td> 
                         <td >{{row.createdAt}}</td>
+
                         <td >{{row.frutosnudo5}}</td> 
                         <td >{{row.frutosnudo6}}</td>
                     </tr>
                 </tbody>
-            </table> -->
+            </table>
+
+            <!-- Modal -->
+                <div class="modal fade" id="detailModalCampo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Crear Usuario</h4>
+                      </div>
+                      <div class="modal-body">
+                                <div ng-show="error" class="alert alert-danger row">
+                                    <span>{{ error.message }}</span>
+                                  </div>
+            
+                                    <dl>
+                                        <dt>ID:</dt>
+                                        <dd>{{detail._id}}</dd>
+                                        <dt>Creación:</dt>
+                                        <dd>{{detail.createdAt}}</dd>
+                                        <dt>Fincaid:</dt>
+                                        <dd>{{detail.fincaid}}</dd>
+                                        <dt>Fecha:</dt>
+                                        <dd>{{detail.fecha}}</dd>
+
+                                        <dt>Bandolas:</dt>
+                                        <dd>{{detail.bandolas}}</dd>
+                                        <dt>Hojastotales:</dt>
+                                        <dd>{{detail.hojastotales}}</dd>
+
+                                        <dt>Roya:</dt>
+                                        <dd>{{detail.roya}}</dd>
+                                        <dt>Chasparria:</dt>
+                                        <dd>{{detail.chasparria}}</dd>
+                                        <dt>Antracnosis:</dt>
+                                        <dd>{{detail.antracnosis}}</dd>
+                                        <dt>Derrite:</dt>
+                                        <dd>{{detail.derrite}}</dd>
+
+                                        <dt>Ojodegallo:</dt>
+                                        <dd>{{detail.ojodegallo}}</dd>
+                                        <dt>Otro:</dt>
+                                        <dd>{{detail.otro}}</dd>
+                                        <dt>Nudosviejos:</dt>
+                                        <dd>{{detail.nudosviejos}}</dd>
+             
+                                        <dt>Maldehilachas:</dt>
+                                        <dd>{{detail.maldehilachas}}</dd>
+                                        <dt>Nudosmedios:</dt>
+                                        <dd>{{detail.nudosmedios}}</dd>
+                                        <dt>Nudosjovenes:</dt>
+                                        <dd>{{detail.nudosjovenes}}</dd>
+                                        <dt>Frutosnudo5:</dt>
+                                        <dd>{{detail.frutosnudo5}}</dd>
+
+                                        <dt>Frutosnudo6:</dt>
+                                        <dd>{{detail.frutosnudo6}}</dd>
+                                        <dt>Presenciacochinilla:</dt>
+                                        <dd>{{detail.presenciacochinilla}}</dd>
+
+                                        <dt>Floralnueva:</dt>
+                                        <dd>{{detail.floralnueva}}</dd>
+                                        <dt>Vegetativanueva:</dt>
+                                        <dd>{{detail.vegetativanueva}}</dd>
+                                        <dt>Brocatotalnudos:</dt>
+                                        <dd>{{detail.brocatotalnudos}}</dd>
+               
+                                    </dl>
+                                  
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                     </div>
+                    </div>
+                  </div>
+                </div>
+
+
                 <div class="row">
                     <div class="col-md-12">
                        <div class="roya-editor">
@@ -1618,7 +1698,10 @@
                                 </thead>
                                 <tbody>
                                     <tr ng-repeat="row in testsList | myfilter:search | orderBy : sort.column : sort.descending | startFrom:(currentPage-1)*pageSize | limitTo:pageSize">
-                                          <td ng-click="loadTest(row);">{{row.createdAt}}</td>
+                                            <td ng-click="loadTest(row);">{{row.bandolas}}</td>
+                                            <td ng-click="loadTest(row);">{{row.chasparria}}</td> 
+                                            <td ng-click="loadTest(row);">{{row.createdAt}}</td>
+             
                                             <td ng-click="loadTest(row);">{{row.frutosnudo5}}</td> 
                                             <td ng-click="loadTest(row);">{{row.frutosnudo6}}</td>
                                         

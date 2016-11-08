@@ -346,6 +346,7 @@ app.controller('CampoCtrl', [
     'user',
 	function ($scope, auth, $location, campo,  $window, user) { 
 	    var currentTest = null;
+	  
 	    var loadAll = function () {
 
 	    	campo.get().then(function (campo) {
@@ -367,6 +368,8 @@ app.controller('CampoCtrl', [
 
 	    $scope.head = {
 	        createdAt: "Fecha",
+	        bandolas: "Bandolas",
+	        chasparria: "Chasparria",
 	        frutosnudo5: "Frutos nudo 5",
 	        frutosnudo6: "Frutos nudo 6",
 	    };
@@ -394,8 +397,8 @@ app.controller('CampoCtrl', [
 	    $scope.loadTest = function (test) {
 	        currentTest = test;
 	        $scope.detail = currentTest;
-	        console.log(currentTest);
-	        $('#detailModal').modal('show');
+
+	        $('#detailModalCampo').modal('show');
 
 	    }
 
@@ -606,7 +609,7 @@ app.controller('RoyaCtrl', [
 	    $scope.loadTest = function (test) {
 	        currentTest = test;
 	        $scope.detail = currentTest;
-	        console.log(currentTest);
+
 	        $('#detailModal').modal('show');
 
 	    }
