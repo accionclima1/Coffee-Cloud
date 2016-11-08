@@ -25,6 +25,7 @@
 	<script src="bower_components/angular-snap/angular-snap.min.js"></script>
 	<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 	<script src="javascripts/angularApp.js"></script>
+	<script src="javascripts/openWeather.js"></script>
 	
 	
 
@@ -66,21 +67,86 @@
 				        <h2>¡Hola!</h2>
 				        <p>Bienvenido {{ currentUser() }}</p>
 				      </div>
+					  
+					  <div class="weather-wrapper hide">
 
+							<img src="" class="weather-icon" alt="Weather Icon" />
+							
+							<p><strong>Place</strong>
+							<br /><span class="weather-place"></span></p>
+							
+							<p><strong>Temperature</strong>
+							<br /><span class="weather-temperature"></span> (<span class="weather-min-temperature"></span> - <span class="weather-max-temperature"></span>)</p>
+							
+							<p><strong>Description</strong>
+							<br /><span class="weather-description capitalize"></span></p>
+							
+							<p><strong>Humidity</strong>
+							<br /><span class="weather-humidity"></span></p>
+							
+							<p><strong>Wind speed</strong>
+							<br /><span class="weather-wind-speed"></span></p>
+							
+							<p><strong>Sunrise</strong>
+							<br /><span class="weather-sunrise"></span></p>
+							
+							<p><strong>Sunset</strong>
+							<br /><span class="weather-sunset"></span></p>
+						
+						</div>
+					  
 				      <div class="weather-module">
-				      	<div class="degree">23º</div>
+					      <h3 class="weather-place"></h3>
+					      <img src="" class="weather-icon" alt="Weather Icon" />
+				      	<div class="degree weather-temperature"></div>
 				   		<div class="weather-module-meta">
-				   			<p>Nuboso 21º - 19º</p>
-				   			<p>Humedad: 68% | Viento: 21k/h ESE</p>
+				   			<p><span class="weather-description"></span> <span class="weather-min-temperature"></span> - <span class="weather-max-temperature"></span></p>
+				   			<p>Humedad: <span class="weather-humidity"></span> | Viento: <span class="weather-wind-speed"></span></p>
 				   		</div>
 				      </div>
 
-				      <a href="/#/weather" class="btn btn-primary">Ver Mas</a>
+				      <!-- <a href="/#/weather" class="btn btn-primary">Ver Mas</a> -->
 
 					</div>
 			   	</div>
 		   </div>
 		</div>
+		
+		<script>
+	
+			$(function() {
+			
+				$('.weather-wrapper').openWeather({
+					key: 'cb8be1d2a64d8e31a4e56819f95b509b',
+					city: 'San Jose, CR',
+					descriptionTarget: '.weather-description',
+					windSpeedTarget: '.weather-wind-speed',
+					minTemperatureTarget: '.weather-min-temperature',
+					maxTemperatureTarget: '.weather-max-temperature',
+					humidityTarget: '.weather-humidity',
+					sunriseTarget: '.weather-sunrise',
+					sunsetTarget: '.weather-sunset',
+					placeTarget: '.weather-place',
+					iconTarget: '.weather-icon',
+					customIcons: 'images/icons/weather/',
+					success: function() {
+					
+						//show weather
+						$('.weather-wrapper').show();
+						
+					},
+					error: function(message) {
+					
+						console.log(message);
+					
+					}
+				});
+				
+			});
+		
+		</script>
+		
+		
 	</script>
 	<script type="text/ng-template" id="/posts.html">
 	 		

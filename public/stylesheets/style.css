@@ -170,7 +170,7 @@ a {
   background: transparent;
   border-color: transparent;
   border-bottom-color: #8e6d57;
-  color: #4a2212;
+  color: #fff;
   outline: none !important;
   border-radius: 0;
   margin-bottom: 28px;
@@ -203,7 +203,7 @@ a {
 }
 
 .login-wrap form a {
-  color: #693510;
+  color: #fff;
   text-align: center;
   display: block;
   font-weight: bold;
