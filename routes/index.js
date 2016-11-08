@@ -7,7 +7,9 @@ var Comment = mongoose.model('Comment');
 var passport = require('passport');
 var User = mongoose.model('User');
 var Method = mongoose.model('Method');
+var Campo = mongoose.model('Campo');
 var Roya = mongoose.model('Roya');
+var Gallo = mongoose.model('Gallo');
 var jwt = require('express-jwt');
 var auth = jwt({ secret: 'SECRET', userProperty: 'payload' });
 
@@ -166,7 +168,7 @@ router.post('/register', function(req, res, next){
   
   user.exteMunicipio = req.body.municipio;
   
-  user.recomendaciontecnica = req.body.recomendaciontecnica;
+  //user.recomendaciontecnica = req.body.recomendaciontecnica;
   
   user.role = req.body.role;
 
@@ -229,11 +231,12 @@ router.param('test', function(req, res, next, id) {
 
 router.post('/users/:user/units', auth, function(req, res, next) {
   var unit = new Unit(req.body);
+
   //post.author = req.payload.username;
   	 unit.nombre = req.body.nombre;
      unit.altitud = req.body.altitud; 
      unit.departamento = req.body.departamento;
-	 unit.municipio = req.body.municipio;
+	   unit.municipio = req.body.municipio;
      unit.ubicacion = req.body.ubicacion;
      unit.areaTotal = req.body.areaTotal;
      unit.areaCafe = req.body.areaCafe ;
@@ -262,6 +265,7 @@ router.post('/users/:user/units', auth, function(req, res, next) {
      unit.finalCosecha = req.body.finalCosecha;
      unit.epocalluviosa = req.body.epocalluviosa;
      unit.FinEpocalluviosa = req.body.FinEpocalluviosa;
+     unit.recomendaciontecnica = req.body.recomendaciontecnica;
      unit.tipoCafe = req.body.tipoCafe;
      unit.user = req.user;
      
@@ -329,6 +333,7 @@ router.put('/users/:user/units/:unit', auth, function(req, res, next) {
 	     unit.finalCosecha = req.body.finalCosecha;
 	     unit.epocalluviosa = req.body.epocalluviosa;
 	     unit.FinEpocalluviosa = req.body.FinEpocalluviosa;
+       unit.recomendaciontecnica = req.body.recomendaciontecnica;
 	     unit.tipoCafe = req.body.tipoCafe;
 	      
 	    unit.save(function(err) {
@@ -382,8 +387,7 @@ router.get('/users/:user', function(req, res, next) {
 
 router.put('/users/:user', auth, function (req, res, next) {
     var update = req.body;
-    console.log("sasdad")
-    console.log(update)
+
     User.findById(req.body._id, function(err, user ) {
         if (!user)
             return next(new Error('Could not load Document'));
@@ -394,7 +398,7 @@ router.put('/users/:user', auth, function (req, res, next) {
 	        user.role = req.body.role;
 
           user.nickname = req.body.nickname;
-	        user.recomendaciontecnica = req.body.recomendaciontecnica;
+	        //user.recomendaciontecnica = req.body.recomendaciontecnica;
 	        user.image = req.body.image;
 
             if (req.body.password) {
@@ -451,6 +455,34 @@ router.get('/roya', function(req, res, next) {
   });
 });
 
+router.post('/gallo', auth, function(req, res, next) {
+	console.log(req);
+  var gallo = new Gallo(req.body);
+    gallo.advMode = req.body.advMode;
+    gallo.bandolas = req.body.bandolas;
+	gallo.resolved = req.body.resolved;
+	gallo.user = req.body.user;
+	gallo.plantas = req.body.plantas;
+	gallo.unidad = req.body.unidad;
+	gallo.incidencia = req.body.incidencia;
+	gallo.inideanciaPromedioPlanta = req.body.avgplnt;
+	gallo.severidadPromedio = req.body.avgplntDmgPct;
+  
+  roya.save(function(err, gallo){
+    if(err){ return next(err); }
+	console.log(gallo);
+    res.json(gallo);
+  });
+});
+
+router.get('/gallo', function(req, res, next) {
+  Gallo.find(function(err, gallo){
+    if(err){ return next(err); }
+
+    res.json(gallo);
+  });
+});
+
 router.delete('/roya/:test', auth, function (req, res) {
 	Roya.findByIdAndRemove(req.params.test, function (err,test){
     if(err) { throw err; }
@@ -458,6 +490,15 @@ router.delete('/roya/:test', auth, function (req, res) {
 	    console.log("Test eliminado!");
 	});
   
+});
+
+router.get('/technico/units', function(req, res, next) {
+  console.log("hie")
+  Unit.find(function(err, units){
+    if(err){ return next(err); }
+
+    res.json(units);
+  });
 });
 
 module.exports = router;

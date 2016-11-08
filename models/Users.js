@@ -11,7 +11,7 @@ var UserSchema = new mongoose.Schema({
 	role: { type: String, default: 'client' },
 	extemDepartamento: String,
   exteMunicipio: String,
-	recomendaciontecnica: String,
+	//recomendaciontecnica: String,
 	nickname: String,
 	image: String,
 	units: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Unit' }]

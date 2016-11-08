@@ -4,7 +4,7 @@ use npm install to begin
 
 node ./bin/www to launch express app
 nodemon --debug ./bin/www
-node-inspector
+node --inspect --debug-brk ./bin/www
 XR7vwshDKmKW
 
 ssh -i ~/.ssh/coffeecloud.pem ubuntu@ec2-35-162-54-166.us-west-2.compute.amazonaws.com

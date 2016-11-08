@@ -11,8 +11,10 @@ require('./models/Users');
 require('./models/Units');
 require('./models/Chats');
 require('./models/Methods');
+require('./models/Campo');
 require('./models/Messages');
 require('./models/Roya');
+require('./models/Gallo');
 require('./config/passport');
 mongoose.connect('mongodb://cafenube:Sec03lP1nt0@ec2-35-162-54-166.us-west-2.compute.amazonaws.com/dummyDB');
 //XR7vwshDKmKW

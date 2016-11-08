@@ -166,6 +166,7 @@
                 </li>
             </ul>
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+            <!-- Navbars -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav" ng-controller="NavCtrl" ng-show="curUserRole != 'Tecnico' && isLoggedIn()" ng-cloak>
                     <li ng-class="{ active: isActive('/home') }">
@@ -188,6 +189,9 @@
                     </li>
                      <li ng-class="{ active: isActive('/campo') }">
                         <a href="/admin#/campo"><i class="fa fa-fw fa-file-image-o"></i> Hoja de campo  </a>
+                    </li>
+                    <li ng-class="{ active: isActive('/reportesdecampo') }">
+                        <a href="/admin#/reportesdecampo"><i class="fa fa-fw fa-file-image-o"></i> Reportes de Campo  </a>
                     </li>
                     <li ng-class="{ active: isActive('/noticias') }">
                         <a href="/admin#/noticias"><i class="fa fa-fw fa-newspaper-o"></i> Noticias</a>
@@ -932,9 +936,9 @@
                     <tr ng-repeat="row in testsList | orderBy : sort.column : sort.descending | myfilter:search">
                         <td ng-click="loadTest(row);">{{row.createdAt}}</td>
                         <td ng-click="loadTest(row);">{{row.departamento}}</td> 
-                        <td ng-click="loadTest(row);">{{row.incidencia}}%</td>
-                        <td ng-click="loadTest(row);">{{row.nombre}}</td> 
-                        <td ng-click="loadTest(row);">{{row.tipoCafe}}</td> 
+                        <td ng-click="loadTest(row);">{{row.municipio}}</td>
+                        <td ng-click="loadTest(row);">{{row.ubicacion}}</td> 
+                        <td ng-click="loadTest(row);">{{row.recomendaciontecnica}}</td> 
                         <td ng-click="loadTest(row);">{{row.user}}</td>
                         </tr>
                     </tr>
@@ -954,9 +958,10 @@
                                     <tr ng-repeat="row in testsList | orderBy : sort.column : sort.descending | myfilter:search | startFrom:(currentPage-1)*pageSize | limitTo:pageSize">
                                         <td ng-click="loadTest(row);">{{row.createdAt}}</td>
                                         <td ng-click="loadTest(row);">{{row.departamento}}</td> 
-                                        <td ng-click="loadTest(row);">{{row.incidencia}}%</td>
-                                        <td ng-click="loadTest(row);">{{row.nombre}}</td> 
-                                        <td ng-click="loadTest(row);">{{row.tipoCafe}}</td> 
+                                        <td ng-click="loadTest(row);">{{row.municipio}}</td>
+                                         <td ng-click="loadTest(row);">{{row.recomendaciontecnica}}</td> 
+                                        <td ng-click="loadTest(row);">{{row.ubicacion}}</td> 
+                                       
                                         <td ng-click="loadTest(row);">{{row.user}}</td>
                                         <td> <button class="btn btn-danger" ng-click="removeTest(row._id)">X</button></td> 
                                         </tr>
@@ -1372,7 +1377,7 @@
 
                 <div class="row">
                     <div class="col-md-8 col-md-offset-2">
-	                   <form ng-submit="saveTable()">
+	                   <form ng-submit="saveTable()" name="hojaform" id="hojaform" data-toggle="validator">
 		                   <div class="form-group ">
 						      <label class="control-label requiredField" for="finca">
 						       Finca ID
@@ -1380,7 +1385,7 @@
 						        *
 						       </span>
 						      </label>
-						      <input class="form-control" id="finca" name="finca" type="text"/>
+						      <input class="form-control" id="finca" name="finca" type="text" ng-model="campodata.fincaid" required="true" />
 						     </div>
 						     <div class="form-group ">
 						      <label class="control-label requiredField" for="fecha">
@@ -1389,13 +1394,13 @@
 						        *
 						       </span>
 						      </label>
-						      <input class="form-control" id="fecha" name="fecha" placeholder="MM/DD/YYYY" type="text"/>
+						      <input class="form-control" id="fecha" name="fecha" placeholder="MM/DD/YYYY" type="text" ng-model="campodata.fecha" required="true" />
 						     </div>
 						     <div class="form-group ">
 						      <label class="control-label " for="bandolas">
 						       Bandolas
 						      </label>
-						      <select class="select form-control" id="bandolas" name="bandolas">
+						      <select class="select form-control" id="bandolas" name="bandolas" ng-model="campodata.bandolas" required="true" >
 						       <option value="1">
 						        1
 						       </option>
@@ -1432,103 +1437,103 @@
 						      <label class="control-label " for="hojas">
 						       Hojas totales
 						      </label>
-						      <input class="form-control" id="hojas" name="hojas" type="text"/>
+						      <input class="form-control" id="hojas" name="hojas" type="text" ng-model="campodata.hojastotales" required="true" />
 						     </div>
 						     <div class="form-group ">
 						      <label class="control-label " for="roya">
 						       Roya
 						      </label>
-						      <input class="form-control" id="roya" name="roya" type="text"/>
+						      <input class="form-control" id="roya" name="roya" type="text" ng-model="campodata.roya" required="true" />
 						     </div>
 						     <div class="form-group ">
 						      <label class="control-label " for="chasparria">
 						       Chasparria
 						      </label>
-						      <input class="form-control" id="chasparria" name="chasparria" type="text"/>
+						      <input class="form-control" id="chasparria" name="chasparria" type="text" ng-model="campodata.chasparria" required="true" />
 						     </div>
 						     <div class="form-group ">
 						      <label class="control-label " for="antracnosis">
 						       Antracnosis
 						      </label>
-						      <input class="form-control" id="antracnosis" name="antracnosis" type="text"/>
+						      <input class="form-control" id="antracnosis" name="antracnosis" type="text" ng-model="campodata.antracnosis" required="true" />
 						     </div>
 						     <div class="form-group ">
 						      <label class="control-label " for="derrite">
 						       Derrite
 						      </label>
-						      <input class="form-control" id="derrite" name="derrite" type="text"/>
+						      <input class="form-control" id="derrite" name="derrite" type="text" ng-model="campodata.derrite" required="true" />
 						     </div>
 						     <div class="form-group ">
 						      <label class="control-label " for="ojogallo">
 						       Ojo de Gallo
 						      </label>
-						      <input class="form-control" id="ojogallo" name="ojogallo" type="text"/>
+						      <input class="form-control" id="ojogallo" name="ojogallo" type="text" ng-model="campodata.ojodegallo" required="true" />
 						     </div>
 						     <div class="form-group ">
 						      <label class="control-label " for="hilachas">
 						       Mal de Hilachas
 						      </label>
-						      <input class="form-control" id="hilachas" name="hilachas" type="text"/>
+						      <input class="form-control" id="hilachas" name="hilachas" type="text" ng-model="campodata.maldehilachas" required="true" />
 						     </div>
 						     <div class="form-group ">
 						      <label class="control-label " for="otro">
 						       Otro
 						      </label>
-						      <input class="form-control" id="otro" name="otro" type="text"/>
+						      <input class="form-control" id="otro" name="otro" type="text" ng-model="campodata.otro" required="true" />
 						     </div>
 						     <div class="form-group ">
 						      <label class="control-label " for="nudos">
 						       Nudos viejos
 						      </label>
-						      <input class="form-control" id="nudos" name="nudos" type="text"/>
+						      <input class="form-control" id="nudos" name="nudos" type="text" ng-model="campodata.nudosviejos" required="true" />
 						     </div>
 						     <div class="form-group ">
 						      <label class="control-label " for="nudosmedios">
 						       Nudos medios
 						      </label>
-						      <input class="form-control" id="nudosmedios" name="nudosmedios" type="text"/>
+						      <input class="form-control" id="nudosmedios" name="nudosmedios" type="text" ng-model="campodata.nudosmedios" required="true" />
 						     </div>
 						     <div class="form-group ">
 						      <label class="control-label " for="nudosjovenes">
 						       Nudos jovenes
 						      </label>
-						      <input class="form-control" id="nudosjovenes" name="nudosjovenes" type="text"/>
+						      <input class="form-control" id="nudosjovenes" name="nudosjovenes" type="text" ng-model="campodata.nudosjovenes" required="true" />
 						     </div>
 						     <div class="form-group ">
 						      <label class="control-label " for="frutosnudo5">
 						       Frutos nudo 5
 						      </label>
-						      <input class="form-control" id="frutosnudo5" name="frutosnudo5" type="text"/>
+						      <input class="form-control" id="frutosnudo5" name="frutosnudo5" type="text" ng-model="campodata.frutosnudo5" required="true" />
 						     </div>
 						     <div class="form-group ">
 						      <label class="control-label " for="frutosnudo6">
 						       Frutos nudo 6
 						      </label>
-						      <input class="form-control" id="frutosnudo6" name="frutosnudo6" type="text"/>
+						      <input class="form-control" id="frutosnudo6" name="frutosnudo6" type="text" ng-model="campodata.frutosnudo6" required="true" />
 						     </div>
 						     <div class="form-group ">
 						      <label class="control-label " for="brocatotal">
 						       Broca total nudos 5 y 6
 						      </label>
-						      <input class="form-control" id="brocatotal" name="brocatotal" type="text"/>
+						      <input class="form-control" id="brocatotal" name="brocatotal" type="text" ng-model="campodata.brocatotalnudos " required="true" />
 						     </div>
 						     <div class="form-group ">
 						      <div class=" ">
 						       <div class="checkbox">
 						        <label class="checkbox">
-						         <input name="optional" type="checkbox" value="Presencia cochinilla"/>
+						         <input name="optional" type="checkbox" value="Presencia cochinilla" ng-model="campodata.presenciacochinilla" />
 						         Presencia cochinilla
 						        </label>
 						       </div>
 						       <div class="checkbox">
 						        <label class="checkbox">
-						         <input name="optional" type="checkbox" value="Floral  Nueva"/>
+						         <input name="optional" type="checkbox" value="Floral  Nueva" ng-model="campodata.floralnueva" />
 						         Floral  Nueva
 						        </label>
 						       </div>
 						       <div class="checkbox">
 						        <label class="checkbox">
-						         <input name="optional" type="checkbox" value="Vegetativa nueva"/>
+						         <input name="optional" type="checkbox" value="Vegetativa nueva" ng-model="campodata.vegetativanueva" />
 						         Vegetativa nueva
 						        </label>
 						       </div>
@@ -1550,6 +1555,88 @@
 
             </div>
     </script>
+    
+     <script type="text/ng-template" id="/reportesdecampo.html">
+          <div class="container-fluid roya-wrap">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Reportes de Campo
+                        </h1>
+                        
+                        <div class="col-md-12">
+
+                        <div class=" form-inline">
+                            <label>Fecha inicio:</label>
+                            <input type="text" class="form-control date-field" placeholder="Fecha inicio" ng-model="search.dateFrom"></input>
+                            
+                            <label>fecha final</label>
+                            <input type="text" class="form-control date-field" placeholder="Fecha final" ng-model="search.dateTo"></input>
+                        </div>
+                        </div>
+                        <div class="col-md-12">
+                        <div class="form-inline">
+                        <br/>   
+                            <label>Buscar por ID:</label> 
+                            <input type="text"  class="form-control" ng-model="search._id" placeholder="Buscar por ID" />
+                        </div>
+                        </div>                
+                        <br/>
+                        <br/>
+                        <p class="lead col-md-4">resultados: </p>
+                            <!-- <div class="col-md-8 text-right">  
+                                <button ng-click="exportData()" >Exportar</button>
+                            </div> -->
+                <!-- /.row -->
+                
+            <!-- <table class="table table-striped" style="display:none;" id='exportable'>
+                <thead>
+                    <tr>
+                        <th ng-repeat="(i,th) in head" >{{th}}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="row in testsList | orderBy : sort.column : sort.descending | myfilter:search">
+                        <td >{{row.createdAt}}</td>
+                        <td >{{row.frutosnudo5}}</td> 
+                        <td >{{row.frutosnudo6}}</td>
+                    </tr>
+                </tbody>
+            </table> -->
+                <div class="row">
+                    <div class="col-md-12">
+                       <div class="roya-editor">
+                           <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th ng-repeat="(i,th) in head" ng-class="selectedCls(i)" ng-click="changeSorting(i)">{{th}}</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="row in testsList | myfilter:search | orderBy : sort.column : sort.descending | startFrom:(currentPage-1)*pageSize | limitTo:pageSize">
+                                          <td ng-click="loadTest(row);">{{row.createdAt}}</td>
+                                            <td ng-click="loadTest(row);">{{row.frutosnudo5}}</td> 
+                                            <td ng-click="loadTest(row);">{{row.frutosnudo6}}</td>
+                                        
+                                        </tr>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="text-center">
+                                <pagination page="currentPage" max-size="noOfPages" previous-text="<" next-text=">" first-text="<<" last-text=">>" boundary-link-numbers="true" total-items="totalItems" items-per-page="pageSize"></pagination>
+                            </div>
+
+                
+                </div>
+
+            </div>
+                </div>
+        </div>
+ </script>
 
     
 
