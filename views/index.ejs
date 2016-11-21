@@ -43,6 +43,7 @@
 	      <li><a href="/#/roya" snap-toggle><i class="fa fa-leaf"></i> Cálculo de Roya</a></li>
 	      <li><a href="/#/gallo" snap-toggle><i class="fa fa-leaf"></i> Cálculo de Ojo de Gallo</a></li>
 	      <li><a href="#/dosage" snap-toggle><i class="fa fa-cog"></i> Cálculo de Dosificación</a></li>
+	      <li><a href="#/campo" snap-toggle><i class="fa fa-cog"></i> Hoja de campo </a></li>
 	      <!--<li><a href="#" snap-toggle><i class="fa fa-cog"></i> Cálculo de fertilizante</a></li>
 	      <li><a href="#" snap-toggle><i class="fa fa-calculator"></i> Cálculo de cosecha</a></li>
 	      <li><a href="#" snap-toggle><i class="fa fa-shopping-cart"></i> Proveedores</a></li>-->
@@ -96,13 +97,8 @@
 						</div>
 					  
 				      <div class="weather-module">
-					      <h3 class="weather-place"></h3>
-					      <img src="" class="weather-icon" alt="Weather Icon" />
-				      	<div class="degree weather-temperature"></div>
-				   		<div class="weather-module-meta">
-				   			<p><span class="weather-description"></span> <span class="weather-min-temperature"></span> - <span class="weather-max-temperature"></span></p>
-				   			<p>Humedad: <span class="weather-humidity"></span> | Viento: <span class="weather-wind-speed"></span></p>
-				   		</div>
+					      
+					   
 				      </div>
 
 				      <!-- <a href="/#/weather" class="btn btn-primary">Ver Mas</a> -->
@@ -114,34 +110,18 @@
 		
 		<script>
 	
-			$(function() {
-			
-				$('.weather-wrapper').openWeather({
-					key: 'cb8be1d2a64d8e31a4e56819f95b509b',
-					city: 'San Jose, CR',
-					descriptionTarget: '.weather-description',
-					windSpeedTarget: '.weather-wind-speed',
-					minTemperatureTarget: '.weather-min-temperature',
-					maxTemperatureTarget: '.weather-max-temperature',
-					humidityTarget: '.weather-humidity',
-					sunriseTarget: '.weather-sunrise',
-					sunsetTarget: '.weather-sunset',
-					placeTarget: '.weather-place',
-					iconTarget: '.weather-icon',
-					customIcons: 'images/icons/weather/',
-					success: function() {
-					
-						//show weather
-						$('.weather-wrapper').show();
-						
-					},
-					error: function(message) {
-					
-						console.log(message);
-					
+			$(document).ready(function($){
+				$.ajax({
+					url: "http://api.wunderground.com/api/c98eba09df40e7bf/conditions/q/CR/San_Jose.json",
+					dataType : "jsonp",
+					success : function(parsed_json) {
+						var forecast = parsed_json['current_observation'];
+						console.log(forecast)
+						var newForecastString = '<h3 class="weather-place">' + forecast['display_location']['full'] + ' </h3> <img src="'+ forecast['icon_url'] +'" class="weather-icon" alt="'+ forecast['icon'] +'" /><div class="weather-temperature">'+ forecast['temperature_string'] +'</div><div class="weather-module-meta"><p>Humedad: <span class="weather-humidity">'+ forecast['relative_humidity'] +'</span> | Viento: <span class="weather-wind-speed">'+ forecast['wind_kph'] +' kph</span></p></div>';
+						$(".weather-module").append(newForecastString);
+						 
 					}
-				});
-				
+				}); 
 			});
 		
 		</script>
@@ -1152,6 +1132,191 @@
 					</div>
 				</div>
 		  </script><!--Calculo de Fertilizacion actual-->
+	<script type="text/ng-template" id="/campo.html">
+			<div class="roya-wrap">
+						<h2 class="section-header">
+		  				Hoja de campo
+		  			</h2>
+					<div class="container">
+						<div class="row">
+		                    <div class="col-md-8 col-md-offset-2">
+			                   <form ng-submit="saveTable()" name="hojaform" id="hojaform" data-toggle="validator">
+				                   <div class="form-group ">
+								      <label class="control-label requiredField" for="finca">
+								       Finca ID
+								       <span class="asteriskField">
+								        *
+								       </span>
+								      </label>
+								      <input class="form-control" id="finca" name="finca" type="text" ng-model="campodata.fincaid" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label requiredField" for="fecha">
+								       Fecha
+								       <span class="asteriskField">
+								        *
+								       </span>
+								      </label>
+								      <input class="form-control" id="fecha" name="fecha" placeholder="MM/DD/YYYY" type="text" ng-model="campodata.fecha" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="bandolas">
+								       Bandolas
+								      </label>
+								      <select class="select form-control" id="bandolas" name="bandolas" ng-model="campodata.bandolas" required="true" >
+								       <option value="1">
+								        1
+								       </option>
+								       <option value="2">
+								        2
+								       </option>
+								       <option value="3">
+								        3
+								       </option>
+								       <option value="4">
+								        4
+								       </option>
+								       <option value="5">
+								        5
+								       </option>
+								       <option value="6">
+								        6
+								       </option>
+								       <option value="7">
+								        7
+								       </option>
+								       <option value="8">
+								        8
+								       </option>
+								       <option value="9">
+								        9
+								       </option>
+								       <option value="10">
+								        10
+								       </option>
+								      </select>
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="hojas">
+								       Hojas totales
+								      </label>
+								      <input class="form-control" id="hojas" name="hojas" type="text" ng-model="campodata.hojastotales" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="roya">
+								       Roya
+								      </label>
+								      <input class="form-control" id="roya" name="roya" type="text" ng-model="campodata.roya" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="chasparria">
+								       Chasparria
+								      </label>
+								      <input class="form-control" id="chasparria" name="chasparria" type="text" ng-model="campodata.chasparria" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="antracnosis">
+								       Antracnosis
+								      </label>
+								      <input class="form-control" id="antracnosis" name="antracnosis" type="text" ng-model="campodata.antracnosis" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="derrite">
+								       Derrite
+								      </label>
+								      <input class="form-control" id="derrite" name="derrite" type="text" ng-model="campodata.derrite" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="ojogallo">
+								       Ojo de Gallo
+								      </label>
+								      <input class="form-control" id="ojogallo" name="ojogallo" type="text" ng-model="campodata.ojodegallo" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="hilachas">
+								       Mal de Hilachas
+								      </label>
+								      <input class="form-control" id="hilachas" name="hilachas" type="text" ng-model="campodata.maldehilachas" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="otro">
+								       Otro
+								      </label>
+								      <input class="form-control" id="otro" name="otro" type="text" ng-model="campodata.otro" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="nudos">
+								       Nudos viejos
+								      </label>
+								      <input class="form-control" id="nudos" name="nudos" type="text" ng-model="campodata.nudosviejos" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="nudosmedios">
+								       Nudos medios
+								      </label>
+								      <input class="form-control" id="nudosmedios" name="nudosmedios" type="text" ng-model="campodata.nudosmedios" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="nudosjovenes">
+								       Nudos jovenes
+								      </label>
+								      <input class="form-control" id="nudosjovenes" name="nudosjovenes" type="text" ng-model="campodata.nudosjovenes" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="frutosnudo5">
+								       Frutos nudo 5
+								      </label>
+								      <input class="form-control" id="frutosnudo5" name="frutosnudo5" type="text" ng-model="campodata.frutosnudo5" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="frutosnudo6">
+								       Frutos nudo 6
+								      </label>
+								      <input class="form-control" id="frutosnudo6" name="frutosnudo6" type="text" ng-model="campodata.frutosnudo6" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="brocatotal">
+								       Broca total nudos 5 y 6
+								      </label>
+								      <input class="form-control" id="brocatotal" name="brocatotal" type="text" ng-model="campodata.brocatotalnudos " required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <div class=" ">
+								       <div class="checkbox">
+								        <label class="checkbox">
+								         <input name="optional" type="checkbox" value="Presencia cochinilla" ng-model="campodata.presenciacochinilla" />
+								         Presencia cochinilla
+								        </label>
+								       </div>
+								       <div class="checkbox">
+								        <label class="checkbox">
+								         <input name="optional" type="checkbox" value="Floral  Nueva" ng-model="campodata.floralnueva" />
+								         Floral  Nueva
+								        </label>
+								       </div>
+								       <div class="checkbox">
+								        <label class="checkbox">
+								         <input name="optional" type="checkbox" value="Vegetativa nueva" ng-model="campodata.vegetativanueva" />
+								         Vegetativa nueva
+								        </label>
+								       </div>
+								      </div>
+								     </div>
+								     <div class="form-group">
+								      <div>
+								       <button class="btn btn-primary " name="submit" type="submit">
+								        Guardar Camabios
+								       </button>
+								      </div>
+								     </div>
+			                    	
+			                    
+			                   </form>
+		                    </div>
+		                </div>
+					</div>
+				</div>
+		  </script>
 
 	<script type="text/ng-template" id="/weather.html">
 			<div class="home-wrap weather">

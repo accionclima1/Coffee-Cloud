@@ -25,6 +25,7 @@
 	<script src="bower_components/angular-snap/angular-snap.min.js"></script>
 	<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 	<script src="javascripts/angularApp.js"></script>
+	<script src="javascripts/openWeather.js"></script>
 	
 	
 
@@ -40,6 +41,9 @@
 	      <li><a href="#" snap-toggle><i class="fa fa-search"></i> Buscador</a></li>
 	      <li><a href="/#/home" snap-toggle><i class="fa fa-cloud"></i> Clima</a></li>
 	      <li><a href="/#/roya" snap-toggle><i class="fa fa-leaf"></i> Cálculo de Roya</a></li>
+	      <li><a href="/#/gallo" snap-toggle><i class="fa fa-leaf"></i> Cálculo de Ojo de Gallo</a></li>
+	      <li><a href="#/dosage" snap-toggle><i class="fa fa-cog"></i> Cálculo de Dosificación</a></li>
+	      <li><a href="#/campo" snap-toggle><i class="fa fa-cog"></i> Hoja de campo </a></li>
 	      <!--<li><a href="#" snap-toggle><i class="fa fa-cog"></i> Cálculo de fertilizante</a></li>
 	      <li><a href="#" snap-toggle><i class="fa fa-calculator"></i> Cálculo de cosecha</a></li>
 	      <li><a href="#" snap-toggle><i class="fa fa-shopping-cart"></i> Proveedores</a></li>-->
@@ -64,21 +68,65 @@
 				        <h2>¡Hola!</h2>
 				        <p>Bienvenido {{ currentUser() }}</p>
 				      </div>
+					  
+					  <div class="weather-wrapper hide">
 
+							<img src="" class="weather-icon" alt="Weather Icon" />
+							
+							<p><strong>Place</strong>
+							<br /><span class="weather-place"></span></p>
+							
+							<p><strong>Temperature</strong>
+							<br /><span class="weather-temperature"></span> (<span class="weather-min-temperature"></span> - <span class="weather-max-temperature"></span>)</p>
+							
+							<p><strong>Description</strong>
+							<br /><span class="weather-description capitalize"></span></p>
+							
+							<p><strong>Humidity</strong>
+							<br /><span class="weather-humidity"></span></p>
+							
+							<p><strong>Wind speed</strong>
+							<br /><span class="weather-wind-speed"></span></p>
+							
+							<p><strong>Sunrise</strong>
+							<br /><span class="weather-sunrise"></span></p>
+							
+							<p><strong>Sunset</strong>
+							<br /><span class="weather-sunset"></span></p>
+						
+						</div>
+					  
 				      <div class="weather-module">
-				      	<div class="degree">23º</div>
-				   		<div class="weather-module-meta">
-				   			<p>Nuboso 21º - 19º</p>
-				   			<p>Humedad: 68% | Viento: 21k/h ESE</p>
-				   		</div>
+					      
+					   
 				      </div>
 
-				      <a href="/#/weather" class="btn btn-primary">Ver Mas</a>
+				      <!-- <a href="/#/weather" class="btn btn-primary">Ver Mas</a> -->
 
 					</div>
 			   	</div>
 		   </div>
 		</div>
+		
+		<script>
+	
+			$(document).ready(function($){
+				$.ajax({
+					url: "http://api.wunderground.com/api/c98eba09df40e7bf/conditions/q/CR/San_Jose.json",
+					dataType : "jsonp",
+					success : function(parsed_json) {
+						var forecast = parsed_json['current_observation'];
+						console.log(forecast)
+						var newForecastString = '<h3 class="weather-place">' + forecast['display_location']['full'] + ' </h3> <img src="'+ forecast['icon_url'] +'" class="weather-icon" alt="'+ forecast['icon'] +'" /><div class="weather-temperature">'+ forecast['temperature_string'] +'</div><div class="weather-module-meta"><p>Humedad: <span class="weather-humidity">'+ forecast['relative_humidity'] +'</span> | Viento: <span class="weather-wind-speed">'+ forecast['wind_kph'] +' kph</span></p></div>';
+						$(".weather-module").append(newForecastString);
+						 
+					}
+				}); 
+			});
+		
+		</script>
+		
+		
 	</script>
 	<script type="text/ng-template" id="/posts.html">
 	 		
@@ -691,7 +739,7 @@
 
 				  <form ng-submit="logIn()">
 				    <img src="images/pages-logo-dark.png" alt="" class="login-img img-responsive"/>
-				    <img src="images/analogo.svg" alt="" class="ana-img img-responsive"/>
+				    <img src="images/LogoICAFE.svg" alt="" class="ana-img img-responsive"/>
 				    <div class="form-group">
 				       <label for="email">Usuario</label>
 				      <input type="text" name="email"
@@ -785,7 +833,7 @@
 							<div class="plantContainer">
 								<h6>Unidad: {{ test.unidad.nombre }}</h6>
 								<div class="bandolas" ng-click="bandolas()">
-									<p ng-hide="test.bandolas"><strong>1</strong> Bándola (<strong>60</strong> Plantas)</p>
+									<p ng-hide="test.bandolas"><strong>1</strong> Bándola (<strong>50</strong> Plantas)</p>
 									<p ng-show="test.bandolas"><strong>2</strong> Bándolas (<strong>30</strong> Plantas)</p>
 								</div>
 								<div class="plantList">
@@ -800,8 +848,8 @@
 									</div>
 								</div>
 								<div class="testControls">
-									<button class="btn btn-primary" ng-click="addPlant()" ng-hide="test.plantas.length > 29 && test.bandolas || test.plantas.length > 59 && !test.bandolas">Agregar Planta</button>
-									<button class="btn btn-primary" ng-click="calculateTest()" ng-disabled="test.plantas.length < 30 && test.bandolas || test.plantas.length < 60 && !test.bandolas">Calcular</button>
+									<button class="btn btn-primary" ng-click="addPlant()" ng-hide="test.plantas.length > 29 && test.bandolas || test.plantas.length > 49 && !test.bandolas">Agregar Planta</button>
+									<button class="btn btn-primary" ng-click="calculateTest()" ng-disabled="test.plantas.length < 30 && test.bandolas || test.plantas.length < 50 && !test.bandolas">Calcular</button>
 								</div>
 							</div>
 						</div>
@@ -892,6 +940,384 @@
 			</div>
 			
 	  </script>
+	<script type="text/ng-template" id="/gallo.html">
+	  		<div class="roya-wrap">
+	  			<h2 class="section-header">
+	  				CÁLCULO DE OJO DE GALLO 
+	  			</h2>
+				<div class="container">
+					<div class="row intro">
+						<div class="col-lg-6 col-lg-offset-3">
+							<h2>BIENVENIDO <span>{{ currentUser() }}</span></h2>
+							<p>Para llevar a cabo el Cálculo de Roya es necesario que elija 30 plantas (2 Bandolas) o 60 plantas (1 Bandola) al azar</p>
+							
+							
+							<h4 class="clearfix">Seleccione la Unidad para la prueba</h4>
+							
+							<div class="unidades-wrap">
+					   			<div class="unidad" ng-repeat="unit in units" id="{{unit._id}}" ng-click="startTest(unit)">
+					
+						   			<span>{{unit.nombre}}</span>
+						   			
+						   			<i class="glyphicon glyphicon-chevron-right"></i>
+						   			
+						   		</div>
+						    </div>
+						    <a href="/#/profile">Agregar Unidades</a>
+							
+							<!-- <button class="btn btn-primary" ng-click="startTest($event)">Basico</button>
+							<button class="btn btn-primary adv" ng-click="startTest($event)">Avanzado</button> -->
+							
+						</div>
+					</div>
+					<div class="row test">
+						<div class="col-lg-6 col-lg-offset-3">
+							<div class="plantContainer">
+								<h6>Unidad: {{ test.unidad.nombre }}</h6>
+								<div class="bandolas" ng-click="bandolas()">
+									<p ng-hide="test.bandolas"><strong>1</strong> Bándola (<strong>50</strong> Plantas)</p>
+									<p ng-show="test.bandolas"><strong>2</strong> Bándolas (<strong>30</strong> Plantas)</p>
+								</div>
+								<div class="plantList">
+									<div class="plantListItem" ng-repeat="plantas in test.plantas">
+										<span>Planta {{ $index + 1 }}</span>
+										<div class="plantControls">
+											<button class="btn leaf" ng-hide="test.advMode" ng-click="editPlant($index)"> {{ plantas | sumLeafFilter }}x <i class="fa fa-leaf"></i></button>
+											<button class="btn leaf" ng-show="test.advMode" ng-click="editPlant($index)">{{ plantas | sumLeafFilter}}x <i class="fa fa-leaf"></i></button>
+											
+											<button class="btn remove" ng-click="removePlant($index)">X</button>
+										</div>
+									</div>
+								</div>
+								<div class="testControls">
+									<button class="btn btn-primary" ng-click="addPlant()" ng-hide="test.plantas.length > 29 && test.bandolas || test.plantas.length > 49 && !test.bandolas">Agregar Planta</button>
+									<button class="btn btn-primary" ng-click="calculateTest()" ng-disabled="test.plantas.length < 30 && test.bandolas || test.plantas.length < 50 && !test.bandolas">Calcular</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row results">
+						<div class="col-lg-6 col-lg-offset-3">
+							<div ng-show="test.advMode">
+								<h2>Resultados</h2>
+								<p><strong>Plantas:</strong><br> {{totalPlants}}</p>
+								<p><strong>Incidencia promedio</strong><br>{{(test.avgplnt).toFixed(2)}} / Planta ( {{(test.incidencia).toFixed(2)}}% )</p> 
+								<p><strong>Severidad promedio</strong><br>{{(test.avgplntDmgPct).toFixed()}}%</p>
+								<p><strong>Recomendación</strong><br>
+									<span ng-show="test.incidencia < 11">{{methodsMonth.grade1}}</span>
+									<span ng-show="test.incidencia > 10 && test.incidencia < 21 ">{{methodsMonth.grade2}}</span>
+									<span ng-show="test.incidencia > 20 && test.incidencia < 51 ">{{methodsMonth.grade3}}</span>
+									<span ng-show="test.incidencia > 50 ">{{methodsMonth.grade3}}</span>
+								</p>
+								<a href="/#/support" class="btn btn-primary" ng-click="getHelp(totalPlants,avgplnt,avgplntDmgPct,currentUser())">Solicitar Asesoría Técnica</a>
+							</div>
+							
+							<div ng-hide="test.advMode">
+								<h2>Resultados</h2>
+								<p><strong>Plantas:</strong><br> {{totalPlantis}}</p>
+								<p><strong>Incidencia: </strong><br>{{ (test.incidencia).toFixed(2) }}% </p> 
+								<p><strong>Recomendación</strong><br>
+									
+									<span ng-show="test.incidencia < 11">{{methodsMonth.grade1}}</span>
+									<span ng-show="test.incidencia > 10 && test.incidencia < 21 ">{{methodsMonth.grade2}}</span>
+									<span ng-show="test.incidencia > 20 && test.incidencia < 51 ">{{methodsMonth.grade3}}</span>
+									<span ng-show="test.incidencia > 50 ">{{methodsMonth.grade3}}</span>
+								</p>
+								<a href="/#/support" class="btn btn-primary" ng-click="getHelp(currentUser())">Solicitar Asesoría Técnica</a>
+							</div>
+							
+						</div>
+					</div>
+					
+					
+					<div class="modal fade" id="plantModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+					  <div class="modal-dialog" role="document">
+					    <div class="modal-content">
+					      <div class="modal-header">
+					        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					        <h4 class="modal-title" id="myModalLabel">Planta {{plantname}}</h4>
+					      </div>
+					      <div class="modal-body">
+					        <div class="plant-editor">
+									
+									
+									<p ng-show="test.advMode">Divida las hojas de cada planta en grupos por severidad.</p>
+									<p ng-hide="test.advMode">Agregue la cantidad total de hojas.</p>
+									<div class="leaf-list">
+										<div class="leaf-item" ng-repeat="leaf in leafList">
+											<span>Hojas: {{leaf[0]}}</span>
+											<div class="leaf-control">
+												<span class="severity">{{leaf[1]}}</span>
+												<span class="remove" ng-click="removeLeaf($index)">X</span>
+												</div>
+											</div>
+										</div>
+									<div class="plant-editor-control" ng-hide="leafList.length > 1 && !test.advMode">
+										<span>Hojas: <input type="number" name="amount" value="1"> </span>
+										<button class="btn btn-primary" ng-click="initLeaf()">Agregar</button>
+									</div>
+									<ul class="severity-list" ng-show="test.advMode">
+										<li>Seleccione la severidad para el grupo de hojas:</li>
+										<li ng-click="addLeaf('0%')" style="color:lime"><img src="/images/escala1.png" /> <span>0%</span></li>
+										<li ng-click="addLeaf('10%')" style="color:green"><img src="/images/escala2.png" /> 10%</span></li>
+										<li ng-click="addLeaf('20%')" style="color:yellow"><img src="/images/escala3.png" /> <span>20%</span></li>
+										<li ng-click="addLeaf('30%')" style="color:rgba(192, 151, 29, 1)"><img src="/images/escala4.png" /> <span>30%</span></li>
+										<li ng-click="addLeaf('40%')" style="color:orange"><img src="/images/escala5.png" /> <span>40%</span></li>
+										<li ng-click="addLeaf('80%')" style="color:red"><img src="/images/escala6.png" /> <span>80%</span></li>
+									</ul>
+									<ul class="severity-list" ng-hide="test.advMode">
+										<li>Indique el numero de hojas afectadas:</li>
+									    <li><span><input type="number" ng-model="affect" > </span>
+										<button class="btn btn-primary" ng-click="addLeaf('afectadas: ' + affect)">Agregar</button></li>
+									</ul>
+								</div>
+					      </div>
+					      
+					    </div>
+					  </div>
+					</div>
+					
+					
+				</div>
+			</div>
+			
+	  </script>
+	<script type="text/ng-template" id="/dosage.html">
+			<div class="roya-wrap">
+						<h2 class="section-header">
+		  				CÁLCULO DE DOSIFICACION ADECUADA
+		  			</h2>
+					<div class="container">
+						<div class="row">
+							<div class="col-lg-6 col-lg-offset-3">
+								<br>
+								<br>
+									<span><strong>Tipo de Producto</strong></span>
+									<select ng-model="dosage.productType"  id="productType" class="form-control" >
+										<option value="0" selected >Seleccione una opcion</option>
+										<option value="Fungicidas" >Fungicida</option>
+										<option value="Insecticida" >Insecticida</option>
+										<option value="Foliar" >Foliar</option>
+									</select>
+
+									<strong>Nombre del Producto:</strong> <select ng-model="dosage.productName"  id="productType" class="form-control" required>
+										<option value="Opera" selected >Opera</option>
+										<option value="Atemi" >Atemi</option>
+										<option value="Esfera" >Esfera</option>
+										<option value="Opus" >Opus</option>
+									</select>
+
+									<span><strong>Dosis producto cc/ha:</strong> <input type="number" ng-model="dosage.ProductDosage" class="form-control"  value="1"> </span>
+
+									<span><strong>Plantas Atomizadas:</strong> <input type="number" ng-model="dosage.plantsAtomised" class="form-control"  value="1"> </span>
+
+									<span><strong>Litros Gastados:</strong> <input type="number" ng-model="dosage.litersWornOut" class="form-control"  value="1"> </span>
+
+									<span><strong>Litros por Hectárea:</strong> <input type="number" ng-model="dosage.litersByHa" class="form-control"  value="1"> </span>
+
+									<span><strong>Plantas por Hectárea: </strong></span>
+									<input type="radio" id="optionArea1" ng-value="false" name="areas" ng-model="dosage.plantsByHa" value="4000"><label for="optionArea1">4000</label>
+									<input type="radio" id="optionArea2" ng-value="false" name="areas" ng-model="dosage.plantsByHa" value="5000"><label for="optionArea2">5000</label>
+									<input type="radio" id="optionArea3" ng-value="false" name="areas" ng-model="dosage.plantsByHa"value="ot"><label for="optionArea3">Otro</label>
+									<input  id="otherArea" type="number" ng-model="dosage.plantsByHa" class="form-control" value="1"/>
+
+									<br><span><strong>Estañones por Hectárea: {{dosage.estanionByHa}}  </strong></span><br><br>
+
+									<br><span><strong>Resultado (cc/estañon): {{dosage.dosageByEstanion}}  </strong></span><br><br>
+
+									<button type="button" ng-click="calculateDosage()" class="btn btn-modal">Resultado (cc/estañon)</button>
+
+							</div>
+						</div>
+					</div>
+				</div>
+		  </script><!--Calculo de Fertilizacion actual-->
+	<script type="text/ng-template" id="/campo.html">
+			<div class="roya-wrap">
+						<h2 class="section-header">
+		  				Hoja de campo
+		  			</h2>
+					<div class="container">
+						<div class="row">
+		                    <div class="col-md-8 col-md-offset-2">
+			                   <form ng-submit="saveTable()" name="hojaform" id="hojaform" data-toggle="validator">
+				                   <div class="form-group ">
+								      <label class="control-label requiredField" for="finca">
+								       Finca ID
+								       <span class="asteriskField">
+								        *
+								       </span>
+								      </label>
+								      <input class="form-control" id="finca" name="finca" type="text" ng-model="campodata.fincaid" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label requiredField" for="fecha">
+								       Fecha
+								       <span class="asteriskField">
+								        *
+								       </span>
+								      </label>
+								      <input class="form-control" id="fecha" name="fecha" placeholder="MM/DD/YYYY" type="text" ng-model="campodata.fecha" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="bandolas">
+								       Bandolas
+								      </label>
+								      <select class="select form-control" id="bandolas" name="bandolas" ng-model="campodata.bandolas" required="true" >
+								       <option value="1">
+								        1
+								       </option>
+								       <option value="2">
+								        2
+								       </option>
+								       <option value="3">
+								        3
+								       </option>
+								       <option value="4">
+								        4
+								       </option>
+								       <option value="5">
+								        5
+								       </option>
+								       <option value="6">
+								        6
+								       </option>
+								       <option value="7">
+								        7
+								       </option>
+								       <option value="8">
+								        8
+								       </option>
+								       <option value="9">
+								        9
+								       </option>
+								       <option value="10">
+								        10
+								       </option>
+								      </select>
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="hojas">
+								       Hojas totales
+								      </label>
+								      <input class="form-control" id="hojas" name="hojas" type="text" ng-model="campodata.hojastotales" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="roya">
+								       Roya
+								      </label>
+								      <input class="form-control" id="roya" name="roya" type="text" ng-model="campodata.roya" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="chasparria">
+								       Chasparria
+								      </label>
+								      <input class="form-control" id="chasparria" name="chasparria" type="text" ng-model="campodata.chasparria" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="antracnosis">
+								       Antracnosis
+								      </label>
+								      <input class="form-control" id="antracnosis" name="antracnosis" type="text" ng-model="campodata.antracnosis" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="derrite">
+								       Derrite
+								      </label>
+								      <input class="form-control" id="derrite" name="derrite" type="text" ng-model="campodata.derrite" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="ojogallo">
+								       Ojo de Gallo
+								      </label>
+								      <input class="form-control" id="ojogallo" name="ojogallo" type="text" ng-model="campodata.ojodegallo" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="hilachas">
+								       Mal de Hilachas
+								      </label>
+								      <input class="form-control" id="hilachas" name="hilachas" type="text" ng-model="campodata.maldehilachas" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="otro">
+								       Otro
+								      </label>
+								      <input class="form-control" id="otro" name="otro" type="text" ng-model="campodata.otro" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="nudos">
+								       Nudos viejos
+								      </label>
+								      <input class="form-control" id="nudos" name="nudos" type="text" ng-model="campodata.nudosviejos" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="nudosmedios">
+								       Nudos medios
+								      </label>
+								      <input class="form-control" id="nudosmedios" name="nudosmedios" type="text" ng-model="campodata.nudosmedios" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="nudosjovenes">
+								       Nudos jovenes
+								      </label>
+								      <input class="form-control" id="nudosjovenes" name="nudosjovenes" type="text" ng-model="campodata.nudosjovenes" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="frutosnudo5">
+								       Frutos nudo 5
+								      </label>
+								      <input class="form-control" id="frutosnudo5" name="frutosnudo5" type="text" ng-model="campodata.frutosnudo5" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="frutosnudo6">
+								       Frutos nudo 6
+								      </label>
+								      <input class="form-control" id="frutosnudo6" name="frutosnudo6" type="text" ng-model="campodata.frutosnudo6" required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <label class="control-label " for="brocatotal">
+								       Broca total nudos 5 y 6
+								      </label>
+								      <input class="form-control" id="brocatotal" name="brocatotal" type="text" ng-model="campodata.brocatotalnudos " required="true" />
+								     </div>
+								     <div class="form-group ">
+								      <div class=" ">
+								       <div class="checkbox">
+								        <label class="checkbox">
+								         <input name="optional" type="checkbox" value="Presencia cochinilla" ng-model="campodata.presenciacochinilla" />
+								         Presencia cochinilla
+								        </label>
+								       </div>
+								       <div class="checkbox">
+								        <label class="checkbox">
+								         <input name="optional" type="checkbox" value="Floral  Nueva" ng-model="campodata.floralnueva" />
+								         Floral  Nueva
+								        </label>
+								       </div>
+								       <div class="checkbox">
+								        <label class="checkbox">
+								         <input name="optional" type="checkbox" value="Vegetativa nueva" ng-model="campodata.vegetativanueva" />
+								         Vegetativa nueva
+								        </label>
+								       </div>
+								      </div>
+								     </div>
+								     <div class="form-group">
+								      <div>
+								       <button class="btn btn-primary " name="submit" type="submit">
+								        Guardar Camabios
+								       </button>
+								      </div>
+								     </div>
+			                    	
+			                    
+			                   </form>
+		                    </div>
+		                </div>
+					</div>
+				</div>
+		  </script>
+
 	<script type="text/ng-template" id="/weather.html">
 			<div class="home-wrap weather">
 			 <div class="container">
@@ -1022,6 +1448,10 @@
 							   	<label>Telefono</label>
 							   	<input class="form-control" type="text" ng-model="userO.phone"/>
 							</div>
+							<!-- <div class="form-group">
+							   	<label>Recomendación Técnica</label>
+							   	<input class="form-control" type="text" ng-model="userO.recomendaciontecnica"/>
+							</div> -->
 							<div class="form-group">
 							    <button type="submit" style="width:100%;" class="btn btn-primary">Guardar Cambios</button>
 							</div>			
@@ -1494,6 +1924,15 @@
 														      class="form-control date-field"
 														      placeholder="Fin epoca lluviosa"
 														      ng-model="editUnit.FinEpocalluviosa"></input>
+													</div>
+												</div>
+												<div class="col-xs-12">
+													<div class="form-group">
+														<input type="text"
+														      class="form-control"
+														      placeholder="Recomendación Técnica"
+														      ng-model="editUnit.recomendaciontecnica"></input>
+														      
 													</div>
 												</div>
 												<div class="col-xs-12">
@@ -2023,6 +2462,15 @@
 														      class="form-control date-field"
 														      placeholder="Fin epoca lluviosa"
 														      ng-model="newUnit.FinEpocalluviosa"></input>
+													</div>
+												</div>
+												<div class="col-xs-12">
+													<div class="form-group">
+														<input type="text"
+														      class="form-control"
+														      placeholder="Recomendación Técnica"
+														      ng-model="newUnit.recomendaciontecnica"></input>
+														      
 													</div>
 												</div>
 												<div class="col-xs-12">

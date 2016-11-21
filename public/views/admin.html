@@ -21,7 +21,7 @@
     <link href="stylesheets/plugins/morris.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     
     <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
     <script src="/javascripts/validator.min.js"></script>
@@ -57,10 +57,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/admin#/"> <img src="images/pages-logo-light.png" alt="" class="login-img"> Coffee Cloud <small>Admin</small></a>
+                <a class="navbar-brand" href="/admin#/"> <img src="http://centroclima.org/images/SICA-logo.png" alt="" class="login-img"> Coffee Cloud <small>Admin</small></a>
             </div>
             <!-- Top Menu Items -->
-            <ul class="nav navbar-right top-nav" ng-show="isLoggedIn()">
+            <ul class="nav navbar-right top-nav" >
+	            <li>
+	            	<div class="right-logo">
+				    <img src="http://centroclima.org/images/CRRH.png" alt="CRRH" class="img-responsive">
+			    </div>
+	            </li>
                <!-- <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> <b class="caret"></b></a>
                     <ul class="dropdown-menu message-dropdown">
@@ -141,7 +146,7 @@
                         </li>
                     </ul>
                 </li> -->
-                <li class="dropdown">
+                <li class="dropdown" ng-show="isLoggedIn()">
                     <a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ currentUser() }} <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                        <!-- <li>
@@ -161,8 +166,9 @@
                 </li>
             </ul>
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+            <!-- Navbars -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
-                <ul class="nav navbar-nav side-nav" ng-controller="NavCtrl" ng-show="isLoggedIn()">
+                <ul class="nav navbar-nav side-nav" ng-controller="NavCtrl" ng-show="curUserRole != 'Tecnico' && isLoggedIn()" ng-cloak>
                     <li ng-class="{ active: isActive('/home') }">
                         <a href="/admin#/"><i class="fa fa-fw fa-dashboard"></i> Escritorio</a>
                     </li>
@@ -178,12 +184,33 @@
                     <li ng-class="{ active: isActive('/roya') }">
                         <a href="/admin#/roya"><i class="fa fa-fw fa-leaf"></i> Reportes Roya</a>
                     </li>
+                    <li ng-class="{ active: isActive('/technical-recommendation') }">
+                        <a href="/admin#/technical-recommendation"><i class="fa fa-fw fa-compass"></i> Recomendación Técnica  </a>
+                    </li>
+                     <li ng-class="{ active: isActive('/campo') }">
+                        <a href="/admin#/campo"><i class="fa fa-fw fa-file-image-o"></i> Hoja de campo  </a>
+                    </li>
+                    <li ng-class="{ active: isActive('/reportesdecampo') }">
+                        <a href="/admin#/reportesdecampo"><i class="fa fa-fw fa-file-image-o"></i> Reportes de Campo  </a>
+                    </li>
                     <li ng-class="{ active: isActive('/noticias') }">
                         <a href="/admin#/noticias"><i class="fa fa-fw fa-newspaper-o"></i> Noticias</a>
                     </li>
                     <li ng-class="{ active: isActive('/messenger') }">
                         <a href="/admin#/messenger"><i class="fa fa-fw fa-comment"></i>  Consultas</a>
                     </li>
+                    
+                </ul>
+
+                 <ul class="nav navbar-nav side-nav" ng-controller="NavCtrl" ng-show="isLoggedIn() && curUserRole == 'Tecnico'">
+                    <li ng-class="{ active: isActive('/home') }">
+                        <a href="/admin#/"><i class="fa fa-fw fa-dashboard"></i> Escritorio</a>
+                    </li>
+                    
+                    <li ng-class="{ active: isActive('/technical-recommendation') }">
+                        <a href="/admin#/technical-recommendation"><i class="fa fa-fw fa-users"></i> Recomendación Técnica  </a>
+                    </li>
+
                     
                 </ul>
             </div>
@@ -195,6 +222,42 @@
 	        <ui-view></ui-view>
            
             <!-- /.container-fluid -->
+            
+            <footer id="colophon" ng-controller="NavCtrl" class="site-footer" role="contentinfo" ng-hide="isActive('/messenger')">
+	<div class="container">
+		<div class="row text-center">
+			<div class="site-footer-inner col-md-9">
+			
+			<h2>CENTRO CLIMA CUENTA CON EL APOYO TÉCNICO Y FINANCIERO DE:</h2>
+				
+			<img src="http://centroclima.org/wp-content/uploads/2016/06/xusaid.png.pagespeed.ic.HIzO6Beqa-.png" alt="logo">
+			<img src="http://centroclima.org/wp-content/uploads/2016/06/xCATIE.png.pagespeed.ic.L70wLDKZif.png" alt="logo">
+			<img src="http://centroclima.org/wp-content/uploads/2016/06/UICN.svg" alt="logo">
+			<img src="http://centroclima.org/wp-content/uploads/2016/07/xLogo-CARE.png.pagespeed.ic.dbZiYO5x3e.png" alt="logo">
+			<img src="http://centroclima.org/wp-content/uploads/2016/07/xLOGO-TERRA.png.pagespeed.ic.dE9zG_baAD.png" alt="logo">	
+			<img src="http://centroclima.org/wp-content/uploads/2016/07/xLogo-DAI.jpg.pagespeed.ic.kT4r0zPv_X.webp" alt="logo">
+			<img src="http://centroclima.org/wp-content/uploads/2016/06/xepa_seal_large_trim.png.pagespeed.ic.pR7AfJfuIv.png" alt="logo">
+			
+			</div>
+			<div class="site-footer-inner col-md-3">
+			
+			<h2>EN COORDINACIÓN CON:</h2>
+			
+			<img src="http://centroclima.org/wp-content/uploads/2016/07/xLOGO-CCAD-HORIZONTAL-CON-SICA.png.pagespeed.ic.mlGYZrodRq.png" alt="logo">
+				
+
+			</div>
+		</div>
+	</div><!-- close .container -->
+	<div class="copyright">
+		<div class="right">
+			<p>Todos los derechos reservados. Centro Clima 2016</p>
+		</div>
+		<div class="left"><ul id="foot-menu" class="nav navbar-nav"><li id="menu-item-114" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-114"><a title="Politicas" href="#">Politicas</a></li>
+<li id="menu-item-151" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-151"><a title="Condiciones" href="#">Condiciones</a></li>
+<li id="menu-item-116" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-116"><a title="Mapa del sitio" href="#">Mapa del sitio</a></li>
+</ul></div>	</div>
+</footer>
 
         </div>
         <!-- /#page-wrapper -->
@@ -607,9 +670,17 @@
 								      <select class="form-control" ng-model="newUser.role">
 										  <option>Cliente</option>
 										  <option>Extensionista</option>
+                                          <option>Tecnico</option>
 										  <option>Admin</option>
 										</select>
 								    </div>
+                                    <div class="form-group">
+                                      <label>Recomendación Técnica</label>
+                                         <input type="text"
+                                          class="form-control"
+                                          placeholder="Recomendación Técnica"
+                                          ng-model="newUser.recomendaciontecnica"></input>
+                                    </div>
 								    <div class="form-group">
 								      <label>Departamento/Municipio:</label>
 								      <select id="departamentos" class="form-control" required>
@@ -671,6 +742,7 @@
 								    <div class="form-group">
 								      <label>Rol:</label>
 								      <select class="form-control" ng-model="editUserO.role">
+                                          <option>Tecnico</option>
 										  <option>Cliente</option>
 										  <option>Extensionista</option>
 										  <option>Admin</option>
@@ -683,6 +755,13 @@
 								      placeholder="Correo Electrónico"
 								      ng-model="editUserO.email" required></input>
 								    </div>
+                                     <div class="form-group">
+                                      <label>Recomendación Técnica</label>
+                                         <input type="text"
+                                          class="form-control"
+                                          placeholder="Recomendación Técnica"
+                                          ng-model="editUserO.recomendaciontecnica"></input>
+                                    </div>
 								   <div class="form-group">
 											    <div class="form-group">
 											      <input type="password" data-minlength="6" class="form-control" id="inputPasswordEdit" placeholder="Contraseña" >
@@ -811,6 +890,242 @@
 			
 
             </div>
+    </script>
+    <script type="text/ng-template" id="/tech_recom.html">
+         <div class="container-fluid roya-wrap">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Recomendación Técnica
+                        </h1>
+                        
+                        <div class="col-md-12">
+
+                        <div class=" form-inline">
+                            <label>Fecha inicio:</label>
+                            <input type="text" class="form-control date-field" placeholder="Fecha inicio" ng-model="search.dateFrom"></input>
+                            
+                            <label>fecha final</label>
+                            <input type="text" class="form-control date-field" placeholder="Fecha final" ng-model="search.dateTo"></input>
+                        </div>
+                        </div>
+                        <div class="col-md-12">
+                        <div class="form-inline">
+                        <br/>   
+                            <label>Buscar por ID:</label> 
+                            <input type="text"  class="form-control" ng-model="search._id" placeholder="Buscar por ID" />
+                        </div>
+                        </div>                
+                        <br/>
+                        <br/>
+                        <p class="lead col-md-4">resultados: </p>
+                            <div class="col-md-8 text-right">  
+                                <button ng-click="exportData()" >Exportar</button>
+                            </div>
+                <!-- /.row -->
+            <table class="table table-striped" style="display:none;" id='exportable'>
+                <thead>
+                    <tr>
+                        <th ng-repeat="(i,th) in head" >{{th}}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="row in testsList | orderBy : sort.column : sort.descending | myfilter:search">
+                        <td ng-click="loadTest(row);">{{row.createdAt}}</td>
+                        <td ng-click="loadTest(row);">{{row.departamento}}</td> 
+                        <td ng-click="loadTest(row);">{{row.municipio}}</td>
+                        <td ng-click="loadTest(row);">{{row.ubicacion}}</td> 
+                        <td ng-click="loadTest(row);">{{row.recomendaciontecnica}}</td> 
+                        <td ng-click="loadTest(row);">{{row.user}}</td>
+                        </tr>
+                    </tr>
+                </tbody>
+            </table>
+                <div class="row">
+                    <div class="col-md-12">
+                       <div class="roya-editor">
+                           <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th ng-repeat="(i,th) in head" ng-class="selectedCls(i)" ng-click="changeSorting(i)">{{th}}</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="row in testsList | orderBy : sort.column : sort.descending | myfilter:search | startFrom:(currentPage-1)*pageSize | limitTo:pageSize">
+                                        <td ng-click="loadTest(row);">{{row.createdAt}}</td>
+                                        <td ng-click="loadTest(row);">{{row.departamento}}</td> 
+                                        <td ng-click="loadTest(row);">{{row.municipio}}</td>
+                                         <td ng-click="loadTest(row);">{{row.recomendaciontecnica}}</td> 
+                                        <td ng-click="loadTest(row);">{{row.ubicacion}}</td> 
+                                       
+                                        <td ng-click="loadTest(row);">{{row.user}}</td>
+                                        <td> <button class="btn btn-danger" ng-click="removeTest(row._id)">X</button></td> 
+                                        </tr>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="text-center">
+                                <pagination page="currentPage" max-size="noOfPages" previous-text="<" next-text=">" first-text="<<" last-text=">>" boundary-link-numbers="true" total-items="totalItems" items-per-page="pageSize"></pagination>
+                            </div>
+                            <!-- Modal -->
+                                <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                  <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title" id="myModalLabel">Detalle de Reporte</h4>
+                                      </div>
+                                      <div class="modal-body">
+                                          <dl>
+                                              <dt>ID:</dt>
+                                              <dd>{{detail._id}}</dd>
+                                              <dt>User:</dt>
+                                              <dd>{{detail.user}}</dd>
+                                              <dt>Creación:</dt>
+                                              <dd>{{detail.createdAt}}</dd>
+                                              <dt>Recomendación Técnica:</dt>
+                                              <dd>{{detail.recomendaciontecnica}}</dd>
+                                              <dt>Modo:</dt>
+                                              <dd><span ng-show="detail.advMode">avanzado</span><span ng-hide="detail.advMode">Basico</span></dd>
+                                              <dt>Bandolas:</dt>
+                                              <dd><span ng-show="detail.bandolas">2</span><span ng-hide="detail.bandolas">1</span></dd>
+                                              <dt>Plantas:</dt>
+                                              <dd>{{detail.plantas.length}}</dd>
+                                              <dt>Incidencia:</dt>
+                                              <dd>{{ (detail.incidencia).toFixed(2) }}%</dd>
+                                              <dt>incideancia Promedio por Planta:</dt>
+                                              <dd>{{ (detail.inideanciaPromedioPlanta).toFixed(2) }}%</dd>
+                                              <dt>Severidad Promedio:</dt>
+                                              <dd>{{ (detail.severidadPromedio).toFixed(2) }}%</dd>
+                                              <dt>Municipio:</dt>
+                                              <dd>{{ detail.unidad.departamento }}</dd>
+                                              <dt>Detalle Unidad:</dt>
+                                              <dd>
+                                              {{detail.unidad.nombre}}<br/>
+                                              {{detail.unidad._id}}<br/>
+                                              Actualizado: {{detail.unidad.updatedAt}} <br>
+                                              Creado: {{detail.unidad.createdAt}}<br>
+                                              <span ng-show="detail.unidad.sombra">Tiene Sombra</span><br>
+                                              Altitud: {{detail.unidad.altitud}}<br>
+                                              Area de Cafe: {{detail.unidad.areaCafe}}<br>
+                                              Area total: {{detail.unidad.areaTotal}}<br>
+                                              Distanciamiento: {{detail.unidad.distanciamiento}}<br>
+                                              lote: {{detail.unidad.lote}}<br>
+                                              Edad: {{detail.unidad.edadLote}}<br>
+                                              Departamento: {{detail.unidad.departamento}}<br>
+                                              Municipio: {{detail.unidad.municipio}}<br>
+                                              rendimiento: {{detail.unidad.rendimiento}}<br>
+                                              <span ng-show="detail.unidad.enmiendasSuelo">Enmiendas de Suelo</span><br>
+                                              <span ng-show="detail.unidad.fertilizaFollaje">Fertiliza Follaje</span><br>
+                                              <span ng-show="detail.unidad.fertilizaSuelo">Fertiliza Suelo: {{detail.unidad.fertilizaSueloMes}}</span><br>
+                                              Inicia Cosecha: {{detail.unidad.inicioCosecha}}<br>
+                                              Final Cosecha: {{detail.unidad.finalCosecha}}<br>
+                                              Epoca lluviosa: {{detail.unidad.epocalluviosa}}<br>
+                                              Fin Epoca lluviosa: {{detail.unidad.FinEpocalluviosa}}<br>
+                                              <span ng-show="detail.unidad.fertilizaSuelo">Fertiliza Suelo</span><br>
+                                              <span ng-show="detail.unidad.fungicidasRoya">Fungicidas de Roya: <span ng-show="detail.unidad.fungicidas.contacto">Contacto</span></span>, <span ng-show="detail.unidad.fungicidas.sistemico">Sistemico</span>; Fechas: {{detail.unidad.fungicidasFechas}}</span><br>
+                                              <span ng-show="detail.unidad.manejoTejido">Manejo de Tejido: {{detail.unidad.manejoTejidoMes}}</span><br>
+                                              <span ng-show="detail.unidad.muestreo">Muestreo: {{detail.unidad.muestreoMes}}</span><br>
+                                              <span> Tipo de Cafe: <span ng-show="detail.unidad.tipoCafe.duro">duro</span> <span ng-show="detail.unidad.tipoCafe.estrictamenteDuro
+">estrictamenteDuro</span> <span ng-show="detail.unidad.tipoCafe.extraprime
+">extraprime</span> <span ng-show="detail.unidad.tipoCafe.prime
+">prime</span> <span ng-show="detail.unidad.tipoCafe.semiduro
+">semiduro</span></span><br>
+                                              <span> Variedad: <span ng-show="detail.unidad.variedad.bourbon">bourbon</span> <span ng-show="detail.unidad.variedad.catuai
+">catuai</span> <span ng-show="detail.unidad.variedad.caturra
+">caturra</span> <span ng-show="detail.unidad.variedad.maragogype
+">maragogype</span> </span><br>
+                                              <span ng-show="detail.unidad.verificaAgua">Tipo de verificacion de Agua: <span ng-show="detail.unidad.verificaAguaTipo.dureza">Contacto,</span></span> <span ng-show="detail.unidad.verificaAguaTipo.ph">Sistemico</span></span>; Fechas: {{detail.unidad.fungicidasFechas}}<br>
+                                              
+                                              
+                                              </dd>
+                                            </dl>
+                                       
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Crear Usuario</h4>
+                      </div>
+                      <div class="modal-body">
+                                <div ng-show="error" class="alert alert-danger row">
+                                    <span>{{ error.message }}</span>
+                                  </div>
+                
+                                  <form ng-submit="createUser()" name="newuserForm" id="newserForm" data-toggle="validator">
+                
+                                    <div class="form-group">
+                                      <input type="text"
+                                      class="form-control"
+                                      placeholder="Nombre de usuario"
+                                      ng-model="newUser.username" required></input>
+                                    </div>
+                                    <div class="form-group">
+                                      <input type="text"
+                                      class="form-control"
+                                      placeholder="Numero Telefonico"
+                                      ng-model="newUser.phone" required></input>
+                                    </div>
+                                    <div class="form-group">
+                                      <label>Rol:</label>
+                                      <select class="form-control" ng-model="newUser.role">
+                                          <option>Cliente</option>
+                                          <option>Extensionista</option>
+                                          <option>Admin</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                      <label>Departamento/Municipio:</label>
+                                      <select id="departamentos" class="form-control" required>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                      <input type="email"
+                                      class="form-control"
+                                      placeholder="Correo Electrónico"
+                                      ng-model="newUser.email" required></input>
+                                    </div>
+                                   <div class="form-group">
+                                                <div class="form-group">
+                                                  <input type="password" data-minlength="6" class="form-control" id="inputPassword" placeholder="Contraseña" required>
+                                                </div>
+                                                <div class="form-group">
+                                                  <input type="password" class="form-control" id="inputPasswordConfirm" data-match="#inputPassword" data-match-error="No coinciden! " placeholder="Confirmar Contraseña" ng-model="newUser.password" required>
+                                                  <div class="help-block with-errors"></div>
+                                                </div>
+                                            </div>
+                                    
+                                  
+                                  </form>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary"  form="newuserForm" ng-disabled="newuserForm.$invalid" ng-click="createUser()">Guardar Usuario</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+            </div>
+                </div>
+         </div>
     </script>
     <script type="text/ng-template" id="/roya.html">
 	     <div class="container-fluid roya-wrap">
@@ -1042,16 +1357,213 @@
 				</div>
 
             </div>
+                </div>
+        </div>
     </script>
+    <script type="text/ng-template" id="/campo.html">
+	     <div class="container-fluid adaptacion-wrap">
 
-    <script type="text/ng-template" id="/tech_recom.html">
-         <div class="container-fluid roya-wrap">
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                        <h1 class="page-header">
+                           Hoja de campo
+                        </h1>
+                        <p class="lead">Formulario </p>
+                    </div>
+                </div>
+              
+                <!-- /.row -->
+
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+	                   <form ng-submit="saveTable()" name="hojaform" id="hojaform" data-toggle="validator">
+		                   <div class="form-group ">
+						      <label class="control-label requiredField" for="finca">
+						       Finca ID
+						       <span class="asteriskField">
+						        *
+						       </span>
+						      </label>
+						      <input class="form-control" id="finca" name="finca" type="text" ng-model="campodata.fincaid" required="true" />
+						     </div>
+						     <div class="form-group ">
+						      <label class="control-label requiredField" for="fecha">
+						       Fecha
+						       <span class="asteriskField">
+						        *
+						       </span>
+						      </label>
+						      <input class="form-control" id="fecha" name="fecha" placeholder="MM/DD/YYYY" type="text" ng-model="campodata.fecha" required="true" />
+						     </div>
+						     <div class="form-group ">
+						      <label class="control-label " for="bandolas">
+						       Bandolas
+						      </label>
+						      <select class="select form-control" id="bandolas" name="bandolas" ng-model="campodata.bandolas" required="true" >
+						       <option value="1">
+						        1
+						       </option>
+						       <option value="2">
+						        2
+						       </option>
+						       <option value="3">
+						        3
+						       </option>
+						       <option value="4">
+						        4
+						       </option>
+						       <option value="5">
+						        5
+						       </option>
+						       <option value="6">
+						        6
+						       </option>
+						       <option value="7">
+						        7
+						       </option>
+						       <option value="8">
+						        8
+						       </option>
+						       <option value="9">
+						        9
+						       </option>
+						       <option value="10">
+						        10
+						       </option>
+						      </select>
+						     </div>
+						     <div class="form-group ">
+						      <label class="control-label " for="hojas">
+						       Hojas totales
+						      </label>
+						      <input class="form-control" id="hojas" name="hojas" type="text" ng-model="campodata.hojastotales" required="true" />
+						     </div>
+						     <div class="form-group ">
+						      <label class="control-label " for="roya">
+						       Roya
+						      </label>
+						      <input class="form-control" id="roya" name="roya" type="text" ng-model="campodata.roya" required="true" />
+						     </div>
+						     <div class="form-group ">
+						      <label class="control-label " for="chasparria">
+						       Chasparria
+						      </label>
+						      <input class="form-control" id="chasparria" name="chasparria" type="text" ng-model="campodata.chasparria" required="true" />
+						     </div>
+						     <div class="form-group ">
+						      <label class="control-label " for="antracnosis">
+						       Antracnosis
+						      </label>
+						      <input class="form-control" id="antracnosis" name="antracnosis" type="text" ng-model="campodata.antracnosis" required="true" />
+						     </div>
+						     <div class="form-group ">
+						      <label class="control-label " for="derrite">
+						       Derrite
+						      </label>
+						      <input class="form-control" id="derrite" name="derrite" type="text" ng-model="campodata.derrite" required="true" />
+						     </div>
+						     <div class="form-group ">
+						      <label class="control-label " for="ojogallo">
+						       Ojo de Gallo
+						      </label>
+						      <input class="form-control" id="ojogallo" name="ojogallo" type="text" ng-model="campodata.ojodegallo" required="true" />
+						     </div>
+						     <div class="form-group ">
+						      <label class="control-label " for="hilachas">
+						       Mal de Hilachas
+						      </label>
+						      <input class="form-control" id="hilachas" name="hilachas" type="text" ng-model="campodata.maldehilachas" required="true" />
+						     </div>
+						     <div class="form-group ">
+						      <label class="control-label " for="otro">
+						       Otro
+						      </label>
+						      <input class="form-control" id="otro" name="otro" type="text" ng-model="campodata.otro" required="true" />
+						     </div>
+						     <div class="form-group ">
+						      <label class="control-label " for="nudos">
+						       Nudos viejos
+						      </label>
+						      <input class="form-control" id="nudos" name="nudos" type="text" ng-model="campodata.nudosviejos" required="true" />
+						     </div>
+						     <div class="form-group ">
+						      <label class="control-label " for="nudosmedios">
+						       Nudos medios
+						      </label>
+						      <input class="form-control" id="nudosmedios" name="nudosmedios" type="text" ng-model="campodata.nudosmedios" required="true" />
+						     </div>
+						     <div class="form-group ">
+						      <label class="control-label " for="nudosjovenes">
+						       Nudos jovenes
+						      </label>
+						      <input class="form-control" id="nudosjovenes" name="nudosjovenes" type="text" ng-model="campodata.nudosjovenes" required="true" />
+						     </div>
+						     <div class="form-group ">
+						      <label class="control-label " for="frutosnudo5">
+						       Frutos nudo 5
+						      </label>
+						      <input class="form-control" id="frutosnudo5" name="frutosnudo5" type="text" ng-model="campodata.frutosnudo5" required="true" />
+						     </div>
+						     <div class="form-group ">
+						      <label class="control-label " for="frutosnudo6">
+						       Frutos nudo 6
+						      </label>
+						      <input class="form-control" id="frutosnudo6" name="frutosnudo6" type="text" ng-model="campodata.frutosnudo6" required="true" />
+						     </div>
+						     <div class="form-group ">
+						      <label class="control-label " for="brocatotal">
+						       Broca total nudos 5 y 6
+						      </label>
+						      <input class="form-control" id="brocatotal" name="brocatotal" type="text" ng-model="campodata.brocatotalnudos " required="true" />
+						     </div>
+						     <div class="form-group ">
+						      <div class=" ">
+						       <div class="checkbox">
+						        <label class="checkbox">
+						         <input name="optional" type="checkbox" value="Presencia cochinilla" ng-model="campodata.presenciacochinilla" />
+						         Presencia cochinilla
+						        </label>
+						       </div>
+						       <div class="checkbox">
+						        <label class="checkbox">
+						         <input name="optional" type="checkbox" value="Floral  Nueva" ng-model="campodata.floralnueva" />
+						         Floral  Nueva
+						        </label>
+						       </div>
+						       <div class="checkbox">
+						        <label class="checkbox">
+						         <input name="optional" type="checkbox" value="Vegetativa nueva" ng-model="campodata.vegetativanueva" />
+						         Vegetativa nueva
+						        </label>
+						       </div>
+						      </div>
+						     </div>
+						     <div class="form-group">
+						      <div>
+						       <button class="btn btn-primary " name="submit" type="submit">
+						        Guardar Camabios
+						       </button>
+						      </div>
+						     </div>
+	                    	
+	                    
+	                   </form>
+                    </div>
+                </div>
+                
+
+            </div>
+    </script>
+    
+     <script type="text/ng-template" id="/reportesdecampo.html">
+          <div class="container-fluid roya-wrap">
 
                 <!-- Page Heading -->
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Reportes de Roya
+                            Reportes de Campo
                         </h1>
                         
                         <div class="col-md-12">
@@ -1078,6 +1590,7 @@
                                 <button ng-click="exportData()" >Exportar</button>
                             </div>
                 <!-- /.row -->
+                
             <table class="table table-striped" style="display:none;" id='exportable'>
                 <thead>
                     <tr>
@@ -1087,16 +1600,92 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="row in testsList | orderBy : sort.column : sort.descending | myfilter:search">
-                        <td ng-click="loadTest(row);">{{row.createdAt}}</td>
-                        <td ng-click="loadTest(row);">{{row.departamento}}</td> 
-                        <td ng-click="loadTest(row);">{{row.incidencia}}%</td>
-                        <td ng-click="loadTest(row);">{{row.nombre}}</td> 
-                        <td ng-click="loadTest(row);">{{row.tipoCafe}}</td> 
-                        <td ng-click="loadTest(row);">{{row.user}}</td>
-                        </tr>
+                        <td >{{row.bandolas}}</td>
+                        <td >{{row.chasparria}}</td> 
+                        <td >{{row.createdAt}}</td>
+
+                        <td >{{row.frutosnudo5}}</td> 
+                        <td >{{row.frutosnudo6}}</td>
                     </tr>
                 </tbody>
             </table>
+
+            <!-- Modal -->
+                <div class="modal fade" id="detailModalCampo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Crear Usuario</h4>
+                      </div>
+                      <div class="modal-body">
+                                <div ng-show="error" class="alert alert-danger row">
+                                    <span>{{ error.message }}</span>
+                                  </div>
+            
+                                    <dl>
+                                        <dt>ID:</dt>
+                                        <dd>{{detail._id}}</dd>
+                                        <dt>Creación:</dt>
+                                        <dd>{{detail.createdAt}}</dd>
+                                        <dt>Fincaid:</dt>
+                                        <dd>{{detail.fincaid}}</dd>
+                                        <dt>Fecha:</dt>
+                                        <dd>{{detail.fecha}}</dd>
+
+                                        <dt>Bandolas:</dt>
+                                        <dd>{{detail.bandolas}}</dd>
+                                        <dt>Hojastotales:</dt>
+                                        <dd>{{detail.hojastotales}}</dd>
+
+                                        <dt>Roya:</dt>
+                                        <dd>{{detail.roya}}</dd>
+                                        <dt>Chasparria:</dt>
+                                        <dd>{{detail.chasparria}}</dd>
+                                        <dt>Antracnosis:</dt>
+                                        <dd>{{detail.antracnosis}}</dd>
+                                        <dt>Derrite:</dt>
+                                        <dd>{{detail.derrite}}</dd>
+
+                                        <dt>Ojodegallo:</dt>
+                                        <dd>{{detail.ojodegallo}}</dd>
+                                        <dt>Otro:</dt>
+                                        <dd>{{detail.otro}}</dd>
+                                        <dt>Nudosviejos:</dt>
+                                        <dd>{{detail.nudosviejos}}</dd>
+             
+                                        <dt>Maldehilachas:</dt>
+                                        <dd>{{detail.maldehilachas}}</dd>
+                                        <dt>Nudosmedios:</dt>
+                                        <dd>{{detail.nudosmedios}}</dd>
+                                        <dt>Nudosjovenes:</dt>
+                                        <dd>{{detail.nudosjovenes}}</dd>
+                                        <dt>Frutosnudo5:</dt>
+                                        <dd>{{detail.frutosnudo5}}</dd>
+
+                                        <dt>Frutosnudo6:</dt>
+                                        <dd>{{detail.frutosnudo6}}</dd>
+                                        <dt>Presenciacochinilla:</dt>
+                                        <dd>{{detail.presenciacochinilla}}</dd>
+
+                                        <dt>Floralnueva:</dt>
+                                        <dd>{{detail.floralnueva}}</dd>
+                                        <dt>Vegetativanueva:</dt>
+                                        <dd>{{detail.vegetativanueva}}</dd>
+                                        <dt>Brocatotalnudos:</dt>
+                                        <dd>{{detail.brocatotalnudos}}</dd>
+               
+                                    </dl>
+                                  
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                     </div>
+                    </div>
+                  </div>
+                </div>
+
+
                 <div class="row">
                     <div class="col-md-12">
                        <div class="roya-editor">
@@ -1108,14 +1697,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="row in testsList | orderBy : sort.column : sort.descending | myfilter:search | startFrom:(currentPage-1)*pageSize | limitTo:pageSize">
-                                        <td ng-click="loadTest(row);">{{row.createdAt}}</td>
-                                        <td ng-click="loadTest(row);">{{row.departamento}}</td> 
-                                        <td ng-click="loadTest(row);">{{row.incidencia}}%</td>
-                                        <td ng-click="loadTest(row);">{{row.nombre}}</td> 
-                                        <td ng-click="loadTest(row);">{{row.tipoCafe}}</td> 
-                                        <td ng-click="loadTest(row);">{{row.user}}</td>
-                                        <td> <button class="btn btn-danger" ng-click="removeTest(row._id)">X</button></td> 
+                                    <tr ng-repeat="row in testsList | myfilter:search | orderBy : sort.column : sort.descending | startFrom:(currentPage-1)*pageSize | limitTo:pageSize">
+                                            <td ng-click="loadTest(row);">{{row.bandolas}}</td>
+                                            <td ng-click="loadTest(row);">{{row.chasparria}}</td> 
+                                            <td ng-click="loadTest(row);">{{row.createdAt}}</td>
+             
+                                            <td ng-click="loadTest(row);">{{row.frutosnudo5}}</td> 
+                                            <td ng-click="loadTest(row);">{{row.frutosnudo6}}</td>
+                                        
                                         </tr>
                                     </tr>
                                 </tbody>
@@ -1123,158 +1712,16 @@
                             <div class="text-center">
                                 <pagination page="currentPage" max-size="noOfPages" previous-text="<" next-text=">" first-text="<<" last-text=">>" boundary-link-numbers="true" total-items="totalItems" items-per-page="pageSize"></pagination>
                             </div>
-                            <!-- Modal -->
-                                <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                                  <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                      <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <h4 class="modal-title" id="myModalLabel">Detalle de Reporte</h4>
-                                      </div>
-                                      <div class="modal-body">
-                                          <dl>
-                                              <dt>ID:</dt>
-                                              <dd>{{detail._id}}</dd>
-                                              <dt>User:</dt>
-                                              <dd>{{detail.user}}</dd>
-                                              <dt>Creación:</dt>
-                                              <dd>{{detail.createdAt}}</dd>
-                                              <dt>Modo:</dt>
-                                              <dd><span ng-show="detail.advMode">avanzado</span><span ng-hide="detail.advMode">Basico</span></dd>
-                                              <dt>Bandolas:</dt>
-                                              <dd><span ng-show="detail.bandolas">2</span><span ng-hide="detail.bandolas">1</span></dd>
-                                              <dt>Plantas:</dt>
-                                              <dd>{{detail.plantas.length}}</dd>
-                                              <dt>Incidencia:</dt>
-                                              <dd>{{ (detail.incidencia).toFixed(2) }}%</dd>
-                                              <dt>incideancia Promedio por Planta:</dt>
-                                              <dd>{{ (detail.inideanciaPromedioPlanta).toFixed(2) }}%</dd>
-                                              <dt>Severidad Promedio:</dt>
-                                              <dd>{{ (detail.severidadPromedio).toFixed(2) }}%</dd>
-                                              <dt>Municipio:</dt>
-                                              <dd>{{ detail.unidad.departamento }}</dd>
-                                              <dt>Detalle Unidad:</dt>
-                                              <dd>
-                                              {{detail.unidad.nombre}}<br/>
-                                              {{detail.unidad._id}}<br/>
-                                              Actualizado: {{detail.unidad.updatedAt}} <br>
-                                              Creado: {{detail.unidad.createdAt}}<br>
-                                              <span ng-show="detail.unidad.sombra">Tiene Sombra</span><br>
-                                              Altitud: {{detail.unidad.altitud}}<br>
-                                              Area de Cafe: {{detail.unidad.areaCafe}}<br>
-                                              Area total: {{detail.unidad.areaTotal}}<br>
-                                              Distanciamiento: {{detail.unidad.distanciamiento}}<br>
-                                              lote: {{detail.unidad.lote}}<br>
-                                              Edad: {{detail.unidad.edadLote}}<br>
-                                              Departamento: {{detail.unidad.departamento}}<br>
-                                              Municipio: {{detail.unidad.municipio}}<br>
-                                              rendimiento: {{detail.unidad.rendimiento}}<br>
-                                              <span ng-show="detail.unidad.enmiendasSuelo">Enmiendas de Suelo</span><br>
-                                              <span ng-show="detail.unidad.fertilizaFollaje">Fertiliza Follaje</span><br>
-                                              <span ng-show="detail.unidad.fertilizaSuelo">Fertiliza Suelo: {{detail.unidad.fertilizaSueloMes}}</span><br>
-                                              Inicia Cosecha: {{detail.unidad.inicioCosecha}}<br>
-                                              Final Cosecha: {{detail.unidad.finalCosecha}}<br>
-                                              Epoca lluviosa: {{detail.unidad.epocalluviosa}}<br>
-                                              Fin Epoca lluviosa: {{detail.unidad.FinEpocalluviosa}}<br>
-                                              <span ng-show="detail.unidad.fertilizaSuelo">Fertiliza Suelo</span><br>
-                                              <span ng-show="detail.unidad.fungicidasRoya">Fungicidas de Roya: <span ng-show="detail.unidad.fungicidas.contacto">Contacto</span></span>, <span ng-show="detail.unidad.fungicidas.sistemico">Sistemico</span>; Fechas: {{detail.unidad.fungicidasFechas}}</span><br>
-                                              <span ng-show="detail.unidad.manejoTejido">Manejo de Tejido: {{detail.unidad.manejoTejidoMes}}</span><br>
-                                              <span ng-show="detail.unidad.muestreo">Muestreo: {{detail.unidad.muestreoMes}}</span><br>
-                                              <span> Tipo de Cafe: <span ng-show="detail.unidad.tipoCafe.duro">duro</span> <span ng-show="detail.unidad.tipoCafe.estrictamenteDuro
-">estrictamenteDuro</span> <span ng-show="detail.unidad.tipoCafe.extraprime
-">extraprime</span> <span ng-show="detail.unidad.tipoCafe.prime
-">prime</span> <span ng-show="detail.unidad.tipoCafe.semiduro
-">semiduro</span></span><br>
-                                              <span> Variedad: <span ng-show="detail.unidad.variedad.bourbon">bourbon</span> <span ng-show="detail.unidad.variedad.catuai
-">catuai</span> <span ng-show="detail.unidad.variedad.caturra
-">caturra</span> <span ng-show="detail.unidad.variedad.maragogype
-">maragogype</span> </span><br>
-                                              <span ng-show="detail.unidad.verificaAgua">Tipo de verificacion de Agua: <span ng-show="detail.unidad.verificaAguaTipo.dureza">Contacto,</span></span> <span ng-show="detail.unidad.verificaAguaTipo.ph">Sistemico</span></span>; Fechas: {{detail.unidad.fungicidasFechas}}<br>
-                                              
-                                              
-                                              </dd>
-                                            </dl>
-                                       
-                                      </div>
-                                      <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Modal -->
-                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                  <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">Crear Usuario</h4>
-                      </div>
-                      <div class="modal-body">
-                                <div ng-show="error" class="alert alert-danger row">
-                                    <span>{{ error.message }}</span>
-                                  </div>
                 
-                                  <form ng-submit="createUser()" name="newuserForm" id="newserForm" data-toggle="validator">
-                
-                                    <div class="form-group">
-                                      <input type="text"
-                                      class="form-control"
-                                      placeholder="Nombre de usuario"
-                                      ng-model="newUser.username" required></input>
-                                    </div>
-                                    <div class="form-group">
-                                      <input type="text"
-                                      class="form-control"
-                                      placeholder="Numero Telefonico"
-                                      ng-model="newUser.phone" required></input>
-                                    </div>
-                                    <div class="form-group">
-                                      <label>Rol:</label>
-                                      <select class="form-control" ng-model="newUser.role">
-                                          <option>Cliente</option>
-                                          <option>Extensionista</option>
-                                          <option>Admin</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                      <label>Departamento/Municipio:</label>
-                                      <select id="departamentos" class="form-control" required>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                      <input type="email"
-                                      class="form-control"
-                                      placeholder="Correo Electrónico"
-                                      ng-model="newUser.email" required></input>
-                                    </div>
-                                   <div class="form-group">
-                                                <div class="form-group">
-                                                  <input type="password" data-minlength="6" class="form-control" id="inputPassword" placeholder="Contraseña" required>
-                                                </div>
-                                                <div class="form-group">
-                                                  <input type="password" class="form-control" id="inputPasswordConfirm" data-match="#inputPassword" data-match-error="No coinciden! " placeholder="Confirmar Contraseña" ng-model="newUser.password" required>
-                                                  <div class="help-block with-errors"></div>
-                                                </div>
-                                            </div>
-                                    
-                                  
-                                  </form>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary"  form="newuserForm" ng-disabled="newuserForm.$invalid" ng-click="createUser()">Guardar Usuario</button>
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
             </div>
-    </script>
+                </div>
+        </div>
+ </script>
+
+    
 
     <!-- Bootstrap Core JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
