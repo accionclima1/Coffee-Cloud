@@ -80,8 +80,10 @@
 					      
 					   
 				      </div>
-
-				      <!-- <a href="#/weather" class="btn btn-primary">Ver Mas</a> -->
+					  <br />
+				       <a href="#/weather" class="btn btn-primary">Mas Informacion</a> <br />
+				       <a href="#/forecast" class="btn btn-primary">Pronostico 10 dias</a> <br />
+				       <a href="#/moon" class="btn btn-primary">Astronomia</a><br />
 
 					</div>
 			   	</div>
@@ -96,8 +98,7 @@
 					owm: { key: function() { return 'cb8be1d2a64d8e31a4e56819f95b509b'; } },
 					fio: { key: function() { return 'fa519651750073a39baff5dbf42c8a7f'; } },
 					wug: { key: function() { return 'c98eba09df40e7bf'; } }
-				},
-				location: 'San Jose, Costa Rica'
+				}
 			});
 		
 		</script>
@@ -1297,34 +1298,66 @@
 			 <div class="container">
 				   	<div class="row">
 				   		<div class="col-md-6 col-md-offset-3">
-				   		  <div class="page-header">
-					        <h3>NARANJO - ALAJUELA</h3>
-					      </div>
+				   		  
 	
 					      <div class="weather-module">
-					      	<div class="degree">23º</div>
-					   		<div class="weather-module-meta">
-					   			<p>Nuboso 21º - 19º</p>
-					   			<p>Humedad: 68% | Viento: 21k/h ESE</p>
-					   		</div>
+					      	
 					      </div>
 	
 						</div>
 				   	</div>
 			   </div>
 	
-				<div class="section-weather">
-					<div class="container">
-						<div class="row">
-							<div class="col-md-12">
-								<h3>28 JULIO - 2 DE AGOSTO</h3>
-								<h3>AGOSTO</h3>
-							</div>
-						</div>
-					</div>
-				</div>
+				
 	
 			</div>
+			
+			
+			<script>
+				$('.weather-module').EasyWeather({
+				language: 'sp',
+				showDetails: true,
+				Keys: {
+					owm: { key: function() { return 'cb8be1d2a64d8e31a4e56819f95b509b'; } },
+					fio: { key: function() { return 'fa519651750073a39baff5dbf42c8a7f'; } },
+					wug: { key: function() { return 'c98eba09df40e7bf'; } }
+				}
+			});
+			</script>
+		</script>
+	<script type="text/ng-template" id="/forecast.html">
+			<div class="home-wrap weather">
+			 <div class="container">
+				   	<div class="row">
+				   		<div class="col-md-6 col-md-offset-3">
+				   		  
+	
+					      <div class="weather-module">
+					      	
+					      </div>
+	
+						</div>
+				   	</div>
+			   </div>
+	
+				
+	
+			</div>
+			
+			
+			<script>
+				$('.weather-module').EasyWeather({
+				language: 'sp',
+				forecasts: true,
+				nbForecastDays: 10,
+				providerId: 'wug',
+				Keys: {
+					owm: { key: function() { return 'cb8be1d2a64d8e31a4e56819f95b509b'; } },
+					fio: { key: function() { return 'fa519651750073a39baff5dbf42c8a7f'; } },
+					wug: { key: function() { return 'c98eba09df40e7bf'; } }
+				}
+			});
+			</script>
 		</script>
 	<script type="text/ng-template" id="/support.html">
 

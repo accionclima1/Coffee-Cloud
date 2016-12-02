@@ -460,6 +460,12 @@ a {
   font-size: 12px;
 }
 
+.weather-module {
+  /* width: 100% !important; */
+  /* text-align: center !important; */
+  margin: 52px auto !important;
+}
+
 .home-wrap .btn-primary,
 .roya-wrap .btn-primary {
     background-color: #3ebfff;
@@ -474,6 +480,7 @@ a {
     line-height: 30px;
     transition: all 0.4s ease;
     margin-bottom: 24px;
+    width: 100%;
 }
 
 .home-wrap .btn-primary:hover,
