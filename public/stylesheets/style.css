@@ -483,6 +483,23 @@ a {
     width: 100%;
 }
 
+
+.astro {
+    background: white;
+    border-radius: 4px;
+    color: #333;
+    margin: 24px 40px;
+    padding: 24px;
+}
+
+.astro span {
+    font-size: 18px;
+}
+
+.astro p {
+   font-weight: bolder;
+}
+
 .home-wrap .btn-primary:hover,
 .roya-wrap .btn-primary:hover {
     background-color: #3498db;
@@ -586,6 +603,14 @@ a {
   display: block;
   width: 100%;
   margin-bottom: 4px;
+}
+
+#otherArea {
+    display: none;
+}
+
+input:checked + label + #otherArea {
+    display: block;
 }
 
 .roya-wrap.initiated .intro {

@@ -1092,6 +1092,8 @@ app.controller('CampoCtrl', [
 
 		    $scope.saveTable = function () {
 		        campo.create($scope.campodata);
+		        
+		        alert("Informacion Enviada");
 		    };
 	        
 	    };
@@ -1622,6 +1624,16 @@ function($stateProvider, $urlRouterProvider) {
 	.state('forecast', {
 	  url: '/forecast',
 	  templateUrl: '/forecast.html',
+	  controller: 'RoyaCtrl',
+	  onEnter: ['$state', 'auth', function($state, auth){
+	    if(!auth.isLoggedIn()){
+	      $state.go('login');
+	    }
+	  }]
+	})
+	.state('moon', {
+	  url: '/moon',
+	  templateUrl: '/moon.html',
 	  controller: 'RoyaCtrl',
 	  onEnter: ['$state', 'auth', function($state, auth){
 	    if(!auth.isLoggedIn()){
