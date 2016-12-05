@@ -493,11 +493,15 @@ a {
 }
 
 .astro span {
-    font-size: 18px;
+    font-size: 14px;
+    font-weight: bolder;
+    font-family: Helvetica, sans-serif;
 }
 
 .astro p {
    font-weight: bolder;
+   font-size: 32px;
+   margin-bottom: 24px;
 }
 
 .home-wrap .btn-primary:hover,
