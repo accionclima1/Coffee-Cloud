@@ -10,6 +10,8 @@ var Method = mongoose.model('Method');
 var Campo = mongoose.model('Campo');
 var Roya = mongoose.model('Roya');
 var Gallo = mongoose.model('Gallo');
+// Load widget model
+var Widget = mongoose.model('Widget');
 var jwt = require('express-jwt');
 var auth = jwt({ secret: 'SECRET', userProperty: 'payload' });
 
@@ -493,6 +495,16 @@ router.get('/technico/units', function(req, res, next) {
     res.json(units);
   });
 });
+
+/* Route for widget */
+router.get('/getWidgets', function(req, res, next)
+{
+  Widget.find(function(err, widget){
+      if(err){return next(err);}
+      res.json(widget);
+  });
+});
+/* End */
 
 module.exports = router;
 

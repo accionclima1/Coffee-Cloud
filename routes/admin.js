@@ -7,6 +7,8 @@ var passport = require('passport');
 var User = mongoose.model('User');
 var Method = mongoose.model('Method');
 var Campo = mongoose.model('Campo');
+// Load widget model
+var Widget = mongoose.model('Widget');
 var jwt = require('express-jwt');
 var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
 
@@ -110,6 +112,26 @@ router.get('/campo', function(req, res, next) {
 });
 /* Campo routes */
 
+/* Widget Route*/
+router.post('/addwidget', function(req, res, next){
+    var wid = new Widget(req.body);
+    wid.save(function(err, widget){
+        if(err){return next(err);}
+        res.json(widget);
+    });
+});
+router.delete('/widget/:id', function(req, res)
+{
+    Widget.findByIdAndRemove(req.params.id, function(err, wid)
+    {
+        if(err){throw err;}
+        Widget.find(function(err, widget){
+            if(err){return next(err);}
+            res.json(widget);
+        });
+    });
+});
+/* End */
 router.put('/methods', auth, function(req, res, next) {
   
    var update = req.body;
