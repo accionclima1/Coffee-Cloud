@@ -8,6 +8,21 @@ var app = require('../app');
 var debug = require('debug')('coffee-cloud:server');
 var http = require('http');
 var socketio = require('socket.io');
+
+var multer = require('multer')
+var storage = multer.diskStorage({
+    destination: function (file, callback) {
+    	console.log("file mutler")
+    	console.log(file)
+        callback(null, './public/images');
+    },
+    filename: function (file, callback) {
+        callback(null, file.fieldname + '-' + Date.now());
+    }
+});
+//var upload = multer({ storage: storage }).single('attachement');
+var upload = multer({ dest: './public/images/' })
+
 /**
  * Get port from environment and store in Express.
  */
@@ -38,11 +53,12 @@ app.set('server', server);
 io.on('connection',function(socket){ 
 	var mongoose = require('mongoose'); 
 	var Chat = mongoose.model('Chat');
-	var Message = mongoose.model('Message');  
+	var Message = mongoose.model('Message');
+
     socket.on('get msg',function(data){
       console.log('Socketazo Received');
       sendMsg(data,function(result){
-        	io.emit('set msg',JSON.stringify({chat:result,to_user:data.to_user,from_id:data.from_id}));
+        	io.emit('set msg',JSON.stringify({chat:result,to_user:data.to_user,from_id:data.from_id,bodyattachement: data.bodyattachement}));
         	pushChats();
       });
       
@@ -95,11 +111,15 @@ var sendMsg = function (data,callback_result) {
 			  chat.sender = from_id;
 			  chat.reciber = to_user;
 			  chat.chatid = chatId;
-			
+			console.log("chat data if")
+						console.log(data)
+					 var attachment = typeof(data.bodyattachement) == "undefined" ? "null" : data.bodyattachement;
+				
+
 			  chat.save(function(err, chat){
 			    if(err){ return next(err); }
 			    	
-			    	getMessages(data.message,chat,function(conversation){
+			    	getMessages(data.message,attachment,chat,function(conversation){
 						callback_result(conversation)
 					})
 			  });
@@ -107,7 +127,10 @@ var sendMsg = function (data,callback_result) {
 	    } else {
 		    	Chat.findOne({chatid: chatId},function (err, chat){ 
 			    	//console.log(chat._id);
-					getMessages(data.message,chat,function(conversation){
+					
+					 var attachment = typeof(data.bodyattachement) == "undefined" ? null : data.bodyattachement;
+				
+					getMessages(data.message,attachment,chat,function(conversation){
 						callback_result(conversation)
 						//console.log(conversation);
 					})
@@ -117,7 +140,8 @@ var sendMsg = function (data,callback_result) {
 		    
 	});
 	
-var getMessages = function(messageBody,chat,callback) {
+var getMessages = function(messageBody,attachment,chat,callback) {
+
 	 var message = new Message();
 	 message.chat = chat._id;
 	 message.timestamp = timestamp;
@@ -129,6 +153,24 @@ var getMessages = function(messageBody,chat,callback) {
 	 else {
 	    message.bodyMsg = messageBody.bodyMsg;
 		message.sender_id = messageBody.sender_id;
+	 }	
+	
+	 if(attachment == null) {
+	
+	 }
+	 else {
+	    message.Msgattachement = attachment;
+		message.sender_id = messageBody.sender_id;
+		   /* upload(attachment, function (err) {
+		        if (err) {
+		            return res.end("Error uploading file.");
+		        }
+		        res.end("File is uploaded");
+		    });*/
+		   var datasasd = upload.single(attachment)
+		   //var datasasd = attachment.toString('base64')
+		    console.log("strinf")
+		    console.log(datasasd)
 	 }			
 	 
 
