@@ -105,24 +105,44 @@ router.post('/campo', auth, function(req, res, next) {
 });
 
 router.post('/campo/addtests', function(req, res, next) {
-   //console.log(":Addtest",req.body)
-   var arr = req.body.plantas
-  
-   for (var i = 0, len = arr.length; i < len; i++) {
-     // console.log(arr[i][0]);
-      var campo = new Campo(arr[i][0]);
-      var end = (arr.length - 1)
+
+  var arr = req.body.plantas
+
+  if(arr.length == 0 ){
+        res.json(0);
+         
+  }
+  else{
+
+    
+
+      for (var i = 0, len = arr.length; i < len; i++) {
+          
+          if ( arr[i].length > 0 && arr[i][0] !== undefined ) {
+            if(arr[i][0] != null) {
+                var campo = new Campo(arr[i][0]);
+                var end = (arr.length - 1)
 
 
-      campo.save(function(err, campo){
-        if(err){ return next(err); }
-        console.log(end,i)
-      });
-       if(end === i) {
-             res.json(1);
-        }
+                campo.save(function(err, campo){
+                  if(err){ return next(err); }
+                  console.log(end,i)
+                });
+                 if(end === i) {
+                       res.json(1);
+                  }
+            } /*else {
+              res.json(0);
+            }*/
+              
+          } else {
+              res.json(0);
+          }
+      }
 
-    }
+       
+  }
+
 
 });
 
