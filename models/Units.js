@@ -51,6 +51,7 @@ var UnitSchema = new mongoose.Schema({
   finalCosecha:Date, 
   epocalluviosa:Date,
   FinEpocalluviosa:Date,
+  recomendaciontecnica: String,
   tipoCafe: {
 	  estrictamenteDuro: Boolean,
 	  duro: Boolean,

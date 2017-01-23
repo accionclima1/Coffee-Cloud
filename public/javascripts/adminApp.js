@@ -1,4 +1,4 @@
-var app = angular.module('coffeeScriptAdmin', ['btford.socket-io', 'ui.router', 'luegg.directives', 'ui.tinymce', 'ui.bootstrap']);
+var app = angular.module('coffeeScriptAdmin', ['btford.socket-io', 'ui.router', 'luegg.directives', 'ui.tinymce', 'ui.bootstrap', 'ngSanitize']);
 app.directive('fileModel', ['$parse', function ($parse) {
     return {
         restrict: 'A',
@@ -26,12 +26,13 @@ app.filter('startFrom', function () {
 });
 
 // Main controller 
-app.controller('MainCtrl', ['$scope', 'auth', 'roya', 'chats', 'user',
-	function ($scope, auth, chats, roya, user) {
+app.controller('MainCtrl', ['$scope', 'auth', 'roya', 'chats', 'user', 'widget',
+	function ($scope, auth, chats, roya, user, widget) {
 	    $scope.isLoggedIn = auth.isLoggedIn;
 	    $scope.currentUser = auth.currentUser;
 	    $scope.curUserRole = auth.currentUserRole();
 	    $scope.logOut = auth.logOut;
+	    $scope.msg = '';
 	    user.getAll().then(function (users) {
 	        $scope.userList = users;
 	    });
@@ -51,7 +52,38 @@ app.controller('MainCtrl', ['$scope', 'auth', 'roya', 'chats', 'user',
 	        $('body').removeClass('loggedin');
 	        $('body').addClass('loggedOff');
 	    }
+	    // Add new widget
+	    $scope.addWidget = function(wid)
+	    {
+	    	wid.user = auth.currentUserObject()._id;
+	    	widget.create(wid).then(function(data){
+	    		$scope.wid = {};
+	    		$('#myModal').modal('hide');
+	    		$scope.msg = 'widget Added successfully.';
+				widget.getAll().then(function(data)
+			   	{
+			   		$scope.widget = data;
+			   	});	    		
+	    	});
+	    }
+
+	    widget.getAll().then(function(data)
+	   	{
+	   		$scope.widget = data;
+	   	});
+
+	   	$scope.delwid = function(id)
+	   	{
+	   		widget.remove(id).then(function(data)
+	   		{
+	   			$scope.widget = data;	
+	   		});
+	   	}
+	   	
 	}]);
+	
+	
+app.filter('unsafe', function($sce) { return $sce.trustAsHtml; });
 
 // Authorize controller
 app.controller('AuthCtrl', [
@@ -78,9 +110,34 @@ app.controller('AuthCtrl', [
 	            $scope.error = error;
 	        }).then(function () {
 	            $state.go('home');
+	            $state.reload();
 	        });
 	    };
 	}]);
+
+// Services for widget
+app.factory('widget', ['$http', function($http){
+	var w = {};
+	w.getAll = function()
+	{
+		return $http.get('/getWidgets').success(function(data){
+			return data;
+		});
+	};
+	w.create = function(wid)
+	{
+		return $http.post('/admin/addwidget', wid).success(function(data){
+    		return data;
+    	});
+	};
+	w.remove = function(id)
+	{
+		return $http.delete('/admin/widget/'+id).success(function(data) {
+			return data;
+		});
+	}
+	return w;
+}]);
 
 app.factory('posts', ['$http', 'auth', function ($http, auth) {
     var o = {
@@ -141,13 +198,13 @@ app.factory('socket', ['socketFactory',
 	function (socketFactory) {
 	    return socketFactory({
 	        prefix: '',
-	        ioSocket: io.connect('http://coffeecloud.centroclima.org:3000')
+	        ioSocket: io.connect('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000')
 	    });
 	}
 ]);
 
 //authorize service
-app.factory('auth', ['$http', '$window', function ($http, $window) {
+app.factory('auth', ['$http','$state', '$window', function ($http, $state, $window) {
     var auth = {};
 
     auth.saveToken = function (token) {
@@ -272,7 +329,7 @@ app.controller('AdaptacionCtrl', [
 
 	}]);
 
-//USers editor controller
+//Users editor controller
 app.controller('UsersCtrl', [
 	'$scope',
 	'auth',
@@ -336,6 +393,122 @@ app.controller('UsersCtrl', [
 
 	}]);
 
+app.controller('CampoCtrl', [
+	'$scope',
+	'auth',
+	'$location',
+	'campoService',
+	'$window',
+    'user',
+	function ($scope, auth, $location, campo,  $window, user) { 
+	    var currentTest = null;
+	  
+	    var loadAll = function () {
+
+	    	campo.get().then(function (campo) {
+		    	$scope.testsList = campo.data;
+	            $scope.currentPage = 1;
+	            $scope.pageSize = 9;
+	            $scope.noOfPages = Math.ceil($scope.testsList / $scope.pageSize);
+	            $scope.totalItems = $scope.testsList.length;
+		    })
+
+		    $scope.saveTable = function () {
+		        campo.create($scope.campodata);
+		    };
+	        
+	    };
+
+	    loadAll();
+	    $(".date-field").datepicker();
+
+	    $scope.head = {
+	        createdAt: "Fecha",
+	        bandolas: "Bandolas",
+	        chasparria: "Chasparria",
+	        frutosnudo5: "Frutos nudo 5",
+	        frutosnudo6: "Frutos nudo 6",
+	    };
+
+
+	    $scope.sort = {
+	        column: 'createdAt',
+	        descending: false
+	    };
+
+	    $scope.selectedCls = function (column) {
+	        return column == $scope.sort.column && 'sort-' + $scope.sort.descending;
+	    };
+
+	    $scope.changeSorting = function (column) {
+	        var sort = $scope.sort;
+	        if (sort.column == column) {
+	            sort.descending = !sort.descending;
+	        } else {
+	            sort.column = column;
+	            sort.descending = false;
+	        }
+	    };
+
+	    $scope.loadTest = function (test) {
+	        currentTest = test;
+	        $scope.detail = currentTest;
+
+	        $('#detailModalCampo').modal('show');
+
+	    }
+
+	    $scope.removeTest = function (id) {
+
+	    }
+	    $scope.exportData = function () {
+	        var table = document.getElementById('exportable');
+	        var html = table.outerHTML;
+	        window.open('data:application/vnd.ms-excel,' + encodeURIComponent(html));
+	    };
+	    $scope.search = {};
+	    //$watch search to update pagination
+	    $scope.$watch('search', function (newVal, oldVal) {
+	        if ($scope.testsList != undefined) {
+	            $scope.filtered = $scope.testsList;
+	            var arrayToReturn = [];
+	            for (var i = 0; i < $scope.testsList.length; i++) {
+	                if (newVal._id != undefined && newVal._id != "") {
+	                    if ($scope.testsList[i] == newVal._id) {
+	                        arrayToReturn.push($scope.testsList[i]);
+	                    }
+	                }
+	                if (newVal.dateFrom != undefined && newVal.dateFrom != "" && newVal.dateTo != "" && newVal.dateTo != undefined) {
+	                    var startDate = parseDate(newVal.dateFrom);
+	                    var endDate = parseDate(newVal.dateTo);
+	                    var createDate = new Date($scope.testsList[i].createdAt);
+	                    
+	                    if (createDate >= startDate && createDate <= endDate) {
+	                        arrayToReturn.push($scope.testsList[i]);
+	                    }
+	                }
+	                if (newVal.dateFrom == undefined && newVal.dateTo == undefined && newVal._id == undefined) {
+	                    arrayToReturn.push($scope.testsList[i]);
+	                }
+	            }
+	            $scope.filtered = arrayToReturn;
+	            $scope.totalItems = $scope.filtered == undefined ? 0 : $scope.filtered.length;
+	            //$scope.pageSize = 9;
+	            $scope.noOfPages = Math.ceil($scope.totalItems / $scope.pageSize);
+	            $scope.currentPage = 1;
+	        }
+	        else {
+	            var arrayToReturn = [];
+	            $scope.filtered = arrayToReturn;
+	            $scope.totalItems = 0;
+	            $scope.noOfPages = Math.ceil($scope.totalItems / $scope.pageSize);
+	            $scope.currentPage = 1;
+
+	        }
+	    }, true);
+	}]);	
+	
+
 
 app.filter('startFrom', function () {
     return function (input, start) {
@@ -359,11 +532,25 @@ app.filter("myfilter", function () {
         if (items != undefined) {
             for (var i = 0; i < items.length; i++) {
                 var createDate = new Date(items[i].createdAt);
-                if (search._id != undefined && search._id != "") {
-                    if (items[i]._id == search._id) {
-                        arrayToReturn.push(items[i]);
-                    }
+
+                var tyepsrch = (typeof typesearch === "undefined")
+
+                if(tyepsrch === "true"){
+                	if (typesearch._id != undefined && search._id != "") {
+	                    if (items[i]._id == search._id) {
+	                        arrayToReturn.push(items[i]);
+	                    }
+	                }
                 }
+                else{
+                	if (search._id != "") {
+	                    if (items[i]._id == search._id) {
+	                        arrayToReturn.push(items[i]);
+	                    }
+	                }
+                }
+
+
                 if (search.dateFrom != undefined && search.dateFrom != "" && search.dateTo != "" && search.dateTo != undefined) {
                     var startDate = parseDate(search.dateFrom);
                     var endDate = parseDate(search.dateTo);
@@ -378,7 +565,9 @@ app.filter("myfilter", function () {
         }
         return arrayToReturn;
     };
+
 });
+
 //Roya controller
 app.controller('RoyaCtrl', [
 	'$scope',
@@ -476,9 +665,146 @@ app.controller('RoyaCtrl', [
 	    $scope.loadTest = function (test) {
 	        currentTest = test;
 	        $scope.detail = currentTest;
-	        console.log(currentTest);
+
 	        $('#detailModal').modal('show');
 
+	    }
+
+	    $scope.removeTest = function (id) {
+
+	        roya.delete(id).then(function (user) {
+	            loadAll();
+	        });
+	    }
+	    $scope.exportData = function () {
+	        var table = document.getElementById('exportable');
+	        var html = table.outerHTML;
+	        window.open('data:application/vnd.ms-excel,' + encodeURIComponent(html));
+	    };
+	    $scope.search = {};
+	    //$watch search to update pagination
+	    $scope.$watch('search', function (newVal, oldVal) {
+	        if ($scope.testsList != undefined) {
+	            $scope.filtered = $scope.testsList;
+	            var arrayToReturn = [];
+	            for (var i = 0; i < $scope.testsList.length; i++) {
+	                if (newVal._id != undefined && newVal._id != "") {
+	                    if ($scope.testsList[i] == newVal._id) {
+	                        arrayToReturn.push($scope.testsList[i]);
+	                    }
+	                }
+	                if (newVal.dateFrom != undefined && newVal.dateFrom != "" && newVal.dateTo != "" && newVal.dateTo != undefined) {
+	                    var startDate = parseDate(newVal.dateFrom);
+	                    var endDate = parseDate(newVal.dateTo);
+	                    var createDate = new Date($scope.testsList[i].createdAt);
+	                    if (createDate >= startDate && createDate <= endDate) {
+	                        arrayToReturn.push($scope.testsList[i]);
+	                    }
+	                }
+	                if (newVal.dateFrom == undefined && newVal.dateTo == undefined && newVal._id == undefined) {
+	                    arrayToReturn.push($scope.testsList[i]);
+	                }
+	            }
+	            $scope.filtered = arrayToReturn;
+	            $scope.totalItems = $scope.filtered == undefined ? 0 : $scope.filtered.length;
+	            //$scope.pageSize = 9;
+	            $scope.noOfPages = Math.ceil($scope.totalItems / $scope.pageSize);
+	            $scope.currentPage = 1;
+	        }
+	        else {
+	            var arrayToReturn = [];
+	            $scope.filtered = arrayToReturn;
+	            $scope.totalItems = 0;
+	            $scope.noOfPages = Math.ceil($scope.totalItems / $scope.pageSize);
+	            $scope.currentPage = 1;
+
+	        }
+	    }, true);
+	}]);
+
+//TechRecCtrl controller
+app.controller('TechRecCtrl', [
+	'$scope',
+	'auth',
+	'$location',
+	'techRecService',
+	'socket',
+    '$window',
+    'user',
+	function ($scope, auth, $location, techRecService, socket, $window, user) {
+	    var currentTest = null;
+	    var loadAll = function () {
+	        techRecService.getAll().then(function (tests) {
+	            $scope.testsList = tests.data;
+	            $scope.currentPage = 1;
+	            $scope.pageSize = 9;
+	            $scope.noOfPages = Math.ceil($scope.testsList / $scope.pageSize);
+	            $scope.totalItems = $scope.testsList.length;
+	        });
+	    };
+
+	    loadAll();
+	    $(".date-field").datepicker();
+
+	    $scope.head = {
+	        createdAt: 		"Fecha",
+	        departamento: "Departamento",
+	        municipio: "Municipio",
+	        ubicacion: "Ubicacion",
+	        recomendaciontecnica: "Recomendaciontecnica",
+	        user: "User"
+	    };
+
+
+	    $scope.sort = {
+	        column: 'createdAt',
+	        descending: false
+	    };
+
+	    $scope.selectedCls = function (column) {
+	        return column == $scope.sort.column && 'sort-' + $scope.sort.descending;
+	    };
+
+	    $scope.changeSorting = function (column) {
+	        var sort = $scope.sort;
+	        if (sort.column == column) {
+	            sort.descending = !sort.descending;
+	        } else {
+	            sort.column = column;
+	            sort.descending = false;
+	        }
+	    };
+
+	    $scope.loadTest = function (test) {
+	        currentTest = test;
+	        $scope.detail = currentTest;
+	        console.log(currentTest);
+	        $('#detailModal').modal('show');
+	        user.get($scope.detail.user).then(function(obj)
+	    	{
+	    		$scope.reciverDetail = obj;
+	    	});
+	    }
+
+	    // Send message to user with unit detail
+	    $scope.msgsend = function()
+	    {
+	    	$scope.loguser = auth.currentUserObject(); 
+	    	var str =  'Unit Name : '+$scope.detail.departamento;
+	    		str += ' Id : '+$scope.detail._id;
+	    		str += ' Message : '+$scope.msgcontent;
+	    	msg = {
+				bodyMsg: str,
+				sender_id: $scope.loguser._id,
+			}
+			var data_server = {
+				message: msg,
+				to_user: $scope.reciverDetail.username,
+				from_id: $scope.loguser.username
+			};
+			socket.emit('get msg', data_server);
+			$scope.msgcontent = '';
+			$scope.msg = 'Message sent successfully.';
 	    }
 
 	    $scope.removeTest = function (id) {
@@ -834,7 +1160,33 @@ app.factory('methods', ['$http', 'auth', function ($http, auth) {
 
     return o;
 }]);
+//campocontoller Fact
+app.factory('campoService', ['$http', 'auth', function ($http, auth) {
+    var o = {
+        chats: []
+    };
+    o.get = function () {
+        return $http.get('/admin/campo/').success(function (data) {
+            return data;
+        });
+    };
+    o.create = function (method) {
+        return $http.post('/admin/campo', method, {
+            headers: { Authorization: 'Bearer ' + auth.getToken() }
+        }).success(function (data) {
+            return data;
+        });
+    };
+    o.update = function (method) {
+        return $http.put('/admin/methods', method, {
+            headers: { Authorization: 'Bearer ' + auth.getToken() }
+        }).success(function (data) {
+            return data;
+        });
+    };
 
+    return o;
+}]);
 
 
 app.factory('roya', ['$http', 'auth', function ($http, auth) {
@@ -844,6 +1196,34 @@ app.factory('roya', ['$http', 'auth', function ($http, auth) {
     o.getAll = function () {
         return $http.get('/roya').success(function (data) {
             return data;
+        });
+    };
+    o.create = function (roya) {
+        return $http.post('/roya', roya, {
+            headers: { Authorization: 'Bearer ' + auth.getToken() }
+        }).success(function (data) {
+            return data;
+        });
+    };
+    o.delete = function (test) {
+        return $http.delete('/roya/' + test, {
+            headers: { Authorization: 'Bearer ' + auth.getToken() }
+        }).success(function (data) {
+            return data
+        });
+    };
+
+    return o;
+}]);
+
+//TechRecCtrl
+app.factory('techRecService', ['$http', 'auth', function ($http, auth) {
+    var o = {
+
+    };
+    o.getAll = function () {
+        return $http.get('/technico/units').success(function (data) {
+           return data;
         });
     };
     o.create = function (roya) {
@@ -878,7 +1258,7 @@ app.config([
 			        var curUserRole = auth.currentUserRole();
 			        if (!auth.isLoggedIn()) {
 			            $state.go('login');
-			        } else if (curUserRole != 'admin' && curUserRole != 'Admin' && curUserRole != 'Extensionista') {
+			        } else if (curUserRole != 'admin' && curUserRole != 'Admin' && curUserRole != 'Extensionista' && curUserRole != 'Tecnico') {
 			            window.location.href = '/';
 			        }
 			    }]
@@ -890,7 +1270,7 @@ app.config([
 			    onEnter: ['$state', 'auth', function ($state, auth) {
 			        if (auth.isLoggedIn()) {
 			            var curUserRole = auth.currentUserRole();
-			            if (curUserRole != 'admin' && curUserRole != 'Admin' && curUserRole != 'Extensionista') {
+			            if (curUserRole != 'admin' && curUserRole != 'Admin' && curUserRole != 'Extensionista' && curUserRole != 'Tecnico') {
 			                window.location.href = '/';
 			            }
 			            else {
@@ -991,6 +1371,51 @@ app.config([
 			            $state.go('login');
 			        }
 			        else if (curUserRole != 'admin' && curUserRole != 'Admin' && curUserRole != 'Extensionista') {
+			            window.location.href = '/';
+			        }
+			    }]
+			})
+			.state('recomendaciontecnica', {
+			    url: '/technical-recommendation',
+			    templateUrl: '/tech_recom.html',
+			    controller: 'TechRecCtrl',
+			    onEnter: ['$state', 'auth', function ($state, auth) {
+			        var curUserRole = auth.currentUserRole();
+			        
+			        if (!auth.isLoggedIn()) {
+			            $state.go('login');
+			        }
+			        else if (curUserRole != 'admin' && curUserRole != 'Admin' && curUserRole != 'Extensionista' && curUserRole != 'Tecnico') {
+			            window.location.href = '/';
+			        }
+			    }]
+			})
+			.state('campo', {
+			    url: '/campo',
+			    templateUrl: '/campo.html',
+			    controller: 'CampoCtrl',
+			    onEnter: ['$state', 'auth', function ($state, auth) {
+			        var curUserRole = auth.currentUserRole();
+			        
+			        if (!auth.isLoggedIn()) {
+			            $state.go('login');
+			        }
+			        else if (curUserRole != 'admin' && curUserRole != 'Admin' && curUserRole != 'Extensionista' && curUserRole != 'Tecnico') {
+			            window.location.href = '/';
+			        }
+			    }]
+			})
+			.state('reportescampo', {
+			    url: '/reportesdecampo',
+			    templateUrl: '/reportesdecampo.html',
+			    controller: 'CampoCtrl',
+			    onEnter: ['$state', 'auth', function ($state, auth) {
+			        var curUserRole = auth.currentUserRole();
+			        
+			        if (!auth.isLoggedIn()) {
+			            $state.go('login');
+			        }
+			        else if (curUserRole != 'admin' && curUserRole != 'Admin' && curUserRole != 'Extensionista' && curUserRole != 'Tecnico') {
 			            window.location.href = '/';
 			        }
 			    }]

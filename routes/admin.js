@@ -6,6 +6,9 @@ var Message = mongoose.model('Message');
 var passport = require('passport');
 var User = mongoose.model('User');
 var Method = mongoose.model('Method');
+var Campo = mongoose.model('Campo');
+// Load widget model
+var Widget = mongoose.model('Widget');
 var jwt = require('express-jwt');
 var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
 
@@ -51,12 +54,12 @@ router.post('/methods', auth, function(req, res, next) {
 router.get('/methods', function(req, res, next) {
   Method.find(function(err, methods){
     if(err){ return next(err); }
-	
-    res.json(methods);
+	     res.json(methods);
   });
 });
 
 router.put('/methods', auth, function(req, res, next) {
+	
    var update = req.body;
   Method.findById(req.body._id, function(err, method ) {
   if (!method)
@@ -87,6 +90,121 @@ router.put('/methods', auth, function(req, res, next) {
 });
 });
 
+
+/* Campo routes */
+
+router.post('/campo', auth, function(req, res, next) {
+  var campo = new Campo(req.body);
+
+
+  campo.save(function(err, campo){
+    if(err){ return next(err); }
+     console.log(campo)
+    res.json(campo);
+  });
+});
+
+router.post('/campo/addtests', function(req, res, next) {
+
+  var arr = req.body.plantas
+
+  if(arr.length == 0 ){
+        res.json(0);
+         
+  }
+  else{
+
+    
+
+      for (var i = 0, len = arr.length; i < len; i++) {
+          
+          if ( arr[i].length > 0 && arr[i][0] !== undefined ) {
+            if(arr[i][0] != null) {
+                var campo = new Campo(arr[i][0]);
+                var end = (arr.length - 1)
+
+
+                campo.save(function(err, campo){
+                  if(err){ return next(err); }
+                  console.log(end,i)
+                });
+                 if(end === i) {
+                       res.json(1);
+                  }
+            } /*else {
+              res.json(0);
+            }*/
+              
+          } else {
+              res.json(0);
+          }
+      }
+
+       
+  }
+
+
+});
+
+router.get('/campo', function(req, res, next) {
+    Campo.find(function(err, methods){
+      if(err){ return next(err); }
+         res.json(methods);
+    });
+});
+/* Campo routes */
+
+/* Widget Route*/
+router.post('/addwidget', function(req, res, next){
+    var wid = new Widget(req.body);
+    wid.save(function(err, widget){
+        if(err){return next(err);}
+        res.json(widget);
+    });
+});
+router.delete('/widget/:id', function(req, res)
+{
+    Widget.findByIdAndRemove(req.params.id, function(err, wid)
+    {
+        if(err){throw err;}
+        Widget.find(function(err, widget){
+            if(err){return next(err);}
+            res.json(widget);
+        });
+    });
+});
+/* End */
+router.put('/methods', auth, function(req, res, next) {
+  
+   var update = req.body;
+  Method.findById(req.body._id, function(err, method ) {
+  if (!method)
+    return next(new Error('Could not load Document'));
+  else {
+    // do your updates here
+      method.caseInidence10.abrilJunio       = req.body.caseInidence10.abrilJunio;
+    method.caseInidence10.julioSetiembre     = req.body.caseInidence10.julioSetiembre 
+    method.caseInidence10.octubreDiciembre   = req.body.caseInidence10.octubreDiciembre; 
+    method.caseInidence1120.abrilJunio     = req.body.caseInidence1120.abrilJunio;
+    method.caseInidence1120.julioSetiembre   = req.body.caseInidence1120.julioSetiembre;
+    method.caseInidence1120.octubreDiciembre = req.body.caseInidence1120.octubreDiciembre;
+    method.caseInidence2150.abrilJunio       = req.body.caseInidence2150.abrilJunio;
+    method.caseInidence2150.julioSetiembre   = req.body.caseInidence2150.julioSetiembre;
+    method.caseInidence2150.octubreDiciembre = req.body.caseInidence2150.octubreDiciembre;
+    method.caseInidence50.abrilJunio       = req.body.caseInidence50.abrilJunio;
+    method.caseInidence50.julioSetiembre     = req.body.caseInidence50.julioSetiembre;
+    method.caseInidence50.octubreDiciembre   = req.body.caseInidence50.octubreDiciembre;
+  
+    method.save(function(err) {
+      if (err)
+        console.log('error');
+      else
+        console.log(method);
+        res.json(method);
+    });
+  }
+});
+});
 
 module.exports = router;
 

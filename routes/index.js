@@ -1,5 +1,12 @@
 var express = require('express');
 var router = express.Router();
+var speakeasy = require('speakeasy');
+var crypto = require('crypto'),
+    algorithm = 'aes-256-ctr',
+    password = 'd6F3Efeq';
+
+
+var mail = require('../config/mail');
 var mongoose = require('mongoose');
 var Post = mongoose.model('Post');
 var Unit = mongoose.model('Unit');
@@ -7,7 +14,11 @@ var Comment = mongoose.model('Comment');
 var passport = require('passport');
 var User = mongoose.model('User');
 var Method = mongoose.model('Method');
+var Campo = mongoose.model('Campo');
 var Roya = mongoose.model('Roya');
+var Gallo = mongoose.model('Gallo');
+// Load widget model
+var Widget = mongoose.model('Widget');
 var jwt = require('express-jwt');
 var auth = jwt({ secret: 'SECRET', userProperty: 'payload' });
 
@@ -22,13 +33,19 @@ var storage = multer.diskStorage({
 });
 var upload = multer({ storage: storage }).single('userPhoto');
 
-
-router.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
-
+function encrypt(text){
+  var cipher = crypto.createCipher(algorithm,password)
+  var crypted = cipher.update(text,'utf8','hex')
+  crypted += cipher.final('hex');
+  return crypted;
+}
+ 
+function decrypt(text){
+  var decipher = crypto.createDecipher(algorithm,password)
+  var dec = decipher.update(text,'hex','utf8')
+  dec += decipher.final('utf8');
+  return dec;
+}
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -151,7 +168,7 @@ router.post('/register', function(req, res, next){
   if(!req.body.username || !req.body.password || !req.body.email ){
     return res.status(400).json({message: 'Por favor, llene todos los campos'});
   }
-  
+    console.log(req.body)
   var user = new User();
 
   user.username = req.body.username;
@@ -166,8 +183,11 @@ router.post('/register', function(req, res, next){
   
   user.exteMunicipio = req.body.municipio;
   
-  user.role = req.body.role;
+  //user.recomendaciontecnica = req.body.recomendaciontecnica;
   
+  user.role = req.body.role;
+
+ 
   user.save(function (err){
     if(err){ return res.status(500).json({message: 'Usuario o Correo ya an sido registrados'}) }
 
@@ -189,6 +209,105 @@ router.post('/login', function(req, res, next){
       return res.status(401).json(info);
     }
   })(req, res, next);
+});
+router.post('/requestpasswordchange', function(req, res, next){
+  if(!req.body.Email){
+    return res.status(400).json({message: 'Proporcione correo electrónico'});
+  }
+
+  var query = User.findOne({"email" : req.body.Email});
+    query.exec(function (err, user){
+      if (err) {  console.log("err in forgot pasword");  return next(err); }
+      if (!user) { console.log("user"); /*return next(new Error('can\'t find user'));*/; res.json({"success" : false, data : 0}); }
+      else{
+        var secret = speakeasy.generateSecret({length: 20});
+        var tfa =  { secret: secret.base32 };
+        var token = speakeasy.totp({
+                        secret: tfa.secret,
+                        encoding: 'base32',
+                        step:180
+                    });
+        var userIde = (user._id)
+        userIde = encrypt( req.body.Email );
+
+
+
+        //config.environment().url_domain
+        var mailcontent = {
+            from: '"Coffee Cloud" <centroclimaorg@gmail>', // sender address
+            to: req.body.Email, // list of receivers
+            subject: 'Contraseña Temporal', // Subject line
+            html: `<p>Hi ${user.username} <p>
+                                <p>Aqui esta su contraseña temporal.<br />
+                                    
+                                    OTP: ${token},<br />
+                                   
+                                    Saludos,<br />
+                                    Coffee Cloud</p>
+                                  ` // html body
+        }
+        mail.sendEmail(mailcontent);
+
+        res.json({"success" : true,data : {sec : secret.base32 , use : userIde}});
+     }
+    });
+});
+
+router.post('/changeauthenticate', function(req, res, next){
+ console.log(req.body)
+  if(!req.body.otp || !req.body.support){
+    return res.status(400).json({message: 'Solicitud no válida'});
+  }
+
+  var secret = req.body.support.sec
+  var tokenValidates = speakeasy.totp.verify({
+    secret: secret,
+    encoding: 'base32',
+    step:180,
+    token: req.body.otp
+  });
+
+ if(tokenValidates){
+  res.json(1)
+ }
+ else{
+ res.json(0)
+ }
+
+});
+router.post('/passwordchange', function(req, res, next){
+
+  if(!req.body.pasword || !req.body.user){
+    return res.status(400).json({message: 'Solicitud no válida'});
+  }
+  if(req.body.pasword.password !== req.body.pasword.cpassword){
+    return res.status(401).json({message: 'La contraseña no coincide'});
+  }
+  else{
+    
+    userIde = decrypt( req.body.user.use );
+
+
+    var query = User.findOne({"email" : userIde});
+    query.exec(function (err, user){
+      if (err) {  console.log("err in forgot pasword");  return next(err); }
+      if (!user) { console.log("user"); /*return next(new Error('can\'t find user'));*/; res.json({"success" : false, data : 0}); }
+      else{
+        
+          user.setPassword(req.body.pasword.password);
+
+          user.save(function (err) {
+                if (err){
+                    console.log('error');
+                    res.json({"success" : false, data : 0});
+                  }
+                else
+                    res.json({"success" : true, data : 1});
+            });
+      }
+    })
+  }
+
 });
 
 router.param('user', function(req, res, next, id) {
@@ -226,11 +345,12 @@ router.param('test', function(req, res, next, id) {
 
 router.post('/users/:user/units', auth, function(req, res, next) {
   var unit = new Unit(req.body);
+
   //post.author = req.payload.username;
   	 unit.nombre = req.body.nombre;
      unit.altitud = req.body.altitud; 
      unit.departamento = req.body.departamento;
-	 unit.municipio = req.body.municipio;
+	   unit.municipio = req.body.municipio;
      unit.ubicacion = req.body.ubicacion;
      unit.areaTotal = req.body.areaTotal;
      unit.areaCafe = req.body.areaCafe ;
@@ -259,6 +379,7 @@ router.post('/users/:user/units', auth, function(req, res, next) {
      unit.finalCosecha = req.body.finalCosecha;
      unit.epocalluviosa = req.body.epocalluviosa;
      unit.FinEpocalluviosa = req.body.FinEpocalluviosa;
+     unit.recomendaciontecnica = req.body.recomendaciontecnica;
      unit.tipoCafe = req.body.tipoCafe;
      unit.user = req.user;
      
@@ -326,6 +447,7 @@ router.put('/users/:user/units/:unit', auth, function(req, res, next) {
 	     unit.finalCosecha = req.body.finalCosecha;
 	     unit.epocalluviosa = req.body.epocalluviosa;
 	     unit.FinEpocalluviosa = req.body.FinEpocalluviosa;
+       unit.recomendaciontecnica = req.body.recomendaciontecnica;
 	     unit.tipoCafe = req.body.tipoCafe;
 	      
 	    unit.save(function(err) {
@@ -379,6 +501,7 @@ router.get('/users/:user', function(req, res, next) {
 
 router.put('/users/:user', auth, function (req, res, next) {
     var update = req.body;
+    
     User.findById(req.body._id, function(err, user ) {
         if (!user)
             return next(new Error('Could not load Document'));
@@ -388,7 +511,8 @@ router.put('/users/:user', auth, function (req, res, next) {
 	        user.phone = req.body.phone;
 	        user.role = req.body.role;
 
-	        user.nickname = req.body.nickname;
+          user.nickname = req.body.nickname;
+	        //user.recomendaciontecnica = req.body.recomendaciontecnica;
 	        user.image = req.body.image;
 
             if (req.body.password) {
@@ -445,6 +569,34 @@ router.get('/roya', function(req, res, next) {
   });
 });
 
+router.post('/gallo', auth, function(req, res, next) {
+
+  var gallo = new Gallo(req.body);
+  gallo.advMode = req.body.advMode;
+  gallo.bandolas = req.body.bandolas;
+	gallo.resolved = req.body.resolved;
+	gallo.user = req.body.user;
+	gallo.plantas = req.body.plantas;
+	gallo.unidad = req.body.unidad;
+	gallo.incidencia = req.body.incidencia;
+	gallo.inideanciaPromedioPlanta = req.body.avgplnt;
+	gallo.severidadPromedio = req.body.avgplntDmgPct;
+  
+  gallo.save(function(err, gallo){
+    if(err){ return next(err); }
+
+    res.json(gallo);
+  });
+});
+
+router.get('/gallo', function(req, res, next) {
+  Gallo.find(function(err, gallo){
+    if(err){ return next(err); }
+
+    res.json(gallo);
+  });
+});
+
 router.delete('/roya/:test', auth, function (req, res) {
 	Roya.findByIdAndRemove(req.params.test, function (err,test){
     if(err) { throw err; }
@@ -453,6 +605,25 @@ router.delete('/roya/:test', auth, function (req, res) {
 	});
   
 });
+
+router.get('/technico/units', function(req, res, next) {
+
+  Unit.find(function(err, units){
+    if(err){ return next(err); }
+
+    res.json(units);
+  });
+});
+
+/* Route for widget */
+router.get('/getWidgets', function(req, res, next)
+{
+  Widget.find(function(err, widget){
+      if(err){return next(err);}
+      res.json(widget);
+  });
+});
+/* End */
 
 module.exports = router;
 

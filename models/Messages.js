@@ -6,6 +6,7 @@ var MessageSchema = new mongoose.Schema({
   sender: String,
   reciber: String,
   bodyMsg: String,
+  Msgattachement: String,
   read: false,
   sender_id: String,
   chat: { type: mongoose.Schema.Types.ObjectId, ref: 'Chat' }

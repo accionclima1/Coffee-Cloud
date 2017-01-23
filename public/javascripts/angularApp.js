@@ -1,8 +1,13 @@
-var app = angular.module('coffeeScript', ['btford.socket-io','ui.router','snap','luegg.directives','LocalStorageModule','ngSanitize']);
+var app = angular.module('coffeeScript', ['btford.socket-io','ui.router','snap','luegg.directives','LocalStorageModule','ngSanitize','ngFileUpload','base64']);
 
 app.config(['localStorageServiceProvider', function(localStorageServiceProvider){
   localStorageServiceProvider.setPrefix('ls');
-}])
+}]);
+
+app.config(function($httpProvider) {
+    //Enable cross domain calls
+    $httpProvider.defaults.useXDomain = true;
+});
 
 // Socket Factory service
 app.factory('socket', ['socketFactory',
@@ -10,35 +15,60 @@ app.factory('socket', ['socketFactory',
         return socketFactory({
             prefix: '',
             ioSocket: io.connect('http://coffeecloud.centroclima.org:3000')
+           // ioSocket: io.connect('http://localhost:3000')
         });
     }
 ]);
 
-app.controller('MainCtrl',['$scope','posts', 'auth',
-function($scope, posts, auth){
+app.directive('onlyNum', function() {
+    return function(scope, element, attrs) {
+
+        var keyCode = [8, 9, 37, 39, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 110];
+        element.bind("keydown", function(event) {
+            //console.log($.inArray(event.which,keyCode));
+            if ($.inArray(event.which, keyCode) === -1) {
+                scope.$apply(function() {
+                    scope.$eval(attrs.onlyNum);
+                    event.preventDefault();
+                });
+                event.preventDefault();
+            }
+
+        });
+    };
+});
+
+app.controller('MainCtrl',['$scope','posts', 'auth', 'widget',
+function($scope, posts, auth, widget){
 	$scope.isLoggedIn = auth.isLoggedIn;
 	$scope.currentUser = auth.currentUser;
-	$scope.posts = posts.posts;
-  	$scope.addPost = function(){
-	  	if(!$scope.title || $scope.title === '') { return; }
-		posts.create({
-		    title: $scope.title,
-		    link: $scope.link,
-		  });
-		$scope.title = '';
-		$scope.link = '';
-	};
-	$scope.incrementUpvotes = function(post) {
-	  posts.upvote(post);
-	};
+	// Get all widget
+	widget.getAll().then(function(data)
+   	{
+   		$scope.widget = data;
+   	});
 	
 }]);
+
+// Services for widget
+app.factory('widget', ['$http', function($http){
+	var w = {};
+	w.getAll = function()
+	{
+		return $http.get('http://coffeecloud.centroclima.org/:3000/getWidgets').success(function(data){
+			return data;
+		});
+	};
+	return w;
+}]);
+
 app.controller('PostsCtrl', [
 '$scope',
+'$window',
 'posts',
 'post',
 'auth',
-function($scope, posts, post, auth){
+function($scope, $window, posts, post, auth){
 		$scope.isLoggedIn = auth.isLoggedIn;
 		$scope.post = post;
 		$scope.addComment = function(){
@@ -61,7 +91,9 @@ app.controller('AuthCtrl', [
 '$scope',
 '$state',
 'auth',
-function($scope, $state, auth){
+'$window',
+'$timeout',
+function($scope, $state, auth,$window,$timeout){
   $scope.user = {};
   
   $scope.register = function(){
@@ -83,6 +115,147 @@ function($scope, $state, auth){
       $state.go('home');
     });
   };
+  // Tech - 12 jan
+  $scope.GenOtp = function(){
+    auth.GenOtp($scope.user).error(function(error){
+        $scope.error = error;
+    }).then(function(data){
+    	
+    	if(data.data.success == false){
+ 
+    		$scope.success = false
+    		$scope.error = {"message":"Usuario no encontrado"}
+    	}
+    	else if(data.data.success == true){
+    		$scope.error = false
+    		window.localStorage['otp-pasw-token'] = JSON.stringify(data.data.data);
+    		$state.go('authenticateotp');
+    		
+    		$scope.success = {"message":"Un Otp fue enviado a tu correo electrónico"}
+    	}      	
+    });
+  };
+  $scope.VerifyOTP = function(){
+  	if(!$scope.user.otp){
+  		
+  		return false;
+  	}
+  	var parseLoca = $window.localStorage['otp-pasw-token'] ? JSON.parse($window.localStorage['otp-pasw-token']) : null;
+  	if(parseLoca == null){
+  		
+  		$scope.success = false
+		$scope.error = true
+		$scope.error = {"message":"Inténtalo de nuevo solicitando nueva contraseña"}
+		$timeout(function(){
+			$state.go('forgotpassword');
+		}, 2000);
+  		return false;
+  	}
+  	var data =  { otp : $scope.user.otp, support :  parseLoca}
+  	auth.VerifyOtp(data).error(function(error){
+        $scope.error = error;
+    }).then(function(data){
+    	if(data.data == 1){
+    		//window.localStorage.removeItem('otp-pasw-token');
+    		$scope.success = true
+    		$scope.error = false
+    		sessionStorage.removeItem("count_verify");
+    		$scope.success = {"message":"Verificado. Por favor espera..."}
+    		$timeout(function(){
+			$state.go('changepassword');
+			}, 1000);
+    		
+    	}
+    	else{
+    		if(sessionStorage.getItem("count_verify") == null){
+				  counter= sessionStorage.setItem("count_verify", 1);
+				  counters = 1;
+				}else{
+				  counters= parseInt(sessionStorage.getItem("count_verify")); 
+				  counters++;
+				  counter=sessionStorage.setItem("count_verify", counters);
+				}
+    		//window.localStorage.removeItem('otp-pasw-token');
+    		//$state.go('changepassword');
+    		$scope.success = false
+    		$scope.error = true
+    		var chance = 3 - counters;
+    		$scope.error = {"message":"No válido o caducado. Faltan "+chance+" oportunidades"}
+    		if(chance == 0){
+    			sessionStorage.removeItem("count_verify");
+    			window.localStorage.removeItem('otp-pasw-token');
+    			$timeout(function(){
+					$state.go('login');
+				}, 2000)
+    		}
+    	}
+
+      	
+    });
+  }
+  $scope.ChangePassword = function(){
+  	if(!$scope.user.password || !$scope.user.cpassword ){
+  		return false;
+  	}
+  	if($scope.user.password !== $scope.user.cpassword ){
+  		$scope.error =  {"message":"La contraseña no coincide "} 
+  		return false;
+  	}
+  	else{
+  		var parseLoca = $window.localStorage['otp-pasw-token'] ? JSON.parse($window.localStorage['otp-pasw-token']) : null;
+  		if(parseLoca == null){
+  			$scope.error =  {"message":"No se puede identificar al usuario. Inténtalo de nuevo"} 
+  			return false
+  		}
+  		var info = {pasword :$scope.user,user: parseLoca }
+	  	auth.ChangePassword(info).error(function(error){
+	        $scope.error = error;
+	    }).then(function(data){
+
+	    	if(data.data.success){
+	    		$scope.success = true
+	    		$scope.error = false
+	    		window.localStorage.removeItem('otp-pasw-token');
+	    		$scope.success = {"message":"Hecho! Contraseña cambiada correctamente. Por favor espera... "}
+	    		sessionStorage.removeItem("countchpas");
+	    		$timeout(function(){
+					$state.go('login');
+				}, 3000);
+	    	}
+	    	else{
+	    		var counter = null;
+	    		
+	    		if(sessionStorage.getItem("countchpas") == null){
+				  counter= sessionStorage.setItem("countchpas", 1);
+				  counters = 1;
+				}else{
+				  counters= parseInt(sessionStorage.getItem("countchpas")); 
+				  counters++;
+				  counter=sessionStorage.setItem("countchpas", counters);
+				}
+	    		//window.localStorage.removeItem('otp-pasw-token');
+	    		//$state.go('changepassword');
+	    		$scope.success = false
+	    		$scope.error = true
+
+	    		var chance = 3 - counters;
+	    		$scope.error = {"message":"Inválido. Faltan "+chance+" oportunidades"}
+	    		if(chance == 0){
+	    			sessionStorage.removeItem("countchpas");
+	    			window.localStorage.removeItem('otp-pasw-token');
+	    			$timeout(function(){
+						$state.go('login');
+					}, 2000)
+	    		}
+
+	    	}
+
+	      	
+	    });
+  	}
+  	
+
+  }
 }]);
 
 //Units Controller
@@ -219,6 +392,10 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
   $scope.currentUser = auth.currentUser;
   var currentId = auth.currentUser();
   var testInStore = localStorageService.get('localTest');
+  $scope.ClearTest = function(){
+  	localStorageService.remove('localTest');
+  	$state.go($state.current, {}, {reload: true})
+  }
   var plantEditor = function(plant) {
 	  $scope.plantname = plant;
 	  $scope.leafList = $scope.test.plantas[plant - 1];
@@ -456,6 +633,316 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
     
 }]);
 
+
+
+app.controller('GalloCtrl', [
+'$scope',
+'$state',
+'auth',
+'localStorageService',
+'socket',
+'unit',
+'user',
+'methods',
+'gallo',
+function($scope, $state, auth, localStorageService, socket, unit, user, methods, roya){
+  $scope.currentUser = auth.currentUser;
+  var currentId = auth.currentUser();
+  var testInStore = localStorageService.get('localTestgallo');
+  
+  $scope.ClearTest = function(){
+  	localStorageService.remove('localTestgallo');
+  	$state.go($state.current, {}, {reload: true})
+  }
+  var plantEditor = function(plant) {
+	  $scope.plantname = plant;
+	  $scope.leafList = $scope.test.plantas[plant - 1];
+	  //console.log($scope.leafList);
+	  $('#plantModal').modal('show');
+  };
+    $scope.affect = 1;
+    user.get(auth.userId()).then(function(user){
+		 $scope.units = user.units;
+    });
+    
+     $scope.test = testInStore || {
+	  	advMode : false,
+	  	bandolas : false,
+	  	resolved: false,
+	  	user : currentId,
+	  	plantas: [],
+	  	unidad: {},
+	  	incidencia: 0,
+	  	avgplnt : "",
+		avgplntDmgPct : 0,
+		incidencia : 0
+	  };
+	methods.get().then(function(methods){
+		 var meth = methods.data[0];
+		 var date = new Date();
+		 var currentMonth = date.getMonth();
+		if(currentMonth < 6 ){
+		   var methodsAvail = {};
+		   methodsAvail.grade1 = meth.caseInidence10.abrilJunio;
+		   methodsAvail.grade2 = meth.caseInidence1120.abrilJunio;
+		   methodsAvail.grade3 = meth.caseInidence2150.abrilJunio;
+		   methodsAvail.grade4 = meth.caseInidence50.abrilJunio;
+		   $scope.methodsMonth = methodsAvail;
+		   
+		} else if(currentMonth > 5 && currentMonth < 9) {
+		   var methodsAvail = {};
+		   methodsAvail.grade1 = meth.caseInidence10.julioSetiembre;
+		   methodsAvail.grade2 = meth.caseInidence1120.julioSetiembre;
+		   methodsAvail.grade3 = meth.caseInidence2150.julioSetiembre;
+		   methodsAvail.grade4 = meth.caseInidence50.julioSetiembre;
+		   $scope.methodsMonth = methodsAvail;
+		} else if(currentMonth > 8) {
+		   var methodsAvail = {};
+		   methodsAvail.grade1 = meth.caseInidence10.octubreDiciembre;
+		   methodsAvail.grade2 = meth.caseInidence1120.octubreDiciembre;
+		   methodsAvail.grade3 = meth.caseInidence2150.octubreDiciembre;
+		   methodsAvail.grade4 = meth.caseInidence50.octubreDiciembre;
+		   $scope.methodsMonth = methodsAvail;
+		}
+    });
+
+  
+   $scope.$watch('test', function () {
+      localStorageService.set('localTestgallo', $scope.test);
+    }, true);
+ 
+  
+  if(testInStore && Object.keys(testInStore.unidad).length > 1) {
+	  $('.roya-wrap').addClass('initiated');
+  }
+  
+  if(testInStore && testInStore.resolved) {
+	  $('.test').hide();
+	  $('.results').show();
+  }
+	
+  $scope.startTest = function(selectedUnit) {
+	  $scope.test.unidad = selectedUnit;
+	  $('.roya-wrap').addClass('initiated');
+   }
+   $scope.bandolas = function() {
+	   if($scope.test.bandolas) {
+		  $scope.test.bandolas = false;
+	  } else {
+		  $scope.test.bandolas = true;
+	  }
+	}
+	$scope.addPlant = function() {
+		$scope.test.plantas.push([]);
+		var plantName = $scope.test.plantas.length;
+		plantEditor(plantName);
+		setTimeout(function () { $('[name=amount]').val(''); }, 100);
+	};
+	
+	$scope.editPlant = function($index) {
+		plantEditor($index + 1);
+		$scope.leafList = $scope.test.plantas[$index];
+	}
+	
+	$scope.initLeaf = function() {
+		$('.severity-list').addClass('active');
+	}
+	
+	$scope.closePlant = function() {
+		$('.plant-editor').removeClass('active');
+	}
+	
+	$scope.addLeaf = function(severity) {
+		var amount = $('[name=amount]').val();
+		var plantIndex = $scope.plantname - 1;
+		$scope.test.plantas[plantIndex].push([amount,severity]);
+		$scope.leafList = $scope.test.plantas[plantIndex];
+		$('[name=amount]').val('');
+		$scope.affect = 1;
+		$('.severity-list').removeClass('active');
+	};
+
+    $scope.removePlant = function (index) {
+      $scope.test.plantas.splice(index, 1);
+    };
+    
+    $scope.removeLeaf = function (index) {
+	  var plantIndex = $scope.plantname - 1;
+      $scope.test.plantas[plantIndex].splice(index, 1);
+    };  
+    
+    $scope.calculateTest = function() {
+	    
+	    if ($scope.test.advMode) {
+		    $scope.totalPlants = $scope.test.plantas.length;
+			var totalPlantitas = $scope.totalPlants;	
+			var totalLeaf = 0;
+			var totalIncidencePlant = [];
+			var totalDamagePlant = [];
+			var avgInc = 0;
+			var avgPct = 0;
+			
+			for(var i = 0, len = $scope.totalPlants; i < len; i++) {
+				var affected = 0;
+				var avgDmg = 0;
+				var Dmg = [];
+				$.each($scope.test.plantas[i], function( index, value ) {
+					  totalLeaf += parseInt(value[0]);
+					  	if (value[1] !='0%') {
+						   affected += parseInt(value[0]);
+						   Dmg.push(parseInt(value[1]));
+					  	} 
+				});	
+				totalIncidencePlant.push(affected);
+				$.each(Dmg, function( index, value ) {
+					  
+					  avgDmg += parseInt(Dmg[index]);
+				});
+				var curAvgDmg = avgDmg / Dmg.length;
+				totalDamagePlant.push(curAvgDmg);
+				
+			}
+			var incidenceLength = totalIncidencePlant.length;
+			for(var i = 0; i < incidenceLength; i++) {
+			    avgInc += totalIncidencePlant[i];
+			}
+			var avg = avgInc / incidenceLength;
+			var damageLength = totalDamagePlant.length;
+			for(var i = 0; i < damageLength; i++) {
+			    avgPct += totalDamagePlant[i];
+			}
+			var avgDmgPct = avgPct / damageLength;
+			$scope.avgIncidence = (avgInc/totalLeaf)*100;
+			$scope.test.avgplnt = avg;
+			$scope.test.avgplntDmgPct = avgDmgPct;
+			$scope.test.resolved = true;
+			$scope.test.incidencia = $scope.avgIncidence;
+			$('.test').hide();
+			$('.results').show();
+	    } else {
+		   
+		  
+		   var plants = $scope.test.plantas,
+		   	   totalPlants = plants.length,
+		   	   affectedLeaf = [];
+		   	   affectedTotal = 0;
+		   	   allLeaf = [];
+		   	   totalLeaf = 0;
+		   	    $scope.totalPlantis = plants.length;
+		   
+		   	   $.each($scope.test.plantas, function( index, value ) {	
+		   	   		
+			   		var count = value[0][1].split(":"),
+			   			affectedCnt = parseInt(count[1]);
+			   			affectedLeaf.push(affectedCnt);
+				});
+				
+				$.each($scope.test.plantas, function( index, value ) {	
+			   		var totalCnt = parseInt(value[0][0]);
+			   			allLeaf.push(totalCnt);
+				});
+				
+			   for(var i = 0; i < affectedLeaf.length; i++) {
+				    affectedTotal += affectedLeaf[i];
+				}
+				
+				for(var i = 0; i < allLeaf.length; i++) {
+					
+				    totalLeaf += parseInt(allLeaf[i]);
+				}
+				
+			   var avgAffected = affectedTotal / affectedLeaf.length,
+			       avgLeaf = totalLeaf / totalPlants,
+			       percent = (avgAffected/avgLeaf)*100;
+			       
+			   $scope.test.incidencia = percent;
+			   $scope.test.resolved = true;
+			   $('.test').hide();
+			   $('.results').show();
+			  
+		   
+	    }
+		
+		
+    };
+    
+    $scope.getHelp = function(currentUser) { 
+	    
+	    
+	    roya.create(testInStore).success(function(data){
+		    
+		    
+		    
+		     var msg = 'Calculo De Roya Enviado: ID: ' + data._id + '.' ;
+		  	 var data_server={
+	            message:msg,
+	            to_user:'admin',
+	            from_id:currentUser
+	        };
+	        socket.emit('get msg',data_server);
+
+		    
+	        localStorageService.remove('localTestgallo');
+        });
+	    
+	           
+        
+        
+    };
+    
+}]);
+
+app.controller('DosageCtrl', [
+'$scope',
+'$state',
+'auth',
+'localStorageService',
+'socket',
+function($scope, $state, auth,localStorageService, socket){
+  var tempEstanions;
+  $scope.currentUser=auth.currentUser;
+  /*if($scope.plantsByHa=='ot'){
+
+  }*/
+
+  $scope.calculateDosage= function(){
+	var ProductDetails = $scope.dosage.productName.split(",");
+	
+	if ($scope.dosage.productType != 'Ojo de gallo') {
+		$scope.dosage.dosageByEstanion = (ProductDetails[1]/500)*ProductDetails[3];
+	} else {
+		var prodDtlSplt = ProductDetails[1].split("+"),
+			prodDtl = parseInt(prodDtlSplt[0]) + parseInt(prodDtlSplt[1]),
+			prodDtlBSplt = ProductDetails[3].split("+"),
+			prodDtlB = parseInt(prodDtlBSplt[0]) + parseInt(prodDtlBSplt[1]);
+			$scope.dosage.dosageByEstanion = (prodDtl/500)*prodDtlB;
+			
+	}
+    
+    
+  }
+
+
+}]);
+
+app.controller('VulneCtrl', [
+'$scope',
+'$state',
+'auth',
+'localStorageService',
+'socket',
+function($scope, $state, auth,localStorageService, socket){
+
+  $scope.currentUser=auth.currentUser;
+  /*if($scope.plantsByHa=='ot'){
+
+  }*/
+
+
+
+
+}]);
+
 app.filter('sumLeafFilter', function () {
     return function (leafArray) {
         var leafTotals = 0;
@@ -477,8 +964,8 @@ function($scope, $state, auth){
 }]);
 
 // Support Chat Controller 
-app.controller('SupportCtrl',['$scope','auth', 'socket', 'user',
-function ($scope, auth, socket, user) {
+app.controller('SupportCtrl',['$scope','auth', 'socket', 'user','Upload','$base64',
+function ($scope, auth, socket, user,Upload,$base64) {
 
 	$scope.isLoggedIn = auth.isLoggedIn;
 	$scope.currentUser = auth.currentUser;
@@ -566,20 +1053,53 @@ function ($scope, auth, socket, user) {
 	}
 
 	
-	$scope.sendMessage = function() {
-		var f = $('.type-sink');
-        var msg = f.find('[name=chatMsg]').val();
-        var from_id = f.find('[name=fromId]').val();
-		var data_server={
-            message:msg,
-            to_user:'admin',
-            from_id:from_id
-        };
-        socket.emit('get msg',data_server);
-        $('.type-sink .form-control').val("");
+	$scope.sendMessage = function(attachmentfile) {
+		var image;
+		console.log(attachmentfile)
+		if(attachmentfile){
+			console.log(attachmentfile)
+			//console.log(Upload.dataUrl(attachmentfile).then(('base64')))
+		 Upload.dataUrl(attachmentfile, true).then(function(dataUrl) {
+			image = dataUrl;
+			var f = $('.type-sink');
+	        var msg = f.find('[name=chatMsg]').val();
+	        var from_id = f.find('[name=fromId]').val();
+	        var from_chatattchment = image;
+	     
+	       
+			var data_server={
+	            message:msg,
+	            bodyattachement:from_chatattchment,
+	            to_user:'admin',
+	            from_id:from_id
+	        };
+
+	        socket.emit('get msg',data_server);
+	        $('.type-sink .form-control').val("");
+	        $scope.files = '';
+		 })
+		 } else {
+
+		 
+			var f = $('.type-sink');
+	        var msg = f.find('[name=chatMsg]').val();
+	        var from_id = f.find('[name=fromId]').val();
+	        var from_chatattchment = image;
+	     
+	       
+			var data_server={
+	            message:msg,
+	            bodyattachement:from_chatattchment,
+	            to_user:'admin',
+	            from_id:from_id
+	        };
+
+	        socket.emit('get msg',data_server);
+	        $('.type-sink .form-control').val("");
+        }
 	};
 	socket.on('set msg only',function(data){
-        data=JSON.parse(data);
+        data=JSON.parse(data);console.log("set msg only", data)
         var user = data.sender;
         if (user == $scope.loggedUser) {
             $scope.setCurrentUserImage(data.messages);
@@ -587,7 +1107,7 @@ function ($scope, auth, socket, user) {
 	    }
     });
 	socket.on('set msg',function(data){
-        data=JSON.parse(data);
+        data=JSON.parse(data);console.log("set msg", data);
         var usera = data.to_user;
         var userb = data.from_id;
         if (usera == $scope.loggedUser || userb == $scope.loggedUser) {
@@ -626,12 +1146,14 @@ function ($scope, auth, socket, user) {
 	    var userObj = auth.currentUserObject();
 	    if (userObj != null) {
 	        user.get(userObj._id).then(function (userObj) {
+	        	console.log($scope.UserImage)
 	            if ($scope.UserImage != null) {
 	                userObj.image = $scope.UserImage;
 	            }
 	            //if ($scope.UserName != null) {
 	            //    userObj.nickname = $scope.UserName;
 	            //}
+	            
 	            user.update(userObj).error(function (error) {
 	                $scope.error = error;
 	            }).then(function (data) {
@@ -648,6 +1170,7 @@ function ($scope, auth, socket, user) {
 
 app.controller('ProfileCtrl',['$http','$scope', 'auth', 'unit', 'user',
 function($http, $scope, auth, unit, user){
+	var map;
 	$scope.isLoggedIn = auth.isLoggedIn;
 	$scope.currentUser = auth.currentUser;
 	$scope.userId = auth.userId;
@@ -662,6 +1185,7 @@ function($http, $scope, auth, unit, user){
 	  manejoTejido: true,
 	  fungicidasRoya: true,
 	  verificaAgua: true,
+	  recomendaciontecnica: '',
 	  variedad: {
 	  		caturra: false,
 			bourbon: false,
@@ -739,6 +1263,8 @@ function($http, $scope, auth, unit, user){
 			
 		$scope.newUnit.departamento = $("#departamentos option:selected").text();
 		$scope.newUnit.municipio = $("#departamentos-munis option:selected").text();
+		$scope.newUnit.lat = $('[name="lat"]').val();
+		$scope.newUnit.lng = $('[name="lng"]').val();
 		
 	    unit.create($scope.newUnit,auth.userId()).error(function(error){
 	      $scope.error = error;
@@ -775,6 +1301,7 @@ function($http, $scope, auth, unit, user){
 					  ph: true,
 					  dureza: false
 				  },
+				  recomendaciontecnica: '',
 				  tipoCafe: {
 					  estrictamenteDuro: true,
 					  duro: false,
@@ -790,6 +1317,369 @@ function($http, $scope, auth, unit, user){
 	  };
   
      muni14.addDepts('departamentos');
+
+   function wait(ms){
+   var start = new Date().getTime();
+   var end = start;
+   while(end < start + ms) {
+     end = new Date().getTime();
+  }
+}
+
+    function initialize() {
+	var myLatlng, myLat, myLng;
+	var x;
+	var ax  = [];
+	var infoWindow = new google.maps.InfoWindow({map: map});
+	if(!document.getElementById('latlongid').value) {
+		if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+			
+			myLat = position.coords.latitude;
+			myLng = position.coords.longitude;
+           // map.setCenter(pos);
+            myLatlng = new google.maps.LatLng(myLat , myLng); 
+            
+            var myOptions = {
+	 zoom: 13,
+	 center: myLatlng,
+	 mapTypeId: google.maps.MapTypeId.ROADMAP
+	}
+	map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
+
+	map1 = new google.maps.Map(document.getElementById("map-canvas1"), myOptions);
+
+	var marker = new google.maps.Marker({
+	 draggable: true,
+	 position: myLatlng,
+	 map: map,
+	 title: "Your location"
+	});
+
+	var marker1 = new google.maps.Marker({
+		 draggable: true,
+		 position: myLatlng,
+		 map: map1,
+		 title: "Your location"
+	});	
+	
+
+		google.maps.event.addListener(marker, 'dragend', function(event) {
+		    
+		    $scope.newUnit.ubicacion = '('+event.latLng.lat()+' , '+event.latLng.lng()+')';
+		     document.getElementById('latlongid').value = event.latLng.lat() +',' + event.latLng.lng();
+		    console.log("this is marker info", event.latLng.lat() +' , ' + event.latLng.lng());
+		    
+		});
+
+		google.maps.event.addListener(marker1, 'dragend', function(event) {
+			
+		    placeMarker(event.latLng);
+		    $scope.editUnit.ubicacion = '('+event.latLng.lat()+' , '+event.latLng.lng()+')';
+		    document.getElementById('latlongid').value = event.latLng.lat() +',' + event.latLng.lng();
+		    console.log("this is marker info", event.latLng.lat() +' , ' + event.latLng.lng());
+		    
+		});
+		google.maps.event.addDomListener(window, 'load', initialize);
+            
+          }, function() {
+            handleLocationError(true, infoWindow, map.getCenter());
+          });
+          console.log("this is positon", myLat);
+        } else {
+          // Browser doesn't support Geolocation
+          handleLocationError(false, infoWindow, map.getCenter());
+        }
+	//myLatlng = new google.maps.LatLng(42.94033923363181 , -10.37109375); 
+	
+	}
+	else {
+		x = document.getElementById('latlongid').value;
+	x = x.replace(/[{()}]/g, '');
+	ax= x.split(",");
+	myLatlng = new google.maps.LatLng(ax[0],ax[1]);
+	
+	var myOptions = {
+	 zoom: 13,
+	 center: myLatlng,
+	  disableDoubleClickZoom: true,
+	 mapTypeId: google.maps.MapTypeId.ROADMAP
+	}
+	map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
+
+	map1 = new google.maps.Map(document.getElementById("map-canvas1"), myOptions);
+
+	var marker = new google.maps.Marker({
+	 draggable: true,
+	 position: myLatlng,
+	 map: map,
+	 title: "Your location"
+	});
+
+	var marker1 = new google.maps.Marker({
+		 draggable: true,
+		 position: myLatlng,
+		 map: map1,
+		 title: "Your location"
+	});	
+	
+
+		google.maps.event.addListener(marker, 'dragend', function(event) {
+		    
+		    $scope.newUnit.ubicacion = '('+event.latLng.lat()+' , '+event.latLng.lng()+')';
+		     document.getElementById('latlongid').value = event.latLng.lat() +',' + event.latLng.lng();
+		    console.log("this is marker info", event.latLng.lat() +' , ' + event.latLng.lng());
+		    
+		});
+
+		google.maps.event.addListener(marker1, 'dragend', function(event) {
+			
+		    placeMarker(event.latLng);
+		    $scope.editUnit.ubicacion = '('+event.latLng.lat()+' , '+event.latLng.lng()+')';
+		    document.getElementById('latlongid1').value = event.latLng.lat() +',' + event.latLng.lng();
+		    console.log("this is marker info", event.latLng.lat() +' , ' + event.latLng.lng());
+		    
+		});
+		
+		// double click event
+   /*   google.maps.event.addListener(map1, 'dblclick', function(e) {
+        var positionDoubleclick = e.latLng;
+        marker1.setPosition(positionDoubleclick);
+        // if you don't do this, the map will zoom in
+      }); */
+		google.maps.event.addDomListener(window, 'load', initialize);
+	
+	}
+
+	
+	
+}
+	
+	function placeMarker(location) {
+  var marker = new google.maps.Marker({
+      position: location,
+      draggable:true,
+      map: map
+  });
+
+  map.setCenter(location);
+}
+
+	// Initialize map
+	$scope.mapInit = function()
+	{
+		$('.map').collapse('toggle');
+		initialize();
+	}
+
+
+}]);
+
+
+	
+app.controller('CampoCtrl', [
+'$scope',
+'$state',
+'auth',
+'localStorageService',
+'socket',
+'unit',
+'user',
+'methods',
+'gallo','campoService',
+function($scope, $state, auth, localStorageService, socket, unit, user, methods, roya, campoService){
+  $scope.currentUser = auth.currentUser;
+  $scope.resultscampo = false;
+  var currentId = auth.currentUser();
+  var testInStore = localStorageService.get('localTestCampo');
+  $scope.ClearTest = function(){
+  	localStorageService.remove('localTestCampo');
+  	$state.go($state.current, {}, {reload: true})
+  }
+  
+  var plantEditorCampo = function(plant) {
+	  $scope.plantname = plant;
+	  $scope.leafList = $scope.test.plantas[plant - 1];
+	  //console.log($scope.leafList);
+	  $('#plantModal').modal('show');
+  };
+    $scope.affect = 1;
+    user.get(auth.userId()).then(function(user){
+		 $scope.units = user.units;
+    });
+    
+     $scope.test = testInStore || {
+	  	advMode : false,
+	  	bandolas : false,
+	  	resolved: false,
+	  	user : currentId,
+	  	plantas: [],
+	  	unidad: {},
+	  	incidencia: 0,
+	  	avgplnt : "",
+		avgplntDmgPct : 0,
+		incidencia : 0
+	  };
+
+	methods.get().then(function(methods){
+		 var meth = methods.data[0];
+		 var date = new Date();
+		 var currentMonth = date.getMonth();
+		if(currentMonth < 6 ){
+		   var methodsAvail = {};
+		   methodsAvail.grade1 = meth.caseInidence10.abrilJunio;
+		   methodsAvail.grade2 = meth.caseInidence1120.abrilJunio;
+		   methodsAvail.grade3 = meth.caseInidence2150.abrilJunio;
+		   methodsAvail.grade4 = meth.caseInidence50.abrilJunio;
+		   $scope.methodsMonth = methodsAvail;
+		   
+		} else if(currentMonth > 5 && currentMonth < 9) {
+		   var methodsAvail = {};
+		   methodsAvail.grade1 = meth.caseInidence10.julioSetiembre;
+		   methodsAvail.grade2 = meth.caseInidence1120.julioSetiembre;
+		   methodsAvail.grade3 = meth.caseInidence2150.julioSetiembre;
+		   methodsAvail.grade4 = meth.caseInidence50.julioSetiembre;
+		   $scope.methodsMonth = methodsAvail;
+		} else if(currentMonth > 8) {
+		   var methodsAvail = {};
+		   methodsAvail.grade1 = meth.caseInidence10.octubreDiciembre;
+		   methodsAvail.grade2 = meth.caseInidence1120.octubreDiciembre;
+		   methodsAvail.grade3 = meth.caseInidence2150.octubreDiciembre;
+		   methodsAvail.grade4 = meth.caseInidence50.octubreDiciembre;
+		   $scope.methodsMonth = methodsAvail;
+		}
+    });
+
+  
+   $scope.$watch('test', function () {
+      localStorageService.set('localTestCampo', $scope.test);
+    }, true);
+ 
+  
+  if(testInStore && Object.keys(testInStore.unidad).length > 1) {
+	  $('.roya-wrap').addClass('initiated');
+  }
+  
+  if(testInStore && testInStore.resolved) {
+	  $('.test').hide();
+	  $('.results').show();
+  }
+	
+  $scope.startTest = function(selectedUnit) {
+	  $scope.test.unidad = selectedUnit;
+	  $('.roya-wrap').addClass('initiated');
+   }
+   $scope.bandolas = function() {
+	   if($scope.test.bandolas) {
+		  $scope.test.bandolas = false;
+	  } else {
+		  $scope.test.bandolas = true;
+	  }
+	}
+	$scope.addPlant = function() {
+		$scope.test.plantas.push([]);
+		var plantName = $scope.test.plantas.length;
+		plantEditorCampo(plantName);
+		setTimeout(function () { $('[name=amount]').val(''); }, 100);
+	};
+	
+	$scope.editPlant = function($index) {
+		plantEditorCampo($index + 1);
+		$scope.leafList = $scope.test.plantas[$index];
+	}
+	
+	$scope.initLeaf = function() {
+		$('.severity-list').addClass('active');
+	}
+	
+	$scope.closePlant = function() {
+		$('.plant-editor').removeClass('active');
+	}
+	
+	$scope.addLeaf = function(severity) {
+		var amount = $('[name=amount]').val();
+		var plantIndex = $scope.plantname - 1;
+		$scope.test.plantas[plantIndex].push([amount,severity]);
+		$scope.leafList = $scope.test.plantas[plantIndex];
+		$('[name=amount]').val('');
+		$scope.affect = 1;
+		$('.severity-list').removeClass('active');
+	};
+
+    $scope.removePlant = function (index) {
+      $scope.test.plantas.splice(index, 1);
+    };
+    
+    $scope.removeLeaf = function (index) {
+	  var plantIndex = $scope.plantname - 1;
+      $scope.test.plantas[plantIndex].splice(index, 1);
+    }; 
+
+    $scope.addPlantMutiple = function(data){
+    	var plantIndex = $scope.plantname - 1;
+    	$scope.test.plantas[plantIndex].push(data)
+
+    }
+    $scope.SaveTestRecord = function() {
+    	    testInStore = localStorageService.get('localTestCampo');
+
+  			if(testInStore == null) 
+  			{
+  				alert("Hubo un error. No se pudo completar la solicitud. Por favor rellene los detalles de las plantas.")
+  				return false;
+  			}
+  			campoService.SaveCampoUnitTest(testInStore).then(function(success){
+  				//alert("The test has been saved.")
+  				//alert("Se ha guardado la prueba.")
+  				if(success.data == 1){
+  				 localStorageService.remove('localTestCampo');
+  				 $scope.resultscampo = true;
+
+  				 $('.test').hide();
+				 $('.results').show();
+  				}
+  				else{
+  					  alert("Hubo un error. No se pudo completar la solicitud. Por favor rellene los detalles de las plantas.")
+  				}
+  			},function(err){
+  				console.log(err)
+  				if(err.status == 404){
+  				  alert("Hubo un error. No se pudo completar la solicitud.")
+  				 // alert("There went an error. Request could not be completed.")
+  				}
+  				
+  			})
+    		
+    };
+    //AKhil
+    $scope.getHelp = function(currentUser) { 
+	    
+	    
+	    roya.create(testInStore).success(function(data){
+		    
+		    
+		    
+		     var msg = 'Calculo De Roya Enviado: ID: ' + data._id + '.' ;
+		  	 var data_server={
+	            message:msg,
+	            to_user:'admin',
+	            from_id:currentUser
+	        };
+	        socket.emit('get msg',data_server);
+
+		    
+	        localStorageService.remove('localTestCampo');
+        });
+	    
+	           
+        
+        
+    };
+    
 }]);
 
 app.factory('posts', ['$http', 'auth', function($http, auth){
@@ -797,19 +1687,19 @@ app.factory('posts', ['$http', 'auth', function($http, auth){
 	  		posts : []
 	  };
 	  o.getAll = function() {
-	    return $http.get('/posts').success(function(data){
+	    return $http.get('http://coffeecloud.centroclima.org/:3000/posts').success(function(data){
 	      angular.copy(data, o.posts);
 	    });
 	  };
 	  o.create = function(post) {
-		  return $http.post('/posts', post, {
+		  return $http.post('http://coffeecloud.centroclima.org/:3000/posts', post, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    o.posts.push(data);
 		  });
 		};
 		o.upvote = function(post) {
-		  return $http.put('/posts/' + post._id + '/upvote', null, {
+		  return $http.put('http://coffeecloud.centroclima.org/:3000/posts/' + post._id + '/upvote', null, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   })
 		    .success(function(data){
@@ -817,17 +1707,17 @@ app.factory('posts', ['$http', 'auth', function($http, auth){
 		    });
 		};
 		o.get = function(id) {
-		  return $http.get('/posts/' + id).then(function(res){
+		  return $http.get('http://coffeecloud.centroclima.org/:3000/posts/' + id).then(function(res){
 		    return res.data;
 		  });
 		};
 		o.addComment = function(id, comment) {
-		  return $http.post('/posts/' + id + '/comments', comment, {
+		  return $http.post('http://coffeecloud.centroclima.org/:3000/posts/' + id + '/comments', comment, {
 		    headers: {Authorization: 'Bearer '+auth.getToken()}
 		  });
 		};
 		o.upvoteComment = function(post, comment) {
-		  return $http.put('/posts/' + post._id + '/comments/'+ comment._id + '/upvote', null, {
+		  return $http.put('http://coffeecloud.centroclima.org/:3000/posts/' + post._id + '/comments/'+ comment._id + '/upvote', null, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   })
 		    .success(function(data){
@@ -848,20 +1738,21 @@ app.factory('user', ['$http', 'auth', function($http, auth){
 		  });
 		};*/
 		o.getAll = function() {
-		  return $http.get('/users', {
+		  return $http.get('http://coffeecloud.centroclima.org/:3000/users', {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).then(function(res){
 		    return res.data;
 		  });
 		};
 		o.get = function(id) {
-		  return $http.get('/users/' + id).then(function(res){
+		  return $http.get('http://coffeecloud.centroclima.org/:3000/users/' + id).then(function(res){
 		    return res.data;
 		  });
 		};
 		
 		o.update = function(user){
-	  return $http.put('/users/' + user._id, user, {
+			/*console.log(user)*/
+	  return $http.put('http://coffeecloud.centroclima.org/:3000/users/' + user._id, user, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 	    return data
@@ -923,16 +1814,48 @@ app.factory('auth', ['$http', '$window', function($http, $window){
 	};
 
 	auth.register = function(user){
-	  return $http.post('/register', user).success(function(data){
+	  return $http.post('http://coffeecloud.centroclima.org/:3000/register', user).success(function(data){
 	    auth.saveToken(data.token);
 	  });
 	};
 
 	auth.logIn = function(user){
-	  return $http.post('/login', user).success(function(data){
+	  return $http.post('http://coffeecloud.centroclima.org/:3000/login', user).success(function(data){
 	    auth.saveToken(data.token);
 	  });
 	};
+	// Tech 12 / 1
+	// Change Localhost to production url
+	// for GenOtp(), VerifyOtp(), ChangePassword()
+	
+	auth.GenOtp = function(user){
+		
+	  /*return $http.post('http://coffeecloud.centroclima.org/:3000/requestpasswordchange', user).success(function(data){
+	    auth.saveToken(data.token);
+	  });*/
+	  return $http.post('http://coffeecloud.centroclima.org/:3000/requestpasswordchange', user).success(function(data){
+	     return data;
+	  });
+	};	
+	auth.VerifyOtp = function(user){
+		
+	  /*return $http.post('http://coffeecloud.centroclima.org/:3000/changeauthenticate', user).success(function(data){
+	    auth.saveToken(data.token);
+	  });*/
+	  return $http.post('http://coffeecloud.centroclima.org/:3000/changeauthenticate', user).success(function(data){
+	     return data;
+	  });
+	};	
+	auth.ChangePassword = function(user){
+		
+	  /*return $http.post('http://coffeecloud.centroclima.org/:3000/passwordchange', user).success(function(data){
+	    auth.saveToken(data.token);
+	  });*/
+	  return $http.post('http://coffeecloud.centroclima.org/:3000/passwordchange', user).success(function(data){
+	     return data;
+	  });
+	};
+
 	auth.logOut = function(){
 	  $window.localStorage.removeItem('flapper-news-token');
 	  window.location.href = '/';
@@ -944,18 +1867,18 @@ app.factory('auth', ['$http', '$window', function($http, $window){
 app.factory('unit', ['$http', 'auth','$window', function($http, auth, $window){
    var o = {};
    o.getAll = function(id) {
-	    return $http.get('/users/'+ id +'/units').success(function(data){
+	    return $http.get('http://coffeecloud.centroclima.org/:3000/users/'+ id +'/units').success(function(data){
 	      return data;
 	    });
 	  };
    o.get = function(userId,id) {
-		  return $http.get('/users/'+ userId +'/units/'+ id).then(function(res){
+		  return $http.get('http://coffeecloud.centroclima.org/:3000/users/'+ userId +'/units/'+ id).then(function(res){
 		    return res.data;
 		  });
 		};
    
 	o.create = function(unit, id){
-	  return $http.post('/users/'+ id +'/units', unit, {
+	  return $http.post('http://coffeecloud.centroclima.org/:3000/users/'+ id +'/units', unit, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return data;
@@ -963,7 +1886,7 @@ app.factory('unit', ['$http', 'auth','$window', function($http, auth, $window){
 	};
 	
 	o.update = function(unit, id, unitData){
-	  return $http.put('/users/'+ id +'/units/'+ unit, unitData, {
+	  return $http.put('http://coffeecloud.centroclima.org/:3000/users/'+ id +'/units/'+ unit, unitData, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 	    return data
@@ -971,7 +1894,7 @@ app.factory('unit', ['$http', 'auth','$window', function($http, auth, $window){
 	};
 	
 	o.deleteUnit = function(unitId, userId){
-	  return $http.delete('/users/'+ userId +'/units/'+ unitId, {
+	  return $http.delete('http://coffeecloud.centroclima.org/:3000/users/'+ userId +'/units/'+ unitId, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return unitId;
@@ -986,19 +1909,19 @@ app.factory('methods', ['$http', 'auth', function($http, auth){
 	  		chats : []
 	  };
 	  o.get = function() {
-	    return $http.get('/admin/methods/').success(function(data){
+	    return $http.get('http://coffeecloud.centroclima.org/:3000/admin/methods/').success(function(data){
 	      return data;
 	    });
 	  };
 	  o.create = function(method) {
-		  return $http.post('/admin/methods', method, {
+		  return $http.post('http://coffeecloud.centroclima.org/:3000/admin/methods', method, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return data;
 		  });
 		};
 		o.update = function(method) {
-		  return $http.put('/admin/methods', method, {
+		  return $http.put('http://coffeecloud.centroclima.org/:3000/admin/methods', method, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return data;
@@ -1008,17 +1931,76 @@ app.factory('methods', ['$http', 'auth', function($http, auth){
   return o;
 }]);
 
+//campocontoller Fact
+app.factory('campoService', ['$http', 'auth', function ($http, auth) {
+    var o = {
+        chats: []
+    };
+    o.get = function () {
+        return $http.get('http://coffeecloud.centroclima.org/:3000/admin/campo/').success(function (data) {
+            return data;
+        });
+    };
+    o.create = function (method) {
+        return $http.post('http://coffeecloud.centroclima.org/:3000/admin/campo', method, {
+            headers: { Authorization: 'Bearer ' + auth.getToken() }
+        }).success(function (data) {
+            return data;
+        });
+    };
+    o.update = function (method) {
+        return $http.put('http://coffeecloud.centroclima.org/:3000/admin/methods', method, {
+            headers: { Authorization: 'Bearer ' + auth.getToken() }
+        }).success(function (data) {
+            return data;
+        });
+    };
+    o.SaveCampoUnitTest = function(data){
+    	return $http.post('http://coffeecloud.centroclima.org/:3000/admin/campo/addtests',data, {
+            headers: { Authorization: 'Bearer ' + auth.getToken() }
+        }).success(function (data) {
+            return data;
+        });
+    }
+
+    return o;
+}]);
+
 app.factory('roya', ['$http', 'auth', function($http, auth){
 	  var o = {
 	  		
 	  };
 	  o.getAll = function() {
-	    return $http.get('/roya').success(function(data){
+	    return $http.get('http://coffeecloud.centroclima.org/:3000/roya').success(function(data){
 	      return data;
 	    });
 	  };
 	  o.create = function(roya) {
-		 return $http.post('/roya', roya, {
+		 return $http.post('http://coffeecloud.centroclima.org/:3000/roya', roya, {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  }).success(function(data){
+		    return data;	
+		  });
+		};
+		/*o.get = function(id) {
+		  return $http.get('/roya/' + id).then(function(res){
+		    return res.data;
+		  });
+		};*/
+  return o;
+}]);
+
+app.factory('gallo', ['$http', 'auth', function($http, auth){
+	  var o = {
+	  		
+	  };
+	  o.getAll = function() {
+	    return $http.get('http://coffeecloud.centroclima.org/:3000/gallo').success(function(data){
+	      return data;
+	    });
+	  };
+	  o.create = function(gallo) {
+		 return $http.post('http://coffeecloud.centroclima.org/:3000/gallo', gallo, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return data;	
@@ -1104,6 +2086,21 @@ function($stateProvider, $urlRouterProvider) {
 	    }
 	  }]
 	})
+	.state('forgotpassword', {
+	  url: '/forgotpassword',
+	  templateUrl: '/forgorpasswordscreen.html',
+	  controller: 'AuthCtrl'
+	})
+	.state('authenticateotp', {
+	  url: '/authenticate',
+	  templateUrl: '/otpscreen.html',
+	  controller: 'AuthCtrl'
+	})
+	.state('changepassword', {
+	  url: '/resetpassword',
+	  templateUrl: '/resetpassword.html',
+	  controller: 'AuthCtrl'
+	})
 	.state('register-profile', {
 	  url: '/register-profile',
 	  templateUrl: '/register-profile.html',
@@ -1134,9 +2131,69 @@ function($stateProvider, $urlRouterProvider) {
 	    }
 	  }]
 	})
+	.state('gallo', {
+	  url: '/gallo',
+	  templateUrl: '/gallo.html',
+	  controller: 'GalloCtrl',
+	  onEnter: ['$state', 'auth', function($state, auth){
+	    if(!auth.isLoggedIn()){
+	      $state.go('login');
+	    }
+	  }]
+	})
+	.state('dosage', {
+	  url: '/dosage',
+	  templateUrl: '/dosage.html',
+	  controller: 'DosageCtrl',
+	  onEnter: ['$state', 'auth', function($state, auth){
+	    if(!auth.isLoggedIn()){
+	      $state.go('login');
+	    }
+	  }]
+	})//Dosage
+	.state('vulnerability', {
+	  url: '/vulnerability',
+	  templateUrl: '/vulnerability.html',
+	  controller: 'VulneCtrl',
+	  onEnter: ['$state', 'auth', function($state, auth){
+	    if(!auth.isLoggedIn()){
+	      $state.go('login');
+	    }
+	  }]
+	})//Dosage
+	.state('campo', {
+		url: '/campo',
+		templateUrl: '/campo.html',
+		controller: 'CampoCtrl',
+		onEnter: ['$state', 'auth', function($state, auth){
+	    if(!auth.isLoggedIn()){
+	      $state.go('login');
+	    }
+	  }]
+	})
 	.state('weather', {
 	  url: '/weather',
 	  templateUrl: '/weather.html',
+	  controller: 'RoyaCtrl',
+	  onEnter: ['$state', 'auth', function($state, auth){
+	    if(!auth.isLoggedIn()){
+	      $state.go('login');
+	    }
+	  }]
+	})
+	.state('forecast', {
+	  url: '/forecast',
+	  templateUrl: '/forecast.html',
+	  controller: 'RoyaCtrl',
+	  onEnter: ['$state', 'auth', function($state, auth){
+	    if(!auth.isLoggedIn()){
+	      $state.go('login');
+	    }
+	  }]
+	})
+	.state('moon', {
+	  url: '/moon',
+	  templateUrl: '/moon.html',
 	  controller: 'RoyaCtrl',
 	  onEnter: ['$state', 'auth', function($state, auth){
 	    if(!auth.isLoggedIn()){

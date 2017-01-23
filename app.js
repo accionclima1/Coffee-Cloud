@@ -1,18 +1,24 @@
 var express = require('express');
+var cors = require('cors');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var notp = require('notp');
+
 require('./models/Posts');
 require('./models/Comments');
 require('./models/Users');
 require('./models/Units');
 require('./models/Chats');
 require('./models/Methods');
+require('./models/Campo');
 require('./models/Messages');
 require('./models/Roya');
+require('./models/Gallo');
+require('./models/Widget');
 require('./config/passport');
 mongoose.connect('mongodb://cafenube:Sec03lP1nt0@coffeecloud.centroclima.org/dummyDB');
 //WC5OBLfIbWNj
@@ -33,8 +39,7 @@ var admin = require('./routes/admin');
 var instituto = require('./routes/instituto');
 
 var app = express();
-
-
+app.use(cors());
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -48,11 +53,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+
+
 
 app.use('/', routes);
 app.use('/users', users);
