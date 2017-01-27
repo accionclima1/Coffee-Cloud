@@ -1186,6 +1186,35 @@ function($http, $scope, auth, unit, user){
 	  fungicidasRoya: true,
 	  verificaAgua: true,
 	  recomendaciontecnica: '',
+	  nitrogeno: true,
+	  nitrorealiza: '',
+	  sacos: '',
+	  realizapoda: true,
+	  realizamonth: '',
+	  quetipo: '',
+	  enfermedades: true,
+	  cyprosol: true,
+	  cyprosoldate: '',
+	  atemi: true,
+	  atemidate: '',
+	  esfera: true,
+	  esferadate: '',
+	  opera: true,
+	  operadate: '',
+	  opus: true,
+	  opusdate: '',
+	  soprano: true,
+	  sopranodate: '',
+	  hexalon: true,
+	  hexalondate: '',
+	  propicon: true,
+	  propicondate: '',	 
+	  hexil: true,
+	  hexildate: '',	 
+	  otros: true,
+	  otrosdate: '',
+	  fungicidasmonth: '',
+	  produccionhectarea: '',
 	  variedad: {
 	  		caturra: false,
 			bourbon: false,
@@ -1201,13 +1230,15 @@ function($http, $scope, auth, unit, user){
 	  fungicidas: {
 		  contacto: true,
 	  	  bourbon: false,
-	  	  catuai: false
-		  
+	  	  catuai: false,
+		 biologico : false,
+		 sistemico : false
 	  },
 	  verificaAguaTipo: {
 		  ph: true,
 		  dureza: false
 	  },
+	  rendimiento : '',
 	  tipoCafe: {
 		  estrictamenteDuro: true,
 		  duro: false,
@@ -1259,6 +1290,7 @@ function($http, $scope, auth, unit, user){
 	}
 	
 	$scope.saveUnit = function(){
+
 		if ($scope.newunitForm.$valid) {
 			
 		$scope.newUnit.departamento = $("#departamentos option:selected").text();
@@ -1280,6 +1312,36 @@ function($http, $scope, auth, unit, user){
 				  manejoTejido: true,
 				  fungicidasRoya: true,
 				  verificaAgua: true,
+				  recomendaciontecnica: '',
+				  nitrogeno: true,
+				  nitrorealiza: '',
+				  sacos: '',
+				  realizapoda: true,
+				  realizamonth: '',
+				  quetipo: '',
+				  enfermedades: true,
+				  cyprosol: true,
+				  cyprosoldate: '',
+				  atemi: true,
+				  atemidate: '',
+				  esfera: true,
+				  esferadate: '',
+				  opera: true,
+				  operadate: '',
+				  opus: true,
+				  opusdate: '',
+				  soprano: true,
+				  sopranodate: '',
+				  hexalon: true,
+				  hexalondate: '',
+				  propicon: true,
+				  propicondate: '',	 
+				  hexil: true,
+				  hexildate: '',	 
+				  otros: true,
+				  otrosdate: '',
+				  fungicidasmonth: '',
+				  produccionhectarea: '',
 				  variedad: {
 				  		caturra: false,
 						bourbon: false,
@@ -1294,13 +1356,16 @@ function($http, $scope, auth, unit, user){
 				  fungicidas: {
 					  contacto: true,
 				  	  bourbon: false,
-				  	  catuai: false
+				  	  catuai: false,
+				  	  biologico : false,
+		 			  sistemico : false
 					  
 				  },
 				  verificaAguaTipo: {
 					  ph: true,
 					  dureza: false
 				  },
+				  rendimiento : '',
 				  recomendaciontecnica: '',
 				  tipoCafe: {
 					  estrictamenteDuro: true,
@@ -1878,6 +1943,8 @@ app.factory('unit', ['$http', 'auth','$window', function($http, auth, $window){
 		};
    
 	o.create = function(unit, id){
+		//localhost unit
+	  
 	  return $http.post('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/users/'+ id +'/units', unit, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
@@ -1886,6 +1953,8 @@ app.factory('unit', ['$http', 'auth','$window', function($http, auth, $window){
 	};
 	
 	o.update = function(unit, id, unitData){
+		//localhost unit
+	  
 	  return $http.put('http://ec2-35-162-54-166.us-west-2.compute.amazonaws.com:3000/users/'+ id +'/units/'+ unit, unitData, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
