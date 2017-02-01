@@ -20,8 +20,8 @@ require('./models/Roya');
 require('./models/Gallo');
 require('./models/Widget');
 require('./config/passport');
-mongoose.connect('mongodb://cafenube:Sec03lP1nt0@coffeecloud.centroclima.org/dummyDB');
-//WC5OBLfIbWNj
+mongoose.connect('mongodb://cafenube:Sec03lP1nt0@icafe.centroclima.org/dummyDB');
+//XR7vwshDKmKW
 //{
 //      user: "admin",
 //      pwd: "Sec03lP1nt0",

@@ -8,7 +8,7 @@ var app = require('../app');
 var debug = require('debug')('coffee-cloud:server');
 var http = require('http');
 var socketio = require('socket.io');
-
+var fs = require('fs');
 var multer = require('multer')
 var storage = multer.diskStorage({
     destination: function (file, callback) {
@@ -29,12 +29,24 @@ var upload = multer({ dest: './public/images/' })
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
+var https = require('https');
 
+var keyPath = './ssl/key.pem';
+var certPath = './ssl/cert.pem';
+var hskey = fs.readFileSync(keyPath);
+var hscert = fs.readFileSync(certPath);
+var options = {
+    key: hskey,
+    cert: hscert
+};
+var ssl = {};
+ssl.options = options;
 /**
  * Create HTTP server.
  */
+var server = https.createServer(ssl.options, app).listen(port);
 
-var server = http.createServer(app);
+//var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
