@@ -15,8 +15,8 @@
 
 	<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
 	 
-	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js"></script>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
 	<script src="bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
 	<script src="javascripts/validator.min.js"></script>
 	<script src="javascripts/muni14.min.js"></script>
@@ -45,7 +45,7 @@
         window.geoplugin_longitude = function() { return o.longitude; };
 
 }</script>
-<script type="text/javascript" src="http://freegeoip.net/json/?callback=setupGeo"></script>	
+<script type="text/javascript" src="https://freegeoip.net/json/?callback=setupGeo"></script>	
 
 	<style> .glyphicon-thumbs-up { cursor:pointer; } </style>
 </head>
@@ -3883,7 +3883,7 @@
 						console.log(country,decoded);
 										
 						  $.ajax({
-						    url: "http://api.wunderground.com/api/72df18b7f213607b/astronomy/lang:SP/q/" + country + "/" + decoded + ".json",
+						    url: "https://api.wunderground.com/api/72df18b7f213607b/astronomy/lang:SP/q/" + country + "/" + decoded + ".json",
 				    dataType: "jsonp",
 				    success: function(parsed_json) {
 					  

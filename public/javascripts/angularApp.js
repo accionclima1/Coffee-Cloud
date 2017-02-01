@@ -14,8 +14,8 @@ app.factory('socket', ['socketFactory',
     function(socketFactory) {
         return socketFactory({
             prefix: '',
-            ioSocket: io.connect('http://icafe.centroclima.org:3000')
-           // ioSocket: io.connect('http://localhost:3000')
+            ioSocket: io.connect('https://icafe.centroclima.org:3000')
+           // ioSocket: io.connect('https://localhost:3000')
         });
     }
 ]);
@@ -55,7 +55,7 @@ app.factory('widget', ['$http', function($http){
 	var w = {};
 	w.getAll = function()
 	{
-		return $http.get('http://icafe.centroclima.org:3000/getWidgets').success(function(data){
+		return $http.get('https://icafe.centroclima.org:3000/getWidgets').success(function(data){
 			return data;
 		});
 	};
@@ -1752,19 +1752,19 @@ app.factory('posts', ['$http', 'auth', function($http, auth){
 	  		posts : []
 	  };
 	  o.getAll = function() {
-	    return $http.get('http://icafe.centroclima.org:3000/posts').success(function(data){
+	    return $http.get('https://icafe.centroclima.org:3000/posts').success(function(data){
 	      angular.copy(data, o.posts);
 	    });
 	  };
 	  o.create = function(post) {
-		  return $http.post('http://icafe.centroclima.org:3000/posts', post, {
+		  return $http.post('https://icafe.centroclima.org:3000/posts', post, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    o.posts.push(data);
 		  });
 		};
 		o.upvote = function(post) {
-		  return $http.put('http://icafe.centroclima.org:3000/posts/' + post._id + '/upvote', null, {
+		  return $http.put('https://icafe.centroclima.org:3000/posts/' + post._id + '/upvote', null, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   })
 		    .success(function(data){
@@ -1772,17 +1772,17 @@ app.factory('posts', ['$http', 'auth', function($http, auth){
 		    });
 		};
 		o.get = function(id) {
-		  return $http.get('http://icafe.centroclima.org:3000/posts/' + id).then(function(res){
+		  return $http.get('https://icafe.centroclima.org:3000/posts/' + id).then(function(res){
 		    return res.data;
 		  });
 		};
 		o.addComment = function(id, comment) {
-		  return $http.post('http://icafe.centroclima.org:3000/posts/' + id + '/comments', comment, {
+		  return $http.post('https://icafe.centroclima.org:3000/posts/' + id + '/comments', comment, {
 		    headers: {Authorization: 'Bearer '+auth.getToken()}
 		  });
 		};
 		o.upvoteComment = function(post, comment) {
-		  return $http.put('http://icafe.centroclima.org:3000/posts/' + post._id + '/comments/'+ comment._id + '/upvote', null, {
+		  return $http.put('https://icafe.centroclima.org:3000/posts/' + post._id + '/comments/'+ comment._id + '/upvote', null, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   })
 		    .success(function(data){
@@ -1803,21 +1803,21 @@ app.factory('user', ['$http', 'auth', function($http, auth){
 		  });
 		};*/
 		o.getAll = function() {
-		  return $http.get('http://icafe.centroclima.org:3000/users', {
+		  return $http.get('https://icafe.centroclima.org:3000/users', {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).then(function(res){
 		    return res.data;
 		  });
 		};
 		o.get = function(id) {
-		  return $http.get('http://icafe.centroclima.org:3000/users/' + id).then(function(res){
+		  return $http.get('https://icafe.centroclima.org:3000/users/' + id).then(function(res){
 		    return res.data;
 		  });
 		};
 		
 		o.update = function(user){
 			/*console.log(user)*/
-	  return $http.put('http://icafe.centroclima.org:3000/users/' + user._id, user, {
+	  return $http.put('https://icafe.centroclima.org:3000/users/' + user._id, user, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 	    return data
@@ -1879,13 +1879,13 @@ app.factory('auth', ['$http', '$window', function($http, $window){
 	};
 
 	auth.register = function(user){
-	  return $http.post('http://icafe.centroclima.org:3000/register', user).success(function(data){
+	  return $http.post('https://icafe.centroclima.org:3000/register', user).success(function(data){
 	    auth.saveToken(data.token);
 	  });
 	};
 
 	auth.logIn = function(user){
-	  return $http.post('http://icafe.centroclima.org:3000/login', user).success(function(data){
+	  return $http.post('https://icafe.centroclima.org:3000/login', user).success(function(data){
 	    auth.saveToken(data.token);
 	  });
 	};
@@ -1895,28 +1895,28 @@ app.factory('auth', ['$http', '$window', function($http, $window){
 	
 	auth.GenOtp = function(user){
 		
-	  /*return $http.post('http://icafe.centroclima.org:3000/requestpasswordchange', user).success(function(data){
+	  /*return $http.post('https://icafe.centroclima.org:3000/requestpasswordchange', user).success(function(data){
 	    auth.saveToken(data.token);
 	  });*/
-	  return $http.post('http://icafe.centroclima.org:3000/requestpasswordchange', user).success(function(data){
+	  return $http.post('https://icafe.centroclima.org:3000/requestpasswordchange', user).success(function(data){
 	     return data;
 	  });
 	};	
 	auth.VerifyOtp = function(user){
 		
-	  /*return $http.post('http://icafe.centroclima.org:3000/changeauthenticate', user).success(function(data){
+	  /*return $http.post('https://icafe.centroclima.org:3000/changeauthenticate', user).success(function(data){
 	    auth.saveToken(data.token);
 	  });*/
-	  return $http.post('http://icafe.centroclima.org:3000/changeauthenticate', user).success(function(data){
+	  return $http.post('https://icafe.centroclima.org:3000/changeauthenticate', user).success(function(data){
 	     return data;
 	  });
 	};	
 	auth.ChangePassword = function(user){
 		
-	  /*return $http.post('http://icafe.centroclima.org:3000/passwordchange', user).success(function(data){
+	  /*return $http.post('https://icafe.centroclima.org:3000/passwordchange', user).success(function(data){
 	    auth.saveToken(data.token);
 	  });*/
-	  return $http.post('http://icafe.centroclima.org:3000/passwordchange', user).success(function(data){
+	  return $http.post('https://icafe.centroclima.org:3000/passwordchange', user).success(function(data){
 	     return data;
 	  });
 	};
@@ -1932,12 +1932,12 @@ app.factory('auth', ['$http', '$window', function($http, $window){
 app.factory('unit', ['$http', 'auth','$window', function($http, auth, $window){
    var o = {};
    o.getAll = function(id) {
-	    return $http.get('http://icafe.centroclima.org:3000/users/'+ id +'/units').success(function(data){
+	    return $http.get('https://icafe.centroclima.org:3000/users/'+ id +'/units').success(function(data){
 	      return data;
 	    });
 	  };
    o.get = function(userId,id) {
-		  return $http.get('http://icafe.centroclima.org:3000/users/'+ userId +'/units/'+ id).then(function(res){
+		  return $http.get('https://icafe.centroclima.org:3000/users/'+ userId +'/units/'+ id).then(function(res){
 		    return res.data;
 		  });
 		};
@@ -1945,7 +1945,7 @@ app.factory('unit', ['$http', 'auth','$window', function($http, auth, $window){
 	o.create = function(unit, id){
 		//localhost unit
 	  
-	  return $http.post('http://icafe.centroclima.org:3000/users/'+ id +'/units', unit, {
+	  return $http.post('https://icafe.centroclima.org:3000/users/'+ id +'/units', unit, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return data;
@@ -1955,7 +1955,7 @@ app.factory('unit', ['$http', 'auth','$window', function($http, auth, $window){
 	o.update = function(unit, id, unitData){
 		//localhost unit
 	  
-	  return $http.put('http://icafe.centroclima.org:3000/users/'+ id +'/units/'+ unit, unitData, {
+	  return $http.put('https://icafe.centroclima.org:3000/users/'+ id +'/units/'+ unit, unitData, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 	    return data
@@ -1963,7 +1963,7 @@ app.factory('unit', ['$http', 'auth','$window', function($http, auth, $window){
 	};
 	
 	o.deleteUnit = function(unitId, userId){
-	  return $http.delete('http://icafe.centroclima.org:3000/users/'+ userId +'/units/'+ unitId, {
+	  return $http.delete('https://icafe.centroclima.org:3000/users/'+ userId +'/units/'+ unitId, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return unitId;
@@ -1978,19 +1978,19 @@ app.factory('methods', ['$http', 'auth', function($http, auth){
 	  		chats : []
 	  };
 	  o.get = function() {
-	    return $http.get('http://icafe.centroclima.org:3000/admin/methods/').success(function(data){
+	    return $http.get('https://icafe.centroclima.org:3000/admin/methods/').success(function(data){
 	      return data;
 	    });
 	  };
 	  o.create = function(method) {
-		  return $http.post('http://icafe.centroclima.org:3000/admin/methods', method, {
+		  return $http.post('https://icafe.centroclima.org:3000/admin/methods', method, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return data;
 		  });
 		};
 		o.update = function(method) {
-		  return $http.put('http://icafe.centroclima.org:3000/admin/methods', method, {
+		  return $http.put('https://icafe.centroclima.org:3000/admin/methods', method, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return data;
@@ -2006,26 +2006,26 @@ app.factory('campoService', ['$http', 'auth', function ($http, auth) {
         chats: []
     };
     o.get = function () {
-        return $http.get('http://icafe.centroclima.org:3000/admin/campo/').success(function (data) {
+        return $http.get('https://icafe.centroclima.org:3000/admin/campo/').success(function (data) {
             return data;
         });
     };
     o.create = function (method) {
-        return $http.post('http://icafe.centroclima.org:3000/admin/campo', method, {
+        return $http.post('https://icafe.centroclima.org:3000/admin/campo', method, {
             headers: { Authorization: 'Bearer ' + auth.getToken() }
         }).success(function (data) {
             return data;
         });
     };
     o.update = function (method) {
-        return $http.put('http://icafe.centroclima.org:3000/admin/methods', method, {
+        return $http.put('https://icafe.centroclima.org:3000/admin/methods', method, {
             headers: { Authorization: 'Bearer ' + auth.getToken() }
         }).success(function (data) {
             return data;
         });
     };
     o.SaveCampoUnitTest = function(data){
-    	return $http.post('http://icafe.centroclima.org:3000/admin/campo/addtests',data, {
+    	return $http.post('https://icafe.centroclima.org:3000/admin/campo/addtests',data, {
             headers: { Authorization: 'Bearer ' + auth.getToken() }
         }).success(function (data) {
             return data;
@@ -2040,12 +2040,12 @@ app.factory('roya', ['$http', 'auth', function($http, auth){
 	  		
 	  };
 	  o.getAll = function() {
-	    return $http.get('http://icafe.centroclima.org:3000/roya').success(function(data){
+	    return $http.get('https://icafe.centroclima.org:3000/roya').success(function(data){
 	      return data;
 	    });
 	  };
 	  o.create = function(roya) {
-		 return $http.post('http://icafe.centroclima.org:3000/roya', roya, {
+		 return $http.post('https://icafe.centroclima.org:3000/roya', roya, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return data;	
@@ -2064,12 +2064,12 @@ app.factory('gallo', ['$http', 'auth', function($http, auth){
 	  		
 	  };
 	  o.getAll = function() {
-	    return $http.get('http://icafe.centroclima.org:3000/gallo').success(function(data){
+	    return $http.get('https://icafe.centroclima.org:3000/gallo').success(function(data){
 	      return data;
 	    });
 	  };
 	  o.create = function(gallo) {
-		 return $http.post('http://icafe.centroclima.org:3000/gallo', gallo, {
+		 return $http.post('https://icafe.centroclima.org:3000/gallo', gallo, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
 		    return data;	
