@@ -198,7 +198,7 @@ app.factory('socket', ['socketFactory',
 	function (socketFactory) {
 	    return socketFactory({
 	        prefix: '',
-	        ioSocket: io.connect('http://icafe.centroclima.org:3000')
+	        ioSocket: io.connect('https://icafe.centroclima.org:3000')
 	    });
 	}
 ]);

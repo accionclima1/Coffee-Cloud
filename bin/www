@@ -26,8 +26,9 @@ var upload = multer({ dest: './public/images/' })
 /**
  * Get port from environment and store in Express.
  */
-
-var port = normalizePort(process.env.PORT || '3000');
+var portnumssl = 443
+var portnum = 80
+var port = normalizePort(process.env.PORT || portnum);
 app.set('port', port);
 var https = require('https');
 
@@ -44,14 +45,14 @@ ssl.options = options;
 /**
  * Create HTTP server.
  */
-var server = https.createServer(ssl.options, app).listen(port);
+var server = https.createServer(ssl.options, app).listen(portnumssl);
 
-//var server = http.createServer(app);
+var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
-console.log('frontend running at 3000');
+console.log('frontend running at '+ portnum);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
