@@ -344,6 +344,7 @@ router.param('test', function(req, res, next, id) {
 });
 
 router.post('/users/:user/units', auth, function(req, res, next) {
+
   var unit = new Unit(req.body);
 
   //post.author = req.payload.username;
@@ -355,7 +356,7 @@ router.post('/users/:user/units', auth, function(req, res, next) {
      unit.areaTotal = req.body.areaTotal;
      unit.areaCafe = req.body.areaCafe ;
      unit.lote = req.body.lote;
-     unit.edadLote = req.body.edadLote;
+    //  unit.edadLote = req.body.edadLote;
      unit.variedad = req.body.variedad;
      unit.distanciamiento = req.body.distanciamiento;
      unit.sombra = req.body.sombra;
@@ -381,6 +382,36 @@ router.post('/users/:user/units', auth, function(req, res, next) {
      unit.FinEpocalluviosa = req.body.FinEpocalluviosa;
      unit.recomendaciontecnica = req.body.recomendaciontecnica;
      unit.tipoCafe = req.body.tipoCafe;
+      unit.nitrogeno = req.body.nitrogeno ;
+      unit.nitrorealiza= req.body.nitrorealiza ;
+      unit.sacos= req.body.sacos ;
+      unit.realizapoda= req.body.realizapoda ;
+      unit.realizamonth= req.body.realizamonth ;
+      unit.quetipo= req.body.quetipo ;
+      unit.enfermedades= req.body.enfermedades ;
+      unit.cyprosol= req.body.cyprosol ;
+      unit.cyprosoldate= req.body.cyprosoldate ;
+      unit.atemi= req.body.atemi ;
+      unit.atemidate= req.body.atemidate ;
+      unit.esfera= req.body.esfera ;
+      unit.esferadate= req.body.esferadate;
+      unit.opera= req.body.opera
+      unit.operadate= req.body.operadate ;
+      unit.opus= req.body.opus ;
+      unit.opusdate= req.body.opusdate ;
+      unit.soprano= req.body.soprano ;
+      unit.sopranodate= req.body.sopranodate ;
+      unit.hexalon= req.body.hexalon ;
+      unit.hexalondate= req.body.hexalondate ;
+      unit.propicon= req.body.propicon ;
+      unit.propicondate= req.body.propicondate ;  
+      unit.hexil= req.body.hexil ;
+      unit.hexildate= req.body.hexildate ;   
+      unit.otros= req.body.otros ;
+      unit.otrosdate= req.body.otrosdate ;
+      unit.fungicidasmonth= req.body.fungicidasmonth ;
+      unit.produccionhectarea= req.body.produccionhectarea ;
+
      unit.user = req.user;
      
   // console.log(req.user);
@@ -423,7 +454,7 @@ router.put('/users/:user/units/:unit', auth, function(req, res, next) {
 	     unit.areaTotal = req.body.areaTotal;
 	     unit.areaCafe = req.body.areaCafe ;
 	     unit.lote = req.body.lote;
-	     unit.edadLote = req.body.edadLote;
+	    //  unit.edadLote = req.body.edadLote;
 	     unit.variedad = req.body.variedad;
 	     unit.distanciamiento = req.body.distanciamiento;
 	     unit.sombra = req.body.sombra;
@@ -449,7 +480,36 @@ router.put('/users/:user/units/:unit', auth, function(req, res, next) {
 	     unit.FinEpocalluviosa = req.body.FinEpocalluviosa;
        unit.recomendaciontecnica = req.body.recomendaciontecnica;
 	     unit.tipoCafe = req.body.tipoCafe;
-	      
+	     unit.nitrogeno = req.body.nitrogeno ;
+      unit.nitrorealiza= req.body.nitrorealiza ;
+      unit.sacos= req.body.sacos ;
+      unit.realizapoda= req.body.realizapoda ;
+      unit.realizamonth= req.body.realizamonth ;
+      unit.quetipo= req.body.quetipo ;
+      unit.enfermedades= req.body.enfermedades ;
+      unit.cyprosol= req.body.cyprosol ;
+      unit.cyprosoldate= req.body.cyprosoldate ;
+      unit.atemi= req.body.atemi ;
+      unit.atemidate= req.body.atemidate ;
+      unit.esfera= req.body.esfera ;
+      unit.esferadate= req.body.esferadate;
+      unit.opera= req.body.opera
+      unit.operadate= req.body.operadate ;
+      unit.opus= req.body.opus ;
+      unit.opusdate= req.body.opusdate ;
+      unit.soprano= req.body.soprano ;
+      unit.sopranodate= req.body.sopranodate ;
+      unit.hexalon= req.body.hexalon ;
+      unit.hexalondate= req.body.hexalondate ;
+      unit.propicon= req.body.propicon ;
+      unit.propicondate= req.body.propicondate ;  
+      unit.hexil= req.body.hexil ;
+      unit.hexildate= req.body.hexildate ;   
+      unit.otros= req.body.otros ;
+      unit.otrosdate= req.body.otrosdate ;
+      unit.fungicidasmonth= req.body.fungicidasmonth ;
+      unit.produccionhectarea= req.body.produccionhectarea ;
+      
 	    unit.save(function(err) {
 	      if (err)
 	        console.log('error');
