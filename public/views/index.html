@@ -110,11 +110,9 @@
 		
 		<script>
 		$(document).ready(function() {
-			
 			var country = geoplugin_countryName();
 			var zone = geoplugin_region();
 			decoded = $("<textarea/>").html(zone).text();
-				
 			if(decoded == "San José") {
 				decoded = "sanjose"
 			}
@@ -123,7 +121,7 @@
 				language: 'sp',
 				providerId: 'owm',
 				providerSequence: false,
-				location: 'costa rica, ' + decoded + '',
+				refreshLink: false,
 				todayLabel: 'Hoy',
 				detailLabels: {
 					humidity: 'Humedad: ',
@@ -292,7 +290,7 @@
 								      (Manzanas)
 							</div>
 						</div>
-						<div class="col-xs-6">
+						<!--<div class="col-xs-6">
 							<div class="form-group">
 								<input type="text"
 								      class="form-control"
@@ -300,7 +298,7 @@
 								      ng-model="unit.edadLote"></input>
 								      (Años)
 							</div>
-						</div>
+						</div>-->
 						<div class="col-xs-12">
 							<div class="form-group">
 								<div class="row">
@@ -986,6 +984,7 @@
 								</div>
 							</div>
 						</div>
+							
 					</div>
 					<div class="row results">
 						<div class="col-lg-6 col-lg-offset-3">
@@ -1058,12 +1057,16 @@
 									</ul>
 									<ul class="severity-list" ng-hide="test.advMode">
 										<li>Indique el numero de hojas afectadas:</li>
-									    <li><span><input type="number" ng-model="affect" > </span>
+									    <li><span><input type="number" ng-model="affect" min="0" > </span>
 										<button class="btn btn-primary" ng-click="addLeaf('afectadas: ' + affect)">Agregar</button></li>
 									</ul>
 								</div>
 					      </div>
-					      
+								<div class="clearfix"></div>
+									<div class="modal-footer">
+											<button type="button" class="btn btn-default" ng-click="CloseAndAddPlant()"><span class="glyphicon glyphicon-arrow-right"></span></button>
+									</div>
+								<div class="clearfix"></div>
 					    </div>
 					  </div>
 					</div>
@@ -3731,7 +3734,7 @@
 					providerId: 'owm',
 					providerSequence: false,
 					showDetails: true,
-					location: 'costa rica, ' + decoded + '',
+				refreshLink: false,
 					todayLabel: 'Hoy',
 					detailLabels: {
 						humidity: 'Humedad: ',
@@ -3783,7 +3786,7 @@
 						forecasts: true,
 						nbForecastDays: 10,
 						providerId: 'wug',
-						location: 'costa rica, ' + decoded + '',
+						refreshLink: false,
 						todayLabel: 'Hoy',
 						detailLabels: {
 							humidity: 'Humedad: ',
@@ -4111,7 +4114,7 @@
 														      (Hectareas)
 													</div>
 												</div>
-												<div class="col-xs-6">
+												<!--<div class="col-xs-6">
 													<div class="form-group">
 														<input type="text"
 														      class="form-control"
@@ -4119,7 +4122,7 @@
 														      ng-model="editUnit.edadLote"></input>
 														      (Años)
 													</div>
-												</div>
+												</div>-->
 												<div class="col-xs-12">
 													<div class="form-group">
 														<div class="row">
@@ -4599,7 +4602,7 @@
 														      (Hectareas)
 													</div>
 												</div>
-												<div class="col-xs-6">
+												<!--<div class="col-xs-6">
 													<div class="form-group">
 														<input type="text"
 														      class="form-control"
@@ -4607,7 +4610,7 @@
 														      ng-model="newUnit.edadLote"></input>
 														      (Años)
 													</div>
-												</div>
+												</div>-->
 												<div class="col-xs-12">
 													<div class="form-group">
 														<div class="row">

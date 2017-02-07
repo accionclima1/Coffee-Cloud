@@ -402,7 +402,8 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 	  //console.log($scope.leafList);
 	  $('#plantModal').modal('show');
   };
-    $scope.affect = 1;
+    //$scope.affect = 1;
+		$scope.affect = "";
     user.get(auth.userId()).then(function(user){
 		 $scope.units = user.units;
     });
@@ -480,6 +481,11 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 		plantEditor(plantName);
 		setTimeout(function () { $('[name=amount]').val(''); }, 100);
 	};
+
+	$scope.CloseAndAddPlant=function()
+	{
+	  $scope.addPlant();
+	}
 	
 	$scope.editPlant = function($index) {
 		plantEditor($index + 1);
@@ -500,7 +506,8 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 		$scope.test.plantas[plantIndex].push([amount,severity]);
 		$scope.leafList = $scope.test.plantas[plantIndex];
 		$('[name=amount]').val('');
-		$scope.affect = 1;
+		$scope.affect ="";
+		//$scope.affect = 1;
 		$('.severity-list').removeClass('active');
 	};
 
@@ -1252,8 +1259,12 @@ function($http, $scope, auth, unit, user){
 		 $scope.userO = user;
 		 $scope.units = $scope.userO.units;
     });
-    $( ".date-field" ).datepicker();
-     $scope.update = function(){
+	  var spanishDateTimePickerOption = {
+        closeText:"Cerrar",prevText:"&#x3C;Ant",nextText:"Sig&#x3E;",currentText:"Hoy",monthNames:["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"],monthNamesShort:["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"],dayNames:["domingo","lunes","martes","miércoles","jueves","viernes","sábado"],dayNamesShort:["dom","lun","mar","mié","jue","vie","sáb"],dayNamesMin:["D","L","M","X","J","V","S"],weekHeader:"Sm",firstDay:1,isRTL:!1,showMonthAfterYear:!1,yearSuffix:""
+    }
+    $( ".date-field" ).datepicker(spanishDateTimePickerOption);
+    
+    $scope.update = function(){
     user.update($scope.userO).error(function(error){
 	      $scope.error = error;
 	    }).then(function(data){

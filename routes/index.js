@@ -356,7 +356,7 @@ router.post('/users/:user/units', auth, function(req, res, next) {
      unit.areaTotal = req.body.areaTotal;
      unit.areaCafe = req.body.areaCafe ;
      unit.lote = req.body.lote;
-     unit.edadLote = req.body.edadLote;
+    //  unit.edadLote = req.body.edadLote;
      unit.variedad = req.body.variedad;
      unit.distanciamiento = req.body.distanciamiento;
      unit.sombra = req.body.sombra;
@@ -454,7 +454,7 @@ router.put('/users/:user/units/:unit', auth, function(req, res, next) {
 	     unit.areaTotal = req.body.areaTotal;
 	     unit.areaCafe = req.body.areaCafe ;
 	     unit.lote = req.body.lote;
-	     unit.edadLote = req.body.edadLote;
+	    //  unit.edadLote = req.body.edadLote;
 	     unit.variedad = req.body.variedad;
 	     unit.distanciamiento = req.body.distanciamiento;
 	     unit.sombra = req.body.sombra;

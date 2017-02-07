@@ -9,7 +9,7 @@ var UnitSchema = new mongoose.Schema({
   areaTotal: String,
   areaCafe: String,
   lote: String,
-  edadLote: String,
+  // edadLote: String,
   variedad: {
 	  	caturra: Boolean,
 	  	bourbon: Boolean,
