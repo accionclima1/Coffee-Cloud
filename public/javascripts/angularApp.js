@@ -392,17 +392,33 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
   $scope.currentUser = auth.currentUser;
   var currentId = auth.currentUser();
   var testInStore = localStorageService.get('localTest');
+	$scope.IsErrorInfrmRoyaAddPlanta=false;
+	$scope.IsErrorInfrmRoyaAddPlantaLeaf=false;
+	$scope.IsErrorInfrmRoyaAddPlantaLeafAffectedLeaf=false;
+	$scope.IsTotalPlantaAdded=false;
+	$scope.IsHideCloseAndAddPlantaButtonInPopup=false;
+	$scope.modal={};
+	$scope.modal.number="";
+	$scope.modal.numberSubmitted=false;
+
+
   $scope.ClearTest = function(){
+		$scope.IsErrorInfrmRoyaAddPlanta=false;
+		$scope.IsErrorInfrmRoyaAddPlantaLeaf=false;
+		$scope.IsErrorInfrmRoyaAddPlantaLeafAffectedLeaf=false;
+		$scope.IsTotalPlantaAdded=false;
+		$scope.IsHideCloseAndAddPlantaButtonInPopup=false;
   	localStorageService.remove('localTest');
   	$state.go($state.current, {}, {reload: true})
   }
   var plantEditor = function(plant) {
 	  $scope.plantname = plant;
 	  $scope.leafList = $scope.test.plantas[plant - 1];
-	  //console.log($scope.leafList);
+	  $scope.modal.number="";
+		$scope.modal.numberSubmitted=false;
+		$scope.affect = "";
 	  $('#plantModal').modal('show');
   };
-    //$scope.affect = 1;
 		$scope.affect = "";
     user.get(auth.userId()).then(function(user){
 		 $scope.units = user.units;
@@ -474,8 +490,43 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 	  } else {
 		  $scope.test.bandolas = true;
 	  }
+		var requiredLength=0;
+		if($scope.test.bandolas==true){
+			requiredLength=29;
+		}
+		else{
+			requiredLength=49;
+		}
+		if($scope.test.plantas.length>requiredLength)
+		{
+			$scope.IsTotalPlantaAdded=true;
+		}
+		else{
+			$scope.IsTotalPlantaAdded=false;
+		}
+
 	}
 	$scope.addPlant = function() {
+		$('.severity-list').removeClass('active');
+		$scope.IsErrorInfrmRoyaAddPlanta=false;
+		$scope.IsErrorInfrmRoyaAddPlantaLeafAffectedLeaf=false;
+		$scope.IsErrorInfrmRoyaAddPlantaLeafAffected=false;
+		$scope.IsHideCloseAndAddPlantaButtonInPopup=false;
+		var requiredLength=0;
+		if($scope.test.bandolas==true){
+			requiredLength=29;
+		}
+		else{
+			requiredLength=49;
+		}
+		if($scope.test.plantas.length>requiredLength)
+		{
+			$scope.IsTotalPlantaAdded=true;
+			return false;
+		}
+		else{
+			$scope.IsTotalPlantaAdded=false;
+		}
 		$scope.test.plantas.push([]);
 		var plantName = $scope.test.plantas.length;
 		plantEditor(plantName);
@@ -484,31 +535,75 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 
 	$scope.CloseAndAddPlant=function()
 	{
+		$scope.IsErrorInfrmRoyaAddPlanta=false;
+		$scope.IsErrorInfrmRoyaAddPlantaLeafAffectedLeaf=false;
+		$scope.IsHideCloseAndAddPlantaButtonInPopup=false;
 	  $scope.addPlant();
 	}
 	
 	$scope.editPlant = function($index) {
+		$('.severity-list').removeClass('active');
+		$scope.IsErrorInfrmRoyaAddPlanta=false;
+		$scope.IsErrorInfrmRoyaAddPlantaLeaf=false;
+		$scope.IsErrorInfrmRoyaAddPlantaLeafAffectedLeaf=false;
+		$scope.IsHideCloseAndAddPlantaButtonInPopup=false;
 		plantEditor($index + 1);
 		$scope.leafList = $scope.test.plantas[$index];
 	}
-	
-	$scope.initLeaf = function() {
+
+	$scope.initLeaf = function(number) {
+    if(!$scope.frmRoyaAddPlanta.$valid || number==undefined || number<1 || number>99 ){
+			$scope.IsErrorInfrmRoyaAddPlanta=true;
+			return;
+		}
+		else{
+				$scope.IsErrorInfrmRoyaAddPlanta=false;
+				$scope.modal.numberSubmitted=true;
+		}
+
 		$('.severity-list').addClass('active');
+		$scope.IsHideCloseAndAddPlantaButtonInPopup=true;
 	}
 	
 	$scope.closePlant = function() {
 		$('.plant-editor').removeClass('active');
 	}
 	
-	$scope.addLeaf = function(severity) {
+	$scope.addLeaf = function(severity,isPrefixAddRequired) {
+		if(isPrefixAddRequired)
+		{
+			if(!$scope.frmRoyaAddPlantaAffectedLeaf.$valid){
+					$scope.IsErrorInfrmRoyaAddPlantaLeaf=true;
+					$scope.IsErrorInfrmRoyaAddPlantaLeafAffectedLeaf=false;
+					return;
+				}
+				else{
+						$scope.IsErrorInfrmRoyaAddPlantaLeaf=false;
+						$scope.modal.numberSubmitted=true;
+				}
+		}
 		var amount = $('[name=amount]').val();
+		if(isPrefixAddRequired)
+		{
+				if(severity>amount){
+				$scope.IsErrorInfrmRoyaAddPlantaLeafAffectedLeaf=true;
+				return;
+				}
+				else{
+					$scope.IsErrorInfrmRoyaAddPlantaLeafAffectedLeaf=false;
+				}
+				severity='afectadas: ' + severity;
+
+		}
 		var plantIndex = $scope.plantname - 1;
 		$scope.test.plantas[plantIndex].push([amount,severity]);
 		$scope.leafList = $scope.test.plantas[plantIndex];
 		$('[name=amount]').val('');
 		$scope.affect ="";
-		//$scope.affect = 1;
 		$('.severity-list').removeClass('active');
+		$scope.modal.number="";
+		$scope.modal.numberSubmitted=false;
+		$scope.IsHideCloseAndAddPlantaButtonInPopup=false;
 	};
 
     $scope.removePlant = function (index) {
@@ -656,15 +751,31 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
   $scope.currentUser = auth.currentUser;
   var currentId = auth.currentUser();
   var testInStore = localStorageService.get('localTestgallo');
-  
+	$scope.IsErrorInfrmGalloAddPlanta=false;
+	$scope.IsErrorInfrmGalloAddPlantaLeaf=false;
+	$scope.IsErrorInfrmGalloAddPlantaLeafAffectedLeaf=false;
+	$scope.IsTotalPlantaAdded=false;
+	$scope.IsHideCloseAndAddPlantaButtonInPopup=false;
+
+	$scope.modal={};
+	$scope.modal.number="";
+	$scope.modal.numberSubmitted=false;
+
   $scope.ClearTest = function(){
+	  $scope.IsErrorInfrmGalloAddPlanta=false;
+		$scope.IsErrorInfrmGalloAddPlantaLeaf=false;
+		$scope.IsErrorInfrmGalloAddPlantaLeafAffectedLeaf=false;
+		$scope.IsTotalPlantaAdded=false;
+		$scope.IsHideCloseAndAddPlantaButtonInPopup=false;
   	localStorageService.remove('localTestgallo');
   	$state.go($state.current, {}, {reload: true})
   }
   var plantEditor = function(plant) {
 	  $scope.plantname = plant;
 	  $scope.leafList = $scope.test.plantas[plant - 1];
-	  //console.log($scope.leafList);
+	  $scope.modal.number="";
+		$scope.modal.numberSubmitted=false;
+		$scope.affect = 1;
 	  $('#plantModal').modal('show');
   };
     $scope.affect = 1;
@@ -738,8 +849,46 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 	  } else {
 		  $scope.test.bandolas = true;
 	  }
+		var requiredLength=0;
+		if($scope.test.bandolas==true){
+			requiredLength=29;
+		}
+		else{
+			requiredLength=49;
+		}
+		if($scope.test.plantas.length>requiredLength)
+		{
+			$scope.IsTotalPlantaAdded=true;
+		}
+		else{
+			$scope.IsTotalPlantaAdded=false;
+		}
+
 	}
 	$scope.addPlant = function() {
+	
+		$scope.IsHideCloseAndAddPlantaButtonInPopup=false;
+		$scope.IsErrorInfrmGalloAddPlanta=false;
+		$scope.IsErrorInfrmGalloAddPlantaLeafAffectedLeaf=false;
+		$scope.IsErrorInfrmGalloAddPlantaLeaf=false;
+		
+		$('.severity-list').removeClass('active');
+		var requiredLength=0;
+		if($scope.test.bandolas==true){
+			requiredLength=29;
+		}
+		else{
+			requiredLength=49;
+		}
+		if($scope.test.plantas.length>requiredLength)
+		{
+			$scope.IsTotalPlantaAdded=true;
+			return false;
+		}
+		else{
+			$scope.IsTotalPlantaAdded=false;
+		}
+
 		$scope.test.plantas.push([]);
 		var plantName = $scope.test.plantas.length;
 		plantEditor(plantName);
@@ -747,30 +896,75 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 	};
 	$scope.CloseAndAddPlant=function()
 	{
+		$scope.IsErrorInfrmGalloAddPlanta=false;
+		$scope.IsErrorInfrmGalloAddPlantaLeafAffectedLeaf=false;
+		$scope.IsHideCloseAndAddPlantaButtonInPopup=false;
 	  $scope.addPlant();
 	}
 	
 	$scope.editPlant = function($index) {
+		$('.severity-list').removeClass('active');
+		$scope.IsErrorInfrmGalloAddPlanta=false;
+		$scope.IsHideCloseAndAddPlantaButtonInPopup=false;
+		$scope.IsErrorInfrmGalloAddPlantaLeaf=false;
+		$scope.IsErrorInfrmGalloAddPlantaLeafAffectedLeaf=false;
 		plantEditor($index + 1);
 		$scope.leafList = $scope.test.plantas[$index];
 	}
 	
-	$scope.initLeaf = function() {
+	$scope.initLeaf = function(number) {
+		if(!$scope.frmGalloAddPlanta.$valid || number==undefined || number<1 || number>99 ){
+			$scope.IsErrorInfrmGalloAddPlanta=true;
+			return;
+		}
+		else{
+				$scope.IsErrorInfrmGalloAddPlanta=false;
+				$scope.modal.numberSubmitted=true;
+		}
 		$('.severity-list').addClass('active');
+		$scope.IsHideCloseAndAddPlantaButtonInPopup=true;
 	}
 	
 	$scope.closePlant = function() {
 		$('.plant-editor').removeClass('active');
 	}
 	
-	$scope.addLeaf = function(severity) {
+	$scope.addLeaf = function(severity,isPrefixAddRequired) {
+		if(isPrefixAddRequired)
+		{
+			if(!$scope.frmGalloAddPlantaAffectedLeaf.$valid){
+					$scope.IsErrorInfrmGalloAddPlantaLeaf=true;
+					$scope.IsErrorInfrmGalloAddPlantaLeafAffectedLeaf=false;
+					return;
+				}
+				else{
+						$scope.IsErrorInfrmGalloAddPlantaLeaf=false;
+						$scope.modal.numberSubmitted=true;
+				}
+		}
 		var amount = $('[name=amount]').val();
+		if(isPrefixAddRequired)
+		{
+				if(severity>amount){
+				$scope.IsErrorInfrmGalloAddPlantaLeafAffectedLeaf=true;
+				return;
+				}
+				else{
+					$scope.IsErrorInfrmGalloAddPlantaLeafAffectedLeaf=false;
+				}
+				severity='afectadas: ' + severity;
+		}
 		var plantIndex = $scope.plantname - 1;
+	 
+
 		$scope.test.plantas[plantIndex].push([amount,severity]);
 		$scope.leafList = $scope.test.plantas[plantIndex];
 		$('[name=amount]').val('');
 		$scope.affect = 1;
 		$('.severity-list').removeClass('active');
+		$scope.modal.number="";
+		$scope.modal.numberSubmitted=false;
+		$scope.IsHideCloseAndAddPlantaButtonInPopup=false;
 	};
 
     $scope.removePlant = function (index) {
@@ -1187,23 +1381,28 @@ function($http, $scope, auth, unit, user){
 	$scope.userId = auth.userId;
 	$scope.user_Ided = auth.userId();
 	var userO = {};
+  
 	$scope.newUnit = {
 	  sombra: true,
-	  muestreo: true,
-	  fertilizaSuelo: true,
-	  fertilizaFollaje: true,
-	  enmiendasSuelo: true,
-	  manejoTejido: true,
+	  muestreo: false,
+		muestreoMes:[],
+	  fertilizaSuelo: false,
+		fertilizaSueloMes:[],
+	  fertilizaFollaje: false,
+		fertilizaFollajeMes:[],
+	  enmiendasSuelo: false,
+		enmiendasSueloMes:[],
+	  manejoTejido: false,
+		manejoTejidoMes:[],
 	  fungicidasRoya: true,
-	  verificaAgua: true,
-	  recomendaciontecnica: '',
-	  nitrogeno: true,
-	  nitrorealiza: '',
+	  verificaAgua: false,
+	  nitrogeno: false,
+	  nitrorealiza: [],
 	  sacos: '',
 	  realizapoda: true,
 	  realizamonth: '',
 	  quetipo: '',
-	  enfermedades: true,
+	  enfermedades: false,
 	  cyprosol: true,
 	  cyprosoldate: '',
 	  atemi: true,
@@ -1227,26 +1426,76 @@ function($http, $scope, auth, unit, user){
 	  fungicidasmonth: '',
 	  produccionhectarea: '',
 	  variedad: {
-	  		caturra: false,
-			bourbon: false,
-			catuai: false,
-			maragogype: false,
-			typica: false,
-		  	pacamara: false,
-		  	pacheComun: false,
-		  	pacheColis: false,
-		  	mundoNovo: false
-					  
+	  	Catimor5175:false,
+			Sarchimor:false,
+			Anacafe14:false,
+			Anacafe90:false,
+			CostaRica95:false,
+			Lempira:false,
+			Obata:false,
+			Catucai:false,
+			HibridoH1:false,
+			Marsellesa:false,
+			Tupi:false,
+			Parainema:false,
+			CatuaiAmarillo:false,
+			CatuaiRojo:false,
+			Caturra:false,
+			Pacamara:false,
+			Pachecolis:false,
+			Geisha:false,
+			Bourbon:false,
+			Pachecomun:false,
+			Pacas:false,
+			Robusta:false,
+			MundoNovo:false,
+			VillaSarchi:false,
+			Maragogype:false,
+			Typica:false,
+			Maracaturra:false,
+			Otra:false
 	  },
+		typeOfCoffeProducessOptionSelected:[],
 	  fungicidas: {
-		  contacto: true,
-	  	  bourbon: false,
-	  	  catuai: false,
+		 contacto: false,
+	   bourbon: false,
+	   catuai: false,
 		 biologico : false,
-		 sistemico : false
+		 sistemico : false,
+		 contactoOptions:{
+			 	caldovicosa:false,
+		 		caldobordeles:false,
+		 		otrocual:false,
+		 },
+		 biologicalOptions:{
+			 	verticiliumlecanii:false,
+		 		bacilussutillis:false,
+		 		otrocual:false,
+		 },
+		 sistemicoOptions:{
+			 opus:false,
+			 opera:false,
+			 esferamax:false,
+			 amistarxtra:false,
+			 alto10:false,
+			 silvacur:false,
+			 verdadero:false,
+			 otrocual:false,
+			 mancuerna:false,
+			 caporal:false,
+			 halt:false,
+			 astrostarxtra:false,
+			 tutela:false,
+			 halconextra:false,
+			 beken:false,
+			 estrobirulina:false,
+			 otro:false
+		 }
+
+
 	  },
 	  verificaAguaTipo: {
-		  ph: true,
+		  ph: false,
 		  dureza: false
 	  },
 	  rendimiento : '',
@@ -1258,7 +1507,112 @@ function($http, $scope, auth, unit, user){
 		  extraprime: false
 		  }
 	};
-	$scope.editUnit = {};
+	
+	$scope.initNewUnit=angular.copy($scope.newUnit);
+
+	$scope.editUnit = angular.copy($scope.newUnit);
+  
+  $scope.ResetNewUnit=function(){
+	 $scope.newUnit=angular.copy($scope.initNewUnit);
+ }
+
+$scope.typesOfCoffeSelectionOptions=[
+	  {name: 'EstrictamenteDuro',displayValue: 'Estrictamente Duro'},
+    {name: 'Duro',displayValue: 'Duro'},
+    {name: 'Semiduro',displayValue: 'Semiduro'},
+    {name: 'Prime',displayValue: 'Prime'},
+    {name: 'ExtraPrime',displayValue: 'ExtraPrime'}];
+
+$scope.yesNoSelectionChange=function(type)
+{
+	(type=="newUnit")?$scope.newUnit.fungicidas.contacto=false:$scope.editUnit.fungicidas.contacto=false;
+	(type=="newUnit")?$scope.newUnit.fungicidas.bourbon=false:$scope.editUnit.fungicidas.bourbon=false;
+	(type=="newUnit")?$scope.newUnit.fungicidas.catuai=false:$scope.editUnit.fungicidas.catuai=false;
+	(type=="newUnit")?$scope.newUnit.fungicidas.sistemico=false:$scope.editUnit.fungicidas.sistemico=false;
+	(type=="newUnit")?$scope.newUnit.fungicidas.biologico=false:$scope.editUnit.fungicidas.biologico=false;
+	$scope.resetFungicidasSelection(type,true,true,true);
+}
+$scope.FungicidOptionsChange=function(type,optionType)
+{
+    switch (optionType) {
+			case "contacto":
+						  if($scope.newUnit.fungicidas.contacto==false){
+								$scope.resetFungicidasSelection(type,true,false,false);
+							}
+				break;
+			case "sistemico":
+							if($scope.newUnit.fungicidas.sistemico==false){
+								$scope.resetFungicidasSelection(type,false,false,true);
+							}
+				break;
+			case "biologico":
+							if($scope.newUnit.fungicidas.biologico==false){
+								$scope.resetFungicidasSelection(type,false,true,false);
+							}
+				break;
+			default:
+				break;
+		}
+}
+$scope.yesNoNitrogenoChange=function(type)
+{
+	(type=="newUnit")?$scope.newUnit.quetipo='' : $scope.editUnit.quetipo= '';
+	(type=="newUnit")?$scope.newUnit.nitrorealiza=[]:$scope.editUnit.nitrorealiza=[]
+}
+$scope.yesNoVerificiaAcquaChange=function(type)
+{
+	(type=="newUnit")?$scope.newUnit.verificaAguaTipo.ph=false : $scope.editUnit.verificaAguaTipo.ph=false;
+	(type=="newUnit")?$scope.newUnit.verificaAguaTipo.dureza=false:$scope.editUnit.verificaAguaTipo.dureza=false;
+}
+$scope.yesNomanejoTejidoChange=function(type)
+{
+	(type=="newUnit")?$scope.newUnit.manejoTejidoMes=[] : $scope.editUnit.manejoTejidoMes=[]
+}
+$scope.yesNoenmiendasSueloChange=function(type)
+{
+	(type=="newUnit")?$scope.newUnit.enmiendasSueloMes=[] : $scope.editUnit.enmiendasSueloMes=[]
+}
+$scope.yesNofertilizaFollajeChange=function(type)
+{
+	(type=="newUnit")?$scope.newUnit.fertilizaFollajeMes=[] : $scope.editUnit.fertilizaFollajeMes=[]
+}
+$scope.yesNofertilizaSueloChange=function(type)
+{
+	(type=="newUnit")?$scope.newUnit.fertilizaSueloMes=[] : $scope.editUnit.fertilizaSueloMes=[]
+}
+$scope.yesNomuestreoChange=function(type)
+{
+	(type=="newUnit")?$scope.newUnit.muestreoMes=[] : $scope.editUnit.muestreoMes=[]
+}
+
+$scope.resetFungicidasSelection=function(type,isResetfungicidasContactoOptions,isResetfungicidasBiologicalOptions,isResetSistemicOptions){
+	if(isResetfungicidasContactoOptions)
+	{
+			(type=="newUnit")?$scope.newUnit.fungicidas.contactoOptions.caldovicosa=false:$scope.editUnit.fungicidas.contactoOptions.caldovicosa=false;
+			(type=="newUnit")?$scope.newUnit.fungicidas.contactoOptions.caldobordeles=false:$scope.editUnit.fungicidas.contactoOptions.caldobordeles=false;	
+			(type=="newUnit")?$scope.newUnit.fungicidas.contactoOptions.otrocual=false:$scope.editUnit.fungicidas.contactoOptions.otrocual=false;
+  }
+	if(isResetfungicidasBiologicalOptions)
+	{
+		(type=="newUnit")?$scope.newUnit.fungicidas.biologicalOptions.verticiliumlecanii=false:$scope.editUnit.fungicidas.biologicalOptions.verticiliumlecanii=false;	
+		(type=="newUnit")?$scope.newUnit.fungicidas.biologicalOptions.bacilussutillis=false:$scope.editUnit.fungicidas.biologicalOptions.bacilussutillis=false;
+		(type=="newUnit")?$scope.newUnit.fungicidas.biologicalOptions.otrocual=false:$scope.editUnit.fungicidas.biologicalOptions.otrocual=false;
+			
+	}
+	if(isResetSistemicOptions)
+	{
+			(type=="newUnit")?$scope.newUnit.fungicidas.sistemicoOptions.opus=false:$scope.editUnit.fungicidas.sistemicoOptions.opus=false;
+			(type=="newUnit")?$scope.newUnit.fungicidas.sistemicoOptions.opera=false:$scope.editUnit.fungicidas.sistemicoOptions.opera=false;
+			(type=="newUnit")?$scope.newUnit.fungicidas.sistemicoOptions.esferamax=false:$scope.editUnit.fungicidas.sistemicoOptions.esferamax=false;
+			(type=="newUnit")?$scope.newUnit.fungicidas.sistemicoOptions.amistarxtra=false:$scope.editUnit.fungicidas.sistemicoOptions.amistarxtra=false;
+			(type=="newUnit")?$scope.newUnit.fungicidas.sistemicoOptions.alto10=false:$scope.editUnit.fungicidas.sistemicoOptions.alto10=false;
+			(type=="newUnit")?$scope.newUnit.fungicidas.sistemicoOptions.silvacur=false:$scope.editUnit.fungicidas.sistemicoOptions.silvacur=false;	
+			(type=="newUnit")?$scope.newUnit.fungicidas.sistemicoOptions.verdadero=false:$scope.editUnit.fungicidas.sistemicoOptions.verdadero=false;	
+			(type=="newUnit")?$scope.newUnit.fungicidas.sistemicoOptions.otrocual=false:$scope.editUnit.fungicidas.sistemicoOptions.otrocual=false;
+			(type=="newUnit")?$scope.newUnit.fungicidas.sistemicoOptions.caldovicosa=false:$scope.editUnit.fungicidas.sistemicoOptions.caldovicosa=false;
+	}
+}
+
 	user.get($scope.user_Ided).then(function(user){
 		 $scope.userO = user;
 		 $scope.units = $scope.userO.units;
@@ -1288,14 +1642,19 @@ function($http, $scope, auth, unit, user){
 		$scope.sucMsg = null;
 		unit.get(auth.userId(),id).then(function(unitD){
 			console.log(unitD);
+		
 			$scope.editUnit = unitD;
+				console.log("update unit data="+JSON.stringify($scope.editUnit));
 			$scope.updateUnitForm = function(){
+				console.log("called update="+JSON.stringify($scope.editUnit));
 				if ($scope.updateunitForm.$valid) {
 					unit.update(id, auth.userId(), $scope.editUnit).then(function(unitN){
 						user.get($scope.user_Ided).then(function(user){
 							 $scope.userO = user;
 							 $scope.units = $scope.userO.units;
 					    });
+						$scope.editUnit={};
+						console.log("return  updated data="+JSON.stringify(unitN.data));	
 						$scope.editUnit = unitN.data;
 						$scope.sucMsg = '¡Unidad Actualizada exitosamente!';
 					});
@@ -1318,78 +1677,7 @@ function($http, $scope, auth, unit, user){
 	    }).then(function(data){
 				$scope.userO.units.push(data.data);
 				$('#myModal2').modal('hide');
-				$scope.newUnit = {
-				  sombra: true,
-				  muestreo: true,
-				  fertilizaSuelo: true,
-				  fertilizaFollaje: true,
-				  enmiendasSuelo: true,
-				  manejoTejido: true,
-				  fungicidasRoya: true,
-				  verificaAgua: true,
-				  recomendaciontecnica: '',
-				  nitrogeno: true,
-				  nitrorealiza: '',
-				  sacos: '',
-				  realizapoda: true,
-				  realizamonth: '',
-				  quetipo: '',
-				  enfermedades: true,
-				  cyprosol: true,
-				  cyprosoldate: '',
-				  atemi: true,
-				  atemidate: '',
-				  esfera: true,
-				  esferadate: '',
-				  opera: true,
-				  operadate: '',
-				  opus: true,
-				  opusdate: '',
-				  soprano: true,
-				  sopranodate: '',
-				  hexalon: true,
-				  hexalondate: '',
-				  propicon: true,
-				  propicondate: '',	 
-				  hexil: true,
-				  hexildate: '',	 
-				  otros: true,
-				  otrosdate: '',
-				  fungicidasmonth: '',
-				  produccionhectarea: '',
-				  variedad: {
-				  		caturra: false,
-						bourbon: false,
-						catuai: false,
-						maragogype: false,
-						typica: false,
-					  	pacamara: false,
-					  	pacheComun: false,
-					  	pacheColis: false,
-					  	mundoNovo: false		  
-				  },
-				  fungicidas: {
-					  contacto: true,
-				  	  bourbon: false,
-				  	  catuai: false,
-				  	  biologico : false,
-		 			  sistemico : false
-					  
-				  },
-				  verificaAguaTipo: {
-					  ph: true,
-					  dureza: false
-				  },
-				  rendimiento : '',
-				  recomendaciontecnica: '',
-				  tipoCafe: {
-					  estrictamenteDuro: true,
-					  duro: false,
-					  semiduro: false,
-					  prime: false,
-					  extraprime: false
-					  }
-				}
+						$scope.ResetNewUnit();
 		    });
 			
 		}

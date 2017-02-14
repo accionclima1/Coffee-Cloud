@@ -411,7 +411,7 @@ router.post('/users/:user/units', auth, function(req, res, next) {
       unit.otrosdate= req.body.otrosdate ;
       unit.fungicidasmonth= req.body.fungicidasmonth ;
       unit.produccionhectarea= req.body.produccionhectarea ;
-
+      unit.typeOfCoffeProducessOptionSelected= req.body.typeOfCoffeProducessOptionSelected ;
      unit.user = req.user;
      
   // console.log(req.user);
@@ -509,6 +509,7 @@ router.put('/users/:user/units/:unit', auth, function(req, res, next) {
       unit.otrosdate= req.body.otrosdate ;
       unit.fungicidasmonth= req.body.fungicidasmonth ;
       unit.produccionhectarea= req.body.produccionhectarea ;
+      unit.typeOfCoffeProducessOptionSelected= req.body.typeOfCoffeProducessOptionSelected ;
       
 	    unit.save(function(err) {
 	      if (err)
