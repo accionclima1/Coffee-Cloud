@@ -20,7 +20,7 @@
 	<script src="bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
 	<script src="javascripts/validator.min.js"></script>
 	<script src="javascripts/muni14.min.js"></script>
-	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.js"></script>
 	<script src="bower_components/angular-socket-io/socket.min.js"></script>
 	<script src="bower_components/snapjs/snap.min.js"></script>
 	<script src="bower_components/angular-snap/angular-snap.min.js"></script>
@@ -4289,7 +4289,7 @@
 													        </div>
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="editUnit.variedad.Pachecolis"> Pachecolis
+													            <input type="checkbox" ng-model="editUnit.variedad.Pachecolis"> Pache Colis
 													          </label>
 													        </div>
 																		<div class="col-xs-6">
@@ -4352,7 +4352,7 @@
 												</div>
 													<div class="col-xs-12">
 													<div class="form-group">
-														<label for="selCoffeProducessOptions">Tipo de café que produce options?</label>
+														<label for="selCoffeProducessOptions">Tipo de café que produce?</label>
 														<select class="form-control" id="selCoffeProducessOptions" multiple="true" ng-model="editUnit.typeOfCoffeProducessOptionSelected">
 															<option ng-repeat="option in typesOfCoffeSelectionOptions" value="{{option.name}}">{{option.displayValue}}</option>
 														</select>
@@ -4656,23 +4656,6 @@
 																								
 												
 												<!-- new questions --> 
-												<div class="col-xs-12">
-													<div class="form-group">
-														<p>¿Utiliza la extra de nitrógeno?</p>
-														  <div class="radio">
-															  <label>
-															    <input type="radio" name="nitrogeno" ng-value="true" ng-model="editUnit.nitrogeno" >
-															    Si
-															  </label>
-															</div>
-															<div class="radio">
-															  <label>
-															    <input type="radio" name="nitrogeno" ng-value="false" ng-model="editUnit.nitrogeno">
-															    No
-															  </label>
-														</div>
-													</div>
-												</div>
 												<div class="col-xs-12">
 													<div class="form-group">
 														<input type="text"
@@ -5469,7 +5452,7 @@
 													        </div>
 													        <div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-model="newUnit.variedad.Pachecolis"> Pachecolis
+													            <input type="checkbox" ng-model="newUnit.variedad.Pachecolis"> Pache Colis
 													          </label>
 													        </div>
 																		<div class="col-xs-6">
@@ -5534,7 +5517,7 @@
 
 												<div class="col-xs-12">
 													<div class="form-group">
-														<label for="selCoffeProducessOptions">Tipo de café que produce options?</label>
+														<label for="selCoffeProducessOptions">Tipo de café que produce?</label>
 														<select class="form-control" id="selCoffeProducessOptions" multiple="true" ng-model="newUnit.typeOfCoffeProducessOptionSelected">
 															<option ng-repeat="option in typesOfCoffeSelectionOptions" value="{{option.name}}">{{option.displayValue}}</option>
 														</select>
@@ -5885,23 +5868,6 @@
 											</div>
 											
 											<!-- new questions --> 
-												<div class="col-xs-12">
-													<div class="form-group">
-														<p>¿Utiliza la extra de nitrógeno?</p>
-														  <div class="radio">
-															  <label>
-															    <input type="radio" name="nitrogeno" ng-change="yesNoNitrogenoChange('newUnit')" ng-value="true" ng-model="newUnit.nitrogeno" >
-															    Si
-															  </label>
-															</div>
-															<div class="radio">
-															  <label>
-															    <input type="radio" name="nitrogeno"  ng-value="false" ng-model="newUnit.nitrogeno" checked>
-															    No
-															  </label>
-														</div>
-													</div>
-												</div>
 												<div class="col-xs-12" ng-show="newUnit.nitrogeno">
 													<div class="form-group">
 														<label>¿En que mes lo realiza?</label>
