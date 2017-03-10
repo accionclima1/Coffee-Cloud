@@ -199,12 +199,23 @@ router.post('/login', function(req, res, next){
   if(!req.body.username || !req.body.password){
     return res.status(400).json({message: 'Por favor, llene todos los campos'});
   }
-
   passport.authenticate('local', function(err, user, info){
     if(err){ return next(err); }
 
     if(user){
-      return res.json({token: user.generateJWT()});
+      //region changes for giving user Data and not sync units bacl to app while user is loggned successfully.
+       var userUnits=[];
+       Unit.find( { isSync: false,user:user._id},function(err,units){
+        if(err){ return res.json({token: user.generateJWT(),units:[],userData:user}); }
+        for(var x=0;x<units.length;x++){
+        if(units[x].isSync==false)
+        {
+                  userUnits.push(units[x]);
+        }
+        }
+        //endregion
+        return res.json({token: user.generateJWT(),units:[],userData:user}); 
+        });
     } else {
       return res.status(401).json(info);
     }
@@ -374,6 +385,7 @@ router.post('/users/:user/units', auth, function(req, res, next) {
      unit.fungicidas = req.body.fungicidas;
      unit.fungicidasFechas = req.body.fungicidasFechas;
      unit.verificaAguaTipo = req.body.verificaAguaTipo ;
+     unit.verificaAgua = req.body.verificaAgua ;
      unit.rendimiento = req.body.rendimiento;
      unit.floracionPrincipal = req.body.floracionPrincipal;
      unit.inicioCosecha = req.body.inicioCosecha;
@@ -412,6 +424,9 @@ router.post('/users/:user/units', auth, function(req, res, next) {
       unit.fungicidasmonth= req.body.fungicidasmonth ;
       unit.produccionhectarea= req.body.produccionhectarea ;
       unit.typeOfCoffeProducessOptionSelected= req.body.typeOfCoffeProducessOptionSelected ;
+      unit.isSync= req.body.isSync ;
+      unit.isDeleted= req.body.isDeleted ;
+      unit.PouchDBId= req.body.PouchDBId ;
      unit.user = req.user;
      
   // console.log(req.user);
@@ -472,6 +487,7 @@ router.put('/users/:user/units/:unit', auth, function(req, res, next) {
 	     unit.fungicidas = req.body.fungicidas;
 	     unit.fungicidasFechas = req.body.fungicidasFechas;
 	     unit.verificaAguaTipo = req.body.verificaAguaTipo ;
+       unit.verificaAgua = req.body.verificaAgua ;
 	     unit.rendimiento = req.body.rendimiento;
 	     unit.floracionPrincipal = req.body.floracionPrincipal;
 	     unit.inicioCosecha = req.body.inicioCosecha;
@@ -510,7 +526,10 @@ router.put('/users/:user/units/:unit', auth, function(req, res, next) {
       unit.fungicidasmonth= req.body.fungicidasmonth ;
       unit.produccionhectarea= req.body.produccionhectarea ;
       unit.typeOfCoffeProducessOptionSelected= req.body.typeOfCoffeProducessOptionSelected ;
-      
+      unit.isSync= req.body.isSync ;
+      unit.isDeleted= req.body.isDeleted ;
+      unit.PouchDBId= req.body.PouchDBId ;
+
 	    unit.save(function(err) {
 	      if (err)
 	        console.log('error');
@@ -686,6 +705,118 @@ router.get('/getWidgets', function(req, res, next)
 });
 /* End */
 
+
+/*API for Sync */
+
+/*Get all Users for writing to pouch db*/
+router.get('/getUserNotSyncUnits/:user/units/', function(req, res, next) {
+  Unit.find( { isSync: false },function(err,units){
+        if(err){ return next(err); }
+            res.json(units);
+  });
+  
+});
+
+router.post('/SyncUserUnits/:user/units', auth, function(req, res, next) {
+    Unit.remove({ 'PouchDBId' : req.body.PouchDBId }, function (err) {
+    })
+     var unit = new Unit(req.body);
+  	 unit.nombre = req.body.nombre;
+     unit.altitud = req.body.altitud; 
+     unit.departamento = req.body.departamento;
+	   unit.municipio = req.body.municipio;
+     unit.ubicacion = req.body.ubicacion;
+     unit.areaTotal = req.body.areaTotal;
+     unit.areaCafe = req.body.areaCafe ;
+     unit.lote = req.body.lote;
+     unit.variedad = req.body.variedad;
+     unit.distanciamiento = req.body.distanciamiento;
+     unit.sombra = req.body.sombra;
+     unit.muestreo = req.body.muestreo;
+     unit.muestreoMes = req.body.muestreoMes;
+     unit.fertilizaSuelo = req.body.fertilizaSuelo;
+     unit.fertilizaSueloMes = req.body.fertilizaSueloMes;
+     unit.fertilizaFollaje = req.body.fertilizaFollaje;
+     unit.fertilizaFollajeMes = req.body.fertilizaFollajeMes;
+     unit.enmiendasSuelo = req.body.enmiendasSuelo;
+     unit.enmiendasSueloMes = req.body.enmiendasSueloMes;
+     unit.manejoTejido = req.body.manejoTejido;
+     unit.manejoTejidoMes = req.body.manejoTejidoMes;
+     unit.fungicidasRoya = req.body.fungicidasRoya;
+     unit.fungicidas = req.body.fungicidas;
+     unit.fungicidasFechas = req.body.fungicidasFechas;
+     unit.verificaAguaTipo = req.body.verificaAguaTipo ;
+     unit.verificaAgua = req.body.verificaAgua ;
+     unit.rendimiento = req.body.rendimiento;
+     unit.floracionPrincipal = req.body.floracionPrincipal;
+     unit.inicioCosecha = req.body.inicioCosecha;
+     unit.finalCosecha = req.body.finalCosecha;
+     unit.epocalluviosa = req.body.epocalluviosa;
+     unit.FinEpocalluviosa = req.body.FinEpocalluviosa;
+     unit.recomendaciontecnica = req.body.recomendaciontecnica;
+     unit.tipoCafe = req.body.tipoCafe;
+      unit.nitrogeno = req.body.nitrogeno ;
+      unit.nitrorealiza= req.body.nitrorealiza ;
+      unit.sacos= req.body.sacos ;
+      unit.realizapoda= req.body.realizapoda ;
+      unit.realizamonth= req.body.realizamonth ;
+      unit.quetipo= req.body.quetipo ;
+      unit.enfermedades= req.body.enfermedades ;
+      unit.cyprosol= req.body.cyprosol ;
+      unit.cyprosoldate= req.body.cyprosoldate ;
+      unit.atemi= req.body.atemi ;
+      unit.atemidate= req.body.atemidate ;
+      unit.esfera= req.body.esfera ;
+      unit.esferadate= req.body.esferadate;
+      unit.opera= req.body.opera
+      unit.operadate= req.body.operadate ;
+      unit.opus= req.body.opus ;
+      unit.opusdate= req.body.opusdate ;
+      unit.soprano= req.body.soprano ;
+      unit.sopranodate= req.body.sopranodate ;
+      unit.hexalon= req.body.hexalon ;
+      unit.hexalondate= req.body.hexalondate ;
+      unit.propicon= req.body.propicon ;
+      unit.propicondate= req.body.propicondate ;  
+      unit.hexil= req.body.hexil ;
+      unit.hexildate= req.body.hexildate ;   
+      unit.otros= req.body.otros ;
+      unit.otrosdate= req.body.otrosdate ;
+      unit.fungicidasmonth= req.body.fungicidasmonth ;
+      unit.produccionhectarea= req.body.produccionhectarea ;
+      unit.typeOfCoffeProducessOptionSelected= req.body.typeOfCoffeProducessOptionSelected ;
+      unit.isSync= req.body.isSync ;
+      unit.isDeleted= req.body.isDeleted ;
+      unit.PouchDBId= req.body.PouchDBId ;
+
+      unit.user = req.user;
+     
+      // console.log(req.user);
+      unit.save(function(err){
+        if(err){ return res.status(500).json({message: err}); }
+        req.user.units.push(unit);
+        req.user.save(function(err, post) {
+          if(err){ return next(err); }
+                console.log(unit);
+           res.json(unit);
+        });  
+	  });
+});
+router.get('/getAllUsers', function (req, res, next) {
+    User.find(function (err, users) {
+        if (err) { return next(err); }
+        res.json(users);
+    });
+});
+/*Get all Units for writing to pouch db*/
+router.get('/getAllUnits', function (req, res, next) {
+    Unit.find(function (err, units) {
+        if (err) { return next(err); }
+        res.json(units);
+    });
+});
+
+/* */
 module.exports = router;
 
 
