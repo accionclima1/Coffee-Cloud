@@ -1689,7 +1689,7 @@
 							<div class="unidades-wrap">
 					   			<div class="unidad" ng-repeat="unit in units" id="{{unit._id}}" ng-click="startTest(unit)">
 					   				
-					   				<span ng-hide="unit.lote.nombre">{{unit.lote.nombre}}</span>
+					   				<span ng-show="unit.lote.nombre">{{unit.lote.nombre}}</span>
 					   				
 						   			<span ng-hide="unit.lote.nombre">{{unit.nombre}}</span>
 						   			
@@ -1890,7 +1890,9 @@
 							<div class="unidades-wrap">
 					   			<div class="unidad" ng-repeat="unit in units" id="{{unit._id}}" ng-click="startTest(unit)">
 					
-						   			<span>{{unit.nombre}}</span>
+						   			<span ng-show="unit.lote.nombre">{{unit.lote.nombre}}</span>
+					   				
+						   			<span ng-hide="unit.lote.nombre">{{unit.nombre}}</span>
 						   			
 						   			<i class="glyphicon glyphicon-chevron-right"></i>
 						   			
@@ -4302,7 +4304,9 @@
 								<div class="unidades-wrap">
 						   			<div class="unidad" ng-repeat="unit in units" id="{{unit._id}}" ng-click="startTest(unit)">
 						
-							   			<span>{{unit.nombre}}</span>
+							   			<span ng-show="unit.lote.nombre">{{unit.lote.nombre}}</span>
+					   				
+						   			<span ng-hide="unit.lote.nombre">{{unit.nombre}}</span>
 							   			
 							   			<i class="glyphicon glyphicon-chevron-right"></i>
 							   			
