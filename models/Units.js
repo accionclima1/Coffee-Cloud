@@ -12,6 +12,7 @@ var UnitSchema = new mongoose.Schema({
   areaTotal: String,
   areaCafe: String,
   lote: {
+	  nombre: String,
 	  georeferenciacion: String,
 	  altitud: String,
 	  tamano: String,

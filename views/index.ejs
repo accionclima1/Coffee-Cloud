@@ -1688,8 +1688,10 @@
 							
 							<div class="unidades-wrap">
 					   			<div class="unidad" ng-repeat="unit in units" id="{{unit._id}}" ng-click="startTest(unit)">
-					
-						   			<span>{{unit.nombre}}</span>
+					   				
+					   				<span ng-hide="unit.lote.nombre">{{unit.lote.nombre}}</span>
+					   				
+						   			<span ng-hide="unit.lote.nombre">{{unit.nombre}}</span>
 						   			
 						   			<i class="glyphicon glyphicon-chevron-right"></i>
 						   			
@@ -7241,6 +7243,15 @@
 										  <form name="updateunitFormlote" ng-submit="updateUnitForm($event,editUnit._id)" id="updateunitFormlote" >
 						
 										    <div class="row">
+											    <div class="col-xs-12">
+													<div class="form-group">
+														<input type="text"
+														      class="form-control"
+														      placeholder="Nombre del lote"
+														      ng-model="editUnit.lote.nombre"	
+														      ></input>
+													</div>
+												</div>
 												<div class="col-xs-12">
 													<div class="form-group">
 														<input type="text"
