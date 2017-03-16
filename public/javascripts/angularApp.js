@@ -920,7 +920,7 @@ $scope.typesOfCoffeSelectionOptions=[
     {name: 'Semiduro',displayValue: 'Semiduro'},
     {name: 'Prime',displayValue: 'Prime'},
     {name: 'ExtraPrime',displayValue: 'ExtraPrime'},
-    {name: 'No sé',displayValue: 'No sé'}];
+    {name: 'Nose',displayValue: 'No sé'}];
 
 $scope.yesNoSelectionChange=function(type)
 {
@@ -2622,7 +2622,8 @@ $scope.typesOfCoffeSelectionOptions=[
     {name: 'Duro',displayValue: 'Duro'},
     {name: 'Semiduro',displayValue: 'Semiduro'},
     {name: 'Prime',displayValue: 'Prime'},
-    {name: 'ExtraPrime',displayValue: 'ExtraPrime'}];
+    {name: 'ExtraPrime',displayValue: 'ExtraPrime'},
+    {name: 'Nose',displayValue: 'No Sé'}];
 
 $scope.yesNoSelectionChange=function(type)
 {
