@@ -813,7 +813,8 @@ function($scope, $state, unit, auth, PouchDB, onlineStatus, user){
 			Maragogype:false,
 			Typica:false,
 			Maracaturra:false,
-			Otra:false
+			Otra:false,
+			Cual: '',
 	  },
 		typeOfCoffeProducessOptionSelected:[],
 	  fungicidas: {
@@ -918,7 +919,8 @@ $scope.typesOfCoffeSelectionOptions=[
     {name: 'Duro',displayValue: 'Duro'},
     {name: 'Semiduro',displayValue: 'Semiduro'},
     {name: 'Prime',displayValue: 'Prime'},
-    {name: 'ExtraPrime',displayValue: 'ExtraPrime'}];
+    {name: 'ExtraPrime',displayValue: 'ExtraPrime'},
+    {name: 'No sé',displayValue: 'No sé'}];
 
 $scope.yesNoSelectionChange=function(type)
 {

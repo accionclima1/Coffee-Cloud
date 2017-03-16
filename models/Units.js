@@ -51,6 +51,7 @@ var UnitSchema = new mongoose.Schema({
               Typica: Boolean,
               Maracaturra: Boolean,
               Otra: Boolean,
+              Cual: String,
 	  },
   typeOfCoffeProducessOptionSelected:{ type : Array , "default" : [] },  
   distanciamiento: String,
