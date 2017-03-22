@@ -1,0 +1,66 @@
+<script type="text/ng-template" id="/dosage.html">
+			<div class="roya-wrap">
+						<h2 class="section-header">
+		  				CÁLCULO DE DOSIFICACION ADECUADA
+		  			</h2>
+					<div class="container">
+						<div class="row">
+							<div class="col-lg-6 col-lg-offset-3">
+								<br>
+								<br>
+								<form>
+									<span><strong>Tipo de Producto</strong></span>
+									<select ng-model="dosage.productType"  id="productType" class="form-control" >
+										<option value="Broca" >Broca</option>
+										<option value="Roya" >Roya</option>
+										<option value="Ojo de gallo" >Ojo de gallo</option>
+										<option value="Derrite" >Derrite</option>
+										<option value="Derrite" >Mal de hilachas</option>
+									</select>
+
+									<strong>Nombre del Producto:</strong> 
+									
+									<select ng-model="dosage.productName"  id="productType" class="form-control" required>
+										<option ng-show="dosage.productType == 'Broca'" value="cloropirifos48,2.0,2000,800" selected >Clorpirifos 48%</option>
+										<option ng-show="dosage.productType == 'Broca'" value="imidacloprid35,0.8,800,320" >Imidacloprid 35%</option>
+										<option ng-show="dosage.productType == 'Roya'" value="opera18-30SE,0.1,1000,400" >Opera 18,30 SE Roya</option>
+										<option ng-show="dosage.productType == 'Roya'" value="esfera26-75EC,0.4,400,160" >Esfera 26,75 EC Roya</option>
+										<option ng-show="dosage.productType == 'Roya'" value="soprano12-5SC,0.5,500,200" >Soprano 12,5 SC</option>
+										<option ng-show="dosage.productType == 'Roya'" value="atemi10SL,0.4,400,160" >Atemi 10 SL</option>
+										
+										<option ng-show="dosage.productType == 'Roya'" value="cyprosol10SL,0.4,400,160" >Cyprosol 10 SL</option>
+										<option ng-show="dosage.productType == 'Roya'" value="opus12-5SC,0.5,500,200" >Opus 12,5 SC</option>
+										
+										<option ng-show="dosage.productType == 'Roya'" value="propicon25SC,0.5,500,200" >Propicon 25 SC</option>
+										<option ng-show="dosage.productType == 'Ojo de gallo'" value="atemi10SL+Cepex10SL,0.50+2,500+2000,200+800" >Atemi 10 SL + Cepex 10 SL</option>
+										<option ng-show="dosage.productType == 'Ojo de gallo'" value="cyprosol10SL+Cepex10SL,0.50+2,500+2000,200+800" >Cyprosol 10 SL +  Cepex 10 SL</option>
+										<option ng-show="dosage.productType == 'Ojo de gallo'" value="silvacur30EC+Cepex10SL,0.75+2,750+2000,300+800" >Silvacur 30 EC + Cepex 10 SL</option>
+										<option ng-show="dosage.productType == 'Ojo de gallo'" value="tebutriacell30EC+Cepex10SL,0.75+2,750+2000,300+800" >Tebutriacell 30 EC + Cepex 10 SL</option>
+										
+										<option ng-show="dosage.productType == 'Derrite'" value="opera18-30SE,1.0,1000,400" >Opera 18,30 SE </option>
+										<option ng-show="dosage.productType == 'Derrite'" value="esfera26-75EC,0.4,400,160" >Esfera 26,75 EC </option>
+										<option ng-show="dosage.productType == 'Mal de hilachas'" value="opera18-30SE,1.0,1000,400" >Opera 18,30 SE</option>
+										<option ng-show="dosage.productType == 'Mal de hilachas'" value="esfera26-75EC,0.6,600,240" >Esfera 26,75 EC</option>
+									</select>
+
+									<span>
+										<strong>Plantas Atomizadas:</strong> 
+										<input type="number" ng-model="dosage.plantsAtomised" class="form-control"  value="1"> 
+									</span>
+
+									<span>
+										<strong>Litros Gastados:</strong> 
+										<input type="number" ng-model="dosage.litersWornOut" class="form-control"  value="1">
+									</span>
+
+									
+
+									<br><span><strong>Resultado (cc/estañon): {{dosage.dosageByEstanion}}  </strong></span><br><br>
+										
+									<button type="button" ng-click="calculateDosage()" class="btn btn-modal">Resultado (cc/estañon)</button>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+		  </script>

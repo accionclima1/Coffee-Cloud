@@ -30,6 +30,21 @@
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4UV7wDq9fK_rQsP8yZqYwW-mnnz0J1Lc"></script>
 	<script src="javascripts/pouchdb-6.1.2.min.js"></script>
 	<script src="javascripts/angularApp.js"></script>
+	<script src="javascripts/controllers/MainCtrl.js"></script>
+	<script src="javascripts/controllers/PostCtrl.js"></script>
+	<script src="javascripts/controllers/AuthCtrl.js"></script>
+	<script src="javascripts/controllers/UnitCtrl.js"></script>
+	<script src="javascripts/controllers/NavCtrl.js"></script>
+	<script src="javascripts/controllers/NewsCtrl.js"></script>
+	<script src="javascripts/controllers/LocationCtrl.js"></script>
+	<script src="javascripts/controllers/RoyaCtrl.js"></script>
+	<script src="javascripts/controllers/GalloCtrl.js"></script>
+	<script src="javascripts/controllers/DosageCtrl.js"></script>
+	<script src="javascripts/controllers/VulneCtrl.js"></script>
+	<script src="javascripts/controllers/SupportCtrl.js"></script>
+	<script src="javascripts/controllers/WeatherCtrl.js"></script>
+	<script src="javascripts/controllers/ProfileCtrl.js"></script>
+	<script src="javascripts/controllers/CampoCtrl.js"></script>
 	
 	<script src="javascripts/easy-weather-keys.js"></script>
 	<script src="javascripts/easy-weather.js"></script>
@@ -55,7 +70,9 @@
 		<span>Cargando...</span>
 	</div>
 
-	<nav class="navbar navbar-default pull-left" ng-controller="NavCtrl" snap-drawer>
+	<!-- views/partials/navigation.ejs -->
+
+<nav class="navbar navbar-default pull-left" ng-controller="NavCtrl" snap-drawer>
 	    <ul class="nav navbar-nav" ng-show="isLoggedIn()">
 	      <li><a href="#" snap-toggle><i class="fa fa-search"></i> Buscador</a></li>
 	      <li><a href="#/home" snap-toggle><i class="fa fa-cloud"></i> Clima</a></li>
@@ -70,16 +87,17 @@
 	      <li><a href="#/news" snap-toggle><i class="fa fa-bell"></i> Noticias</a></li>
 	      <li><a href="#/support" snap-toggle><i class="fa fa-comment"></i> Comunicación</a></li>
 	      <li><a href="#/profile" snap-toggle><i class="fa fa-user"></i> Perfil</a></li>
-	      <li><a href="#" ng-click="logOut()"><i class="fa fa-power-off"></i> Log out</a></li>
+	      <li><a href="#" ng-click="logOut()"><i class="fa fa-power-off"></i> Salir</a></li>
 	    </ul>
 	  </nav>
+	
+	
 	  <div class="pushbox" snap-content snap-opt-disable="'right'">
 	  	<div class="nav-switch" ng-controller="NavCtrl"><button ng-show="isLoggedIn()" class="switch glyphicon glyphicon-menu-hamburger" type="button" snap-toggle></button></div>
 				<ui-view></ui-view>
 	  </div>
 		  
-			   					   		
-	<script type="text/ng-template" id="/home.html">
+		<script type="text/ng-template" id="/home.html">
 		<div class="home-wrap">
 		 <div class="container">
 			   	<div class="row">
@@ -141,7 +159,8 @@
 		
 		
 	</script>
-	<script type="text/ng-template" id="/posts.html">
+		
+		<script type="text/ng-template" id="/posts.html">
 	  <div class="container blog-post">
 		  <div class="row">
 			  <div class="col-md-12">
@@ -161,8 +180,9 @@
 			  </div>
 		  </div>
 	   </div>
-	</script>
-	<script type="text/ng-template" id="/register.html">
+	</script>   
+		
+		<script type="text/ng-template" id="/register.html">
 	  <div class="register-wrap">
 		<div class="container">
 			<div class="row">
@@ -210,8 +230,9 @@
 			</div>
 		</div>
 	</div>
-	</script>
-	<script type="text/ng-template" id="/register-profile.html">
+	</script>  	
+		
+		<script type="text/ng-template" id="/register-profile.html">
 	  <div class="register-profile-wrap profile">
 		<div class="container">
 			<div class="row">
@@ -1181,7 +1202,8 @@
 		</div>
 	</div>
 	</script>
-	<script type="text/ng-template" id="/login.html">
+		
+		<script type="text/ng-template" id="/login.html">
 		<div class="login-wrap">
 		<div class="container">
 			<div class="row">
@@ -1222,7 +1244,8 @@
 		</div>
 	</div>
 	  </script>
-	<script type="text/ng-template" id="/forgorpasswordscreen.html">
+		
+		<script type="text/ng-template" id="/forgorpasswordscreen.html">
 		<div class="login-wrap">
 		<div class="container">
 			<div class="row">
@@ -1236,7 +1259,7 @@
 
 				  <form ng-submit="GenOtp()">
 				    <img src="images/pages-logo-dark.png" alt="" class="login-img img-responsive"/>
-				    <img src="images/LogoICAFE.svg" alt="" class="ana-img img-responsive"/>
+				    <img src="images/analogo.svg" alt="" class="ana-img img-responsive"/>
 				    <div class="form-group">
 				       <label for="email">Email</label>
 				      <input type="text" name="email"
@@ -1260,8 +1283,9 @@
 			</div>
 		</div>
 	</div>
-	  </script>	
-	<script type="text/ng-template" id="/resetpassword.html">
+	  </script>					   		
+	
+		<script type="text/ng-template" id="/resetpassword.html">
 		<div class="login-wrap">
 		<div class="container">
 			<div class="row">
@@ -1304,8 +1328,9 @@
 			</div>
 		</div>
 	</div>
-	  </script>	
-	<script type="text/ng-template" id="/otpscreen.html">
+	  </script>
+		
+		<script type="text/ng-template" id="/otpscreen.html">
 		<div class="login-wrap">
 		<div class="container">
 			<div class="row">
@@ -1344,7 +1369,8 @@
 		</div>
 	</div>
 	  </script>
-	<script type="text/ng-template" id="/location.html">
+		
+		<script type="text/ng-template" id="/location.html">
 	  		<div class="location-wrap">
 				<div class="container">
 					<div class="row">
@@ -1368,8 +1394,9 @@
 					</div>
 				</div>
 			</div>
-	  </script>  
-	<script type="text/ng-template" id="/roya.html">
+	  </script>
+		
+		<script type="text/ng-template" id="/roya.html">
 	  		<div class="roya-wrap">
 	  			<h2 class="section-header">
 	  				CÁLCULO DE ROYA <small ng-show="test.advMode">(avanzado)</small>
@@ -1578,7 +1605,8 @@
 			</div>
 			
 	  </script>
-	<script type="text/ng-template" id="/gallo.html">
+	
+		<script type="text/ng-template" id="/gallo.html">
 	  		<div class="roya-wrap">
 	  			<h2 class="section-header">
 	  				CÁLCULO DE OJO DE GALLO 
@@ -1752,7 +1780,8 @@
 			</div>
 			
 	  </script>
-	<script type="text/ng-template" id="/dosage.html">
+		
+		<script type="text/ng-template" id="/dosage.html">
 			<div class="roya-wrap">
 						<h2 class="section-header">
 		  				CÁLCULO DE DOSIFICACION ADECUADA
@@ -1818,7 +1847,8 @@
 					</div>
 				</div>
 		  </script>
-	<script type="text/ng-template" id="/vulnerability.html">
+		
+		<script type="text/ng-template" id="/vulnerability.html">
 		
 			<div class="vul-wrap">
 						<h2 class="section-header">
@@ -3987,7 +4017,8 @@
     	}
 	</script>
 	</script>
-	<script type="text/ng-template" id="/campo.html">
+		
+		<script type="text/ng-template" id="/campo.html">
 			<div class="roya-wrap">
 					<h2 class="section-header">
 		  				Hoja de Enfermedad
@@ -4237,7 +4268,8 @@
 				</div>
 				
 		  </script>
-	<script type="text/ng-template" id="/weather.html">
+		
+		<script type="text/ng-template" id="/weather.html">
 			<div class="home-wrap weather">
 			 <div class="container">
 				   	<div class="row">
@@ -4290,7 +4322,8 @@
 			
 		</script>
 		</script>
-	<script type="text/ng-template" id="/forecast.html">
+		
+		<script type="text/ng-template" id="/forecast.html">
 			<div class="home-wrap weather">
 			 <div class="container">
 				   	<div class="row">
@@ -4343,7 +4376,8 @@
 				
 			</script>
 		</script>
-	<script type="text/ng-template" id="/moon.html">
+		
+		<script type="text/ng-template" id="/moon.html">
 			
 			<div class="home-wrap weather">
 			 <div class="container">
@@ -4409,7 +4443,8 @@
 				});
 			</script>
 		</script>
-	<script type="text/ng-template" id="/support.html">
+		
+		<script type="text/ng-template" id="/support.html">
 
 	<!-- Modal -->
 			<div class="modal fade" id="myModalUserImage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -4489,7 +4524,8 @@
 							  <button type="submit" class="btn btn-default">Enviar</button>
 						</form>
 	</script>
-	<script type="text/ng-template" id="/profile.html">
+		
+		<script type="text/ng-template" id="/profile.html">
 		<div class="home-wrap profile-wrap">
 		 <div class="container">
 			   	<div class="row">
@@ -6635,7 +6671,8 @@
 		   </div>
 		</div>
 	</script>
-	<script type="text/ng-template" id="/news.html">
+		
+		<script type="text/ng-template" id="/news.html">
 		<div class="home-wrap blog">
 		 <div class="container">
 			   	<div class="row">
@@ -6669,6 +6706,14 @@
 		   </div>
 		</div>
 	</script>
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 
