@@ -11,16 +11,7 @@ var UnitSchema = new mongoose.Schema({
   ubicacion: String,
   areaTotal: String,
   areaCafe: String,
-  lote: {
-	  nombre: String,
-	  georeferenciacion: String,
-	  altitud: String,
-	  tamano: String,
-	  edad: String,
-	  variedad: String,
-	  sombra: Boolean,
-	  cobertura: Boolean,
-  },
+  lote: { type : Array , "default" : [] },
     // edadLote: String,
   variedad: {
               Catimor5175: Boolean,

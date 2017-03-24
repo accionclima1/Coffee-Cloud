@@ -63,7 +63,7 @@
 						   			<button class="btn btn-danger" ng-click="deleteUnit($event, unit._id, $index)">X</button>
 						   			<button class="btn btn-default" style="margin-left: 12px;" ng-click="updateUnit($event, unit._id, $index)" data-toggle="modal" data-target="#myModal">editar</button>
 						   			
-						   			<button class="btn btn-default" ng-click="updateUnit($event, unit._id, $index)" data-toggle="modal" data-target="#myModal3">Lote</button>
+						   			<button class="btn btn-default" ng-click="updateUnit($event, unit._id, $index)" data-toggle="modal" data-target="#myModal3">Lotes</button>
 						   			
 						   		</div>
 						    </div>
@@ -2030,104 +2030,121 @@
 							    <div class="modal-content">
 							      <div class="modal-header">
 							        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-							        <h4 class="modal-title" id="myModalLabel">Editar Lote: {{ editUnit.nombre }}</h4>
+							        <h4 class="modal-title" id="myModalLabel">Editar Lotes: {{ editUnit.nombre }}</h4>
 							      </div>
 							      <div class="modal-body">
-										  <form name="updateunitFormlote" ng-submit="updateUnitForm($event,editUnit._id)" id="updateunitFormlote" >
-						
-										    <div class="row">
-											    <div class="col-xs-12">
-													<div class="form-group">
-														<input type="text"
-														      class="form-control"
-														      placeholder="Nombre del lote"
-														      ng-model="editUnit.lote.nombre"	
-														      ></input>
-													</div>
-												</div>
-												<div class="col-xs-12">
-													<div class="form-group">
-														<input type="text"
-														      class="form-control"
-														      placeholder="Georeferenciación"
-														      ng-model="editUnit.lote.georeferenciacion"	
-														      ></input>
-													</div>
-												</div>
-												<div class="col-xs-12">
-													<div class="form-group">
-														<input type="text"
-														      class="form-control"
-														      placeholder="Altitud"
-														      ng-model="editUnit.lote.altitud"	
-														      ></input>
-													</div>
-												</div>
-												<div class="col-xs-12">
-													<div class="form-group">
-														<input type="text"
-														      class="form-control"
-														      placeholder="Tamaño del lote (manzanas)"
-														      ng-model="editUnit.lote.tamano"	
-														      ></input>
-													</div>
-												</div>
-												<div class="col-xs-12">
-													<div class="form-group">
-														<input type="text"
-														      class="form-control"
-														      placeholder="Edad del lote"
-														      ng-model="editUnit.lote.edad"	
-														      ></input>
-													</div>
-												</div>
-												<div class="col-xs-12">
-													<div class="form-group">
-														<input type="text"
-														      class="form-control"
-														      placeholder="Variedad"
-														      ng-model="editUnit.lote.variedad"	
-														      ></input>
-													</div>
-												</div>
-												<div class="col-xs-12">
-													<div class="form-group">
-														<p>¿Tiene sombra?</p>
-														<div class="radio">
-														  <label>
-														    <input type="radio" id="optionsRadios1" ng-value="true" ng-model="editUnit.lote.sombra">
-														    Si
-														  </label>
+								    <form name="updateunitFormlote" ng-submit="updateUnitForm($event,editUnit._id)" id="updateunitFormlote" >  
+								      
+								      <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+									  <div class="panel panel-default" ng-repeat="lote in editUnit.lote">
+										    <div class="panel-heading" role="tab" id="{{ 'heading-' + $index }}">
+										      <h4 class="panel-title">
+										        <a role="button" data-toggle="collapse" data-parent="#accordion" href="{{ '#collapse-' + $index }}" aria-expanded="false" aria-controls="{{ 'collapse-' + $index }}">
+										          {{ lote.nombre }}
+										        </a>
+										      </h4>
+										    </div>
+										    <div id="{{ 'collapse-' + $index }}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="{{ 'collapse-' + $index }}">
+										      <div class="panel-body">
+										        	 <div class="row">
+													    <div class="col-xs-12">
+															<div class="form-group">
+																<input type="text"
+																      class="form-control"
+																      placeholder="Nombre del lote"
+																      ng-model="lote.nombre"	
+																      ></input>
+															</div>
 														</div>
-														<div class="radio">
-														  <label>
-														    <input type="radio" id="optionsRadios2" ng-value="false" ng-model="editUnit.lote.sombra">
-														    No
-														  </label>
+														<div class="col-xs-12">
+															<div class="form-group">
+																<input type="text"
+																      class="form-control"
+																      placeholder="Georeferenciación"
+																      ng-model="lote.georeferenciacion"	
+																      ></input>
+															</div>
 														</div>
+														<div class="col-xs-12">
+															<div class="form-group">
+																<input type="text"
+																      class="form-control"
+																      placeholder="Altitud"
+																      ng-model="lote.altitud"	
+																      ></input>
+															</div>
+														</div>
+														<div class="col-xs-12">
+															<div class="form-group">
+																<input type="text"
+																      class="form-control"
+																      placeholder="Tamaño del lote (manzanas)"
+																      ng-model="lote.tamano"	
+																      ></input>
+															</div>
+														</div>
+														<div class="col-xs-12">
+															<div class="form-group">
+																<input type="text"
+																      class="form-control"
+																      placeholder="Edad del lote"
+																      ng-model="lote.edad"	
+																      ></input>
+															</div>
+														</div>
+														<div class="col-xs-12">
+															<div class="form-group">
+																<input type="text"
+																      class="form-control"
+																      placeholder="Variedad"
+																      ng-model="lote.variedad"	
+																      ></input>
+															</div>
+														</div>
+														<div class="col-xs-12">
+															<div class="form-group">
+																<p>¿Tiene sombra?</p>
+																<div class="radio">
+																  <label>
+																    <input type="radio" id="optionsRadios1" ng-value="true" ng-model="lote.sombra">
+																    Si
+																  </label>
+																</div>
+																<div class="radio">
+																  <label>
+																    <input type="radio" id="optionsRadios2" ng-value="false" ng-model="lote.sombra">
+																    No
+																  </label>
+																</div>
+															</div>
+														</div>
+														<div class="col-xs-12">
+															<div class="form-group">
+																<p>¿Tiene cobertura de suelo?</p>
+																<div class="radio">
+																  <label>
+																    <input type="radio" id="optionsRadios1" ng-value="true" ng-model="lote.cobertura">
+																    Si
+																  </label>
+																</div>
+																<div class="radio">
+																  <label>
+																    <input type="radio" id="optionsRadios2" ng-value="false" ng-model="lote.cobertura">
+																    No
+																  </label>
+																</div>
+															</div>
+														</div>
+														
 													</div>
-												</div>
-												<div class="col-xs-12">
-													<div class="form-group">
-														<p>¿Tiene cobertura de suelo?</p>
-														<div class="radio">
-														  <label>
-														    <input type="radio" id="optionsRadios1" ng-value="true" ng-model="editUnit.lote.cobertura">
-														    Si
-														  </label>
-														</div>
-														<div class="radio">
-														  <label>
-														    <input type="radio" id="optionsRadios2" ng-value="false" ng-model="editUnit.lote.cobertura">
-														    No
-														  </label>
-														</div>
-													</div>
-												</div>
-												
-											</div>
-										    
-										  </form>
+										      </div>
+										    </div>
+									  </div>
+									</div>
+							      
+								      </form>
+										  
+										  <button type="button" class="btn btn-default" ng-click="prependItem()>">Agregar nuevo lote</button>
 							      </div>
 							      <div class="modal-footer">
 							        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>

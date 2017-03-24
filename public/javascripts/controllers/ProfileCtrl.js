@@ -533,11 +533,18 @@ $scope.resetFungicidasSelection=function(type,isResetfungicidasContactoOptions,i
 	
 	$scope.updateUnit = function(e,id) {
 		
+		
+		
 		$scope.sucMsg = null;
 		//Commented out as we need to update data from pouchDB only,that will be sync to server
 		if ($scope.remoteMode) {
 		 unit.get(auth.userId(),id).then(function(unitD){
 		 	$scope.editUnit = unitD;
+		 	
+		 	$scope.prependItem = function (newItem) {
+				    editUnit.unshift(newItem);
+				};
+				
 		 	$scope.updateUnitForm = function(){
 		 		if ($scope.updateunitForm.$valid) {
 		 		/*For sync fied ,as new record will always have sync property false until it is' sync by local db' */
@@ -622,6 +629,9 @@ $scope.resetFungicidasSelection=function(type,isResetfungicidasContactoOptions,i
 				
 				}
   }
+	
+	
+	
 	
 	$scope.saveUnit = function(){
 
