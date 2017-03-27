@@ -650,7 +650,7 @@ router.get('/roya', function(req, res, next) {
 });
 
 router.get('/roya/:user', function(req, res, next) {
-  Roya.findOne({ 'unidad.user': req.params.user }, function(err, royasUser){
+  Roya.find({ 'unidad.user': req.params.user }, function(err, royasUser){
     if(err){ return next(err); }
 
     res.json(royasUser);

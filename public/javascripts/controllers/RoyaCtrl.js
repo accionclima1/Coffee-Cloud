@@ -416,12 +416,13 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
         
     };
     
+    var usrid = auth.userId();;
     
-    $scope.historialLaunch = function($scope.user_Ided) {
+    $scope.historialLaunch = function() {
 			  roya.getUser($scope.user_Ided).then(function(userhistory){
 				  $scope.royaHistory = userhistory;
 				  console.log($scope.royaHistory);
-			  };
+			  });
     };
     
     

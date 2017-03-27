@@ -11,8 +11,8 @@ ssh -i ~/.ssh/coffeecloud.pem ubuntu@coffeecloud.centroclima.org
 
 cd apps/coffeecloud/Coffee-Cloud
 
-forever start bin/www
-forever stopall
+sudo forever start bin/www
+sudo forever stopall
 
 
 for DB access
