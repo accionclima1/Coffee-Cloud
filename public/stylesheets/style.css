@@ -1188,3 +1188,9 @@ input:checked + label + #otherArea {
 background-color: #3498db  !important;
     border-color: #3498db;
   }
+
+.panel-group .panel-title a {
+    color: #666;
+    display: block;
+    width: 100%;
+}

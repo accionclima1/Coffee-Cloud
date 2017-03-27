@@ -1,7 +1,7 @@
 <script type="text/ng-template" id="/profile.html">
 		<div class="home-wrap profile-wrap">
 		 <div class="container">
-			   	<div class="row">
+			  	<div class="row">
 			   		<div class="col-md-6 col-md-offset-3">
 			   		  <div class="page-header">
 				        <h2>Editar Perfil <span> {{ currentUser() }}</span></h2>
@@ -14,25 +14,22 @@
 			   	<div class="row">
 				   	<div class="col-md-6 col-md-offset-3">
 					   	<h4>Información de contacto</h4>
-					   	<form class="form" role="form" data-toggle="validator" ng-submit="update()">
+					   	<form class="form" id="contactInfo" name="contactInfo" role="form" data-toggle="validator" ng-submit="loginform.$valid && updated()">
 						   	<div class="form-group">
 							   	<label>Email asociado con su cuenta</label>
-							   	<input class="form-control" type="email" ng-model="userO.email"/>
+							   	<input class="form-control" type="email" ng-model="userO.email" required/>
 							</div>
 							<div class="form-group">
 							   	<label>Telefono</label>
-							   	<input class="form-control" type="text" ng-model="userO.phone"/>
+							   	<input class="form-control" type="text" ng-model="userO.phone" required/>
 							</div>
-							<!-- <div class="form-group">
-							   	<label>Recomendación Técnica</label>
-							   	<input class="form-control" type="text" ng-model="userO.recomendaciontecnica"/>
-							</div> -->
+						
 							<div class="form-group">
-							    <button type="submit" style="width:100%;" class="btn btn-primary">Guardar Cambios</button>
+							    <button type="submit" style="width:100%;" class="btn btn-primary" form="contactInfo">Guardar Cambios</button>
 							</div>			
 					   	</form>
 					   	<h4>Cambiar Contraseña</h4>
-					   	<form class="form" role="form" data-toggle="validator" ng-submit="update()">
+					   	<form class="form" role="form" id="paswordForm" name="paswordForm" data-toggle="validator" ng-submit="loginform.$valid && update()">
 					   		<div class="form-group">
 							<div class="row">
 							    <div class="form-group col-sm-6">
@@ -44,13 +41,13 @@
 							      <div class="help-block with-errors"></div>
 							    </div>
 							    <div class="form-group col-sm-12">
-								    <button type="submit" style="width:100%;" class="btn btn-primary">Actualizar constraseña</button>
+								    <button type="submit" style="width:100%;" class="btn btn-primary" form="paswordForm">Actualizar contraseña</button>
 								</div>
 							</div>
 						</div>	
 					   </form>	
 				   	</div>
-				</div>
+				</div> 
 			   	
 			   	<div class="row">
 				   	<div class="col-md-6 col-md-offset-3">
@@ -70,8 +67,8 @@
 						    <button class="btn btn-primary add-unit" data-toggle="modal" data-target="#myModal2">Agregar Nueva Unidad</button>
 						    
 							
-							<!-- Modals -->
-							
+							<!-- Modals	 -->
+						
 							
 							
 							<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -1059,7 +1056,7 @@
 							        <h4 class="modal-title" id="myModalLabel">Nueva Unidad</h4>
 							      </div>
 							      <div class="modal-body">
-										  <form name="newunitForm" ng-submit="saveUnit()" id="newunitForm" data-toggle="validator">
+										  <form name="newunitForm" novalidate class="form" role="form" ng-submit="loginform.$valid && saveUnit()" id="newunitForm" data-toggle="validator">
 						
 										    <div class="row">
 												<div class="col-xs-12">
@@ -1068,7 +1065,10 @@
 														      class="form-control"
 														      placeholder="Nombre"
 														      ng-model="newUnit.nombre"	
-														      required></input>
+														      data-error="Campo requerido"
+														      required>
+														      <div class="help-block with-errors"></div>
+														      
 													</div>
 												</div>
 												<div class="col-xs-12">
@@ -1087,8 +1087,10 @@
 												</div>
 												<div class="col-xs-12">
 													<div class="form-group munis">
-														<select ng-model="newUnit.departamentos" id="departamentos" class="form-control" required>
-													</select>
+														<select ng-model="newUnit.departamentos" id="departamentos" class="form-control" data-error="Campo requerido" required>
+														</select>
+														
+														 <div class="help-block with-errors"></div>
 													</div>
 												</div>
 												<div class="col-xs-6">
@@ -1096,7 +1098,8 @@
 														<input type="text"
 														      class="form-control"
 														      placeholder="Geo Referencia"
-														      ng-model="newUnit.ubicacion" ng-click="mapInit()" id="latlongid" required></input>
+														      ng-model="newUnit.ubicacion" ng-click="mapInit()" id="latlongid" data-error="Campo requerido" required>
+														      <div class="help-block with-errors"></div></input>
 													</div>
 												</div>
 												<div class="col-xs-6">
@@ -2012,11 +2015,14 @@
 										
 																								<!-- new questions ends --> 
 										    
+										  
+										  <input type="submit" class="btn btn-primary" submit="newunitForm" form="newunitForm" value="Guardar nueva"/>
 										  </form>
 							      </div>
 							      <div class="modal-footer">
+								      
 							        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-							        <button type="button" class="btn btn-primary" form="newunitForm" ng-disabled="newunitForm.$invalid" ng-click="saveUnit()" >Guardar nueva</button>
+							        
 							        <div ng-show="sucMsg" class="bg-success row">
 									    <span>{{ sucMsg }}</span>
 									  </div>
@@ -2035,12 +2041,12 @@
 							      <div class="modal-body">
 								    <form name="updateunitFormlote" ng-submit="updateUnitForm($event,editUnit._id)" id="updateunitFormlote" >  
 								      
-								      <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+								      <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
 									  <div class="panel panel-default" ng-repeat="lote in editUnit.lote">
 										    <div class="panel-heading" role="tab" id="{{ 'heading-' + $index }}">
 										      <h4 class="panel-title">
-										        <a role="button" data-toggle="collapse" data-parent="#accordion" href="{{ '#collapse-' + $index }}" aria-expanded="false" aria-controls="{{ 'collapse-' + $index }}">
-										          {{ lote.nombre }}
+										        <a role="button" data-toggle="collapse" data-parent="#accordion" data-target="{{ '#collapse-' + $index }}" aria-expanded="false" aria-controls="{{ 'collapse-' + $index }}">
+										          {{ editUnit.lote[$index].nombre }}
 										        </a>
 										      </h4>
 										    </div>
@@ -2052,7 +2058,7 @@
 																<input type="text"
 																      class="form-control"
 																      placeholder="Nombre del lote"
-																      ng-model="lote.nombre"	
+																      ng-model="editUnit.lote[$index].nombre"	
 																      ></input>
 															</div>
 														</div>
@@ -2061,7 +2067,7 @@
 																<input type="text"
 																      class="form-control"
 																      placeholder="Georeferenciación"
-																      ng-model="lote.georeferenciacion"	
+																      ng-model="editUnit.lote[$index].georeferenciacion"	
 																      ></input>
 															</div>
 														</div>
@@ -2070,7 +2076,7 @@
 																<input type="text"
 																      class="form-control"
 																      placeholder="Altitud"
-																      ng-model="lote.altitud"	
+																      ng-model="editUnit.lote[$index].altitud"	
 																      ></input>
 															</div>
 														</div>
@@ -2079,7 +2085,7 @@
 																<input type="text"
 																      class="form-control"
 																      placeholder="Tamaño del lote (manzanas)"
-																      ng-model="lote.tamano"	
+																      ng-model="editUnit.lote[$index].tamano"	
 																      ></input>
 															</div>
 														</div>
@@ -2088,7 +2094,7 @@
 																<input type="text"
 																      class="form-control"
 																      placeholder="Edad del lote"
-																      ng-model="lote.edad"	
+																      ng-model="editUnit.lote[$index].edad"	
 																      ></input>
 															</div>
 														</div>
@@ -2097,7 +2103,7 @@
 																<input type="text"
 																      class="form-control"
 																      placeholder="Variedad"
-																      ng-model="lote.variedad"	
+																      ng-model="editUnit.lote[$index].variedad"	
 																      ></input>
 															</div>
 														</div>
@@ -2106,13 +2112,13 @@
 																<p>¿Tiene sombra?</p>
 																<div class="radio">
 																  <label>
-																    <input type="radio" id="optionsRadios1" ng-value="true" ng-model="lote.sombra">
+																    <input type="radio" id="optionsRadios1" ng-value="true" ng-model="editUnit.lote[$index].sombra">
 																    Si
 																  </label>
 																</div>
 																<div class="radio">
 																  <label>
-																    <input type="radio" id="optionsRadios2" ng-value="false" ng-model="lote.sombra">
+																    <input type="radio" id="optionsRadios2" ng-value="false" ng-model="editUnit.lote[$index].sombra">
 																    No
 																  </label>
 																</div>
@@ -2123,13 +2129,13 @@
 																<p>¿Tiene cobertura de suelo?</p>
 																<div class="radio">
 																  <label>
-																    <input type="radio" id="optionsRadios1" ng-value="true" ng-model="lote.cobertura">
+																    <input type="radio" id="optionsRadios1" ng-value="true" ng-model="editUnit.lote[$index].cobertura">
 																    Si
 																  </label>
 																</div>
 																<div class="radio">
 																  <label>
-																    <input type="radio" id="optionsRadios2" ng-value="false" ng-model="lote.cobertura">
+																    <input type="radio" id="optionsRadios2" ng-value="false" ng-model="editUnit.lote[$index].cobertura">
 																    No
 																  </label>
 																</div>
@@ -2144,7 +2150,7 @@
 							      
 								      </form>
 										  
-										  <button type="button" class="btn btn-default" ng-click="prependItem()>">Agregar nuevo lote</button>
+										  <button type="button" class="btn btn-default" ng-click="prependItem()">Agregar nuevo lote</button>
 							      </div>
 							      <div class="modal-footer">
 							        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>

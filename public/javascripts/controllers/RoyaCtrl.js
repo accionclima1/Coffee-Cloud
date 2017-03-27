@@ -23,7 +23,9 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 	$scope.modal.number="";
 	$scope.modal.numberSubmitted=false;
 	$scope.user_Ided = auth.userId();
-
+	
+	
+	
 	$scope.$watch('onlineStatus.isOnline()', function(online) {
         $scope.online_status_string = online ? 'online' : 'offline';
         onlineStatus = $scope.online_status_string
@@ -412,6 +414,14 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 	           
         
         
+    };
+    
+    
+    $scope.historialLaunch = function($scope.user_Ided) {
+			  roya.getUser($scope.user_Ided).then(function(userhistory){
+				  $scope.royaHistory = userhistory;
+				  console.log($scope.royaHistory);
+			  };
     };
     
     

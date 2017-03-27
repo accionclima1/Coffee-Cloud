@@ -815,6 +815,11 @@ app.factory('roya', ['$http', 'auth', function($http, auth){
 	      return data;
 	    });
 	  };
+	   o.getUser = function(userID) {
+	    return $http.get('https://coffeecloud.centroclima.org/roya/' + userID).success(function(data){
+	      return data;
+	    });
+	  };
 	  o.create = function(roya) {
 		 return $http.post('https://coffeecloud.centroclima.org/roya', roya, {
     headers: {Authorization: 'Bearer '+auth.getToken()}

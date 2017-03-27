@@ -21,6 +21,7 @@ function($http, $scope, auth, unit, user, PouchDB, $rootScope, onlineStatus){
 		isSync:false,
 		isDeleted:false,
 	  sombra: false,
+	  lote: [],
 	  muestreo: false,
 		muestreoMes:[],
 	  fertilizaSuelo: false,
@@ -494,13 +495,24 @@ $scope.resetFungicidasSelection=function(type,isResetfungicidasContactoOptions,i
     }
     $( ".date-field" ).datepicker(spanishDateTimePickerOption);
     
-    // $scope.update = function(){
-    // user.update($scope.userO).error(function(error){
-	  //     $scope.error = error;
-	  //   }).then(function(data){
-	  //     $scope.message = data.data.message;
-	  //   });
-	  // };
+     $scope.update = function(){
+	     user.update($scope.userO).error(function(error){
+		     $scope.error = error;
+		   }).then(function(data){
+		     $scope.message = data.data.message;
+		   });
+	 };
+	 
+	 
+	 $scope.updated = function(){
+	 	user.update($scope.userO).error(function(error){
+		     $scope.error = error;
+		   }).then(function(data){
+		     $scope.message = data.data.message;
+		   });
+
+	 };
+	 
 	$scope.deleteUnit = function(e,id,index) {
 		
 		
@@ -540,9 +552,12 @@ $scope.resetFungicidasSelection=function(type,isResetfungicidasContactoOptions,i
 		if ($scope.remoteMode) {
 		 unit.get(auth.userId(),id).then(function(unitD){
 		 	$scope.editUnit = unitD;
-		 	
+		 	$('#myModal3').on('show.bs.modal', function (e) {
+				$('.collapse').collapse('hide');
+			});
 		 	$scope.prependItem = function (newItem) {
-				    editUnit.unshift(newItem);
+			 		
+				    $scope.editUnit.unshift(newItem);
 				};
 				
 		 	$scope.updateUnitForm = function(){
@@ -574,6 +589,16 @@ $scope.resetFungicidasSelection=function(type,isResetfungicidasContactoOptions,i
 								else if(result.status=='success')
 								{
 											$scope.editUnit = result.data;
+											$('#myModal3').on('shown.bs.modal', function (e) {
+												 $('.collapse').collapse('hide');
+											});
+											
+											
+											$scope.prependItem = function (newItem) {
+										 		
+											    $scope.editUnit.lote.push(newItem);
+											   
+											};
 								}
 				});
 		 }
@@ -680,6 +705,8 @@ $scope.resetFungicidasSelection=function(type,isResetfungicidasContactoOptions,i
 		//endregion
 		}
 		
+		} else {
+			
 		}
 		
 	  };
