@@ -19,6 +19,7 @@ require('./models/Messages');
 require('./models/Roya');
 require('./models/Gallo');
 require('./models/Widget');
+require('./models/Variety');
 require('./config/passport');
 mongoose.connect('mongodb://cafenube:Sec03lP1nt0@coffeecloud.centroclima.org/dummyDB');
 //XR7vwshDKmKW

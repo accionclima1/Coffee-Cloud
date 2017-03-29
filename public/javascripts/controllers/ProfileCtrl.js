@@ -1,5 +1,5 @@
-app.controller('ProfileCtrl',['$http','$scope', 'auth', 'unit', 'user','PouchDB','$rootScope', 'onlineStatus',
-function($http, $scope, auth, unit, user, PouchDB, $rootScope, onlineStatus){
+app.controller('ProfileCtrl',['$http','$scope', 'auth', 'unit', 'varieties', 'user','PouchDB','$rootScope', 'onlineStatus',
+function($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlineStatus){
 	var map;
 	$scope.isLoggedIn = auth.isLoggedIn;
 	$scope.currentUser = auth.currentUser;
@@ -15,6 +15,12 @@ function($http, $scope, auth, unit, user, PouchDB, $rootScope, onlineStatus){
         onlineStatus = $scope.online_status_string
         
     });
+    
+    varieties.getAll().then(function(varids){
+				variedades = varids;
+				console.log(variedades);
+	});
+    
     
 	$scope.newUnit = {
 		PouchDBId:'',
@@ -63,36 +69,7 @@ function($http, $scope, auth, unit, user, PouchDB, $rootScope, onlineStatus){
 	  otrosdate: '',
 	  fungicidasmonth: '',
 	  produccionhectarea: '',
-	  variedad: {
-	  	Catimor5175:false,
-			Sarchimor:false,
-			Anacafe14:false,
-			Anacafe90:false,
-			CostaRica95:false,
-			Lempira:false,
-			Obata:false,
-			Catucai:false,
-			HibridoH1:false,
-			Marsellesa:false,
-			Tupi:false,
-			Parainema:false,
-			CatuaiAmarillo:false,
-			CatuaiRojo:false,
-			Caturra:false,
-			Pacamara:false,
-			Pachecolis:false,
-			Geisha:false,
-			Bourbon:false,
-			Pachecomun:false,
-			Pacas:false,
-			Robusta:false,
-			MundoNovo:false,
-			VillaSarchi:false,
-			Maragogype:false,
-			Typica:false,
-			Maracaturra:false,
-			Otra:false
-	  },
+	  variedad: {},
 		typeOfCoffeProducessOptionSelected:[],
 	  fungicidas: {
 		 contacto: false,
@@ -175,6 +152,9 @@ function($http, $scope, auth, unit, user, PouchDB, $rootScope, onlineStatus){
 		  extraprime: false
 		  },
 	};
+	
+	
+	
 	$scope.MonthDropDownOptions=[
 	  {name: 'Enero',displayValue: 'Enero'},
     {name: 'Febrero',displayValue: 'Febrero'},

@@ -744,6 +744,32 @@ app.factory('unit', ['$http', 'auth','$window', function($http, auth, $window){
   return o;
 }]);
 
+app.factory('varieties', ['$http', 'auth','$window', function($http, auth, $window){
+   var o = {};
+   o.getAll = function() {
+	    return $http.get('https://coffeecloud.centroclima.org/varieties').success(function(data){
+	      return data;
+	    });
+	  };
+	o.create = function(varieties){
+		//localhost unit
+	  return $http.post('https://coffeecloud.centroclima.org/varieties', varieties, {
+    headers: {Authorization: 'Bearer '+auth.getToken()}
+  }).success(function(data){
+		    return data;
+		  });
+	};
+	
+	o.deleteVariety = function(Ided){
+		console.log(Ided);
+	  return $http.delete('https://coffeecloud.centroclima.org/varieties', { headers: {Authorization: 'Bearer '+auth.getToken(), variid: Ided.varId}
+	  }).success(function(data){
+			    return Ided;
+			  });
+	};
+  return o;
+}]);
+
 app.factory('methods', ['$http', 'auth', function($http, auth){
 	  var o = {
 	  		chats : []
@@ -827,11 +853,6 @@ app.factory('roya', ['$http', 'auth', function($http, auth){
 		    return data;	
 		  });
 		};
-		/*o.get = function(id) {
-		  return $http.get('/roya/' + id).then(function(res){
-		    return res.data;
-		  });
-		};*/
   return o;
 }]);
 

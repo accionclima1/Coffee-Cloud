@@ -6,6 +6,8 @@ node ./bin/www to launch express app
 nodemon --debug ./bin/www
 node-inspector
 
+node --inspect --debug-brk ./bin/www
+
 ssh -i ~/.ssh/coffeecloud.pem ubuntu@coffeecloud.centroclima.org
 
 

@@ -163,7 +163,8 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 	  $('.results').show();
   }
 	
-  $scope.startTest = function(selectedUnit) {
+  $scope.startTest = function(userid,selectedUnit) {
+	  selectedUnit["user"] = userid;
 	  $scope.test.unidad = selectedUnit;
 	  $('.roya-wrap').addClass('initiated');
    }
@@ -420,7 +421,7 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
     
     $scope.historialLaunch = function() {
 			  roya.getUser($scope.user_Ided).then(function(userhistory){
-				  $scope.royaHistory = userhistory;
+				  $scope.royaHistory = userhistory.data;
 				  console.log($scope.royaHistory);
 			  });
     };

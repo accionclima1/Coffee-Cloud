@@ -15,17 +15,19 @@
 							  <input type="radio" id="optionsRadios2" ng-value="true" ng-model="test.advMode"><label for="optionsRadios2">Avanzado <small>(Incluye cálculo de severidad)</small></label>
 							</div>
 							
-							<h4 class="clearfix">Seleccione la Unidad para la prueba</h4>
+							<h4 class="clearfix">Seleccione el lote para la prueba</h4>
 							
 							<div class="unidades-wrap">
-					   			<div class="unidad" ng-repeat="unit in units" id="{{unit._id}}" ng-click="startTest(unit)">
-					   				
-					   				<span ng-show="unit.lote.nombre">{{unit.lote.nombre}}</span>
-					   				
-						   			<span ng-hide="unit.lote.nombre">{{unit.nombre}}</span>
-						   			
-						   			<i class="glyphicon glyphicon-chevron-right"></i>
-						   			
+					   			<div class="unidad-wrap" ng-repeat="unit in units" id="{{unit._id}}">
+					   				<h3 ng-hide="unit.lote.nombre">{{unit.nombre}}</h3>
+					   					<a class="unidad" ng-show="unit.lote == 0" href="#/profile">
+						   					<span>Agregar Lotes</span>
+							   				<i class="glyphicon glyphicon-chevron-right"></i>
+					   					</a>
+					   					<div class="unidad" ng-repeat="lote in unit.lote" id="{{unit._id + $index}}" ng-click="startTest(unit.user, unit.lote[$index])">
+								   			<span>{{lote.nombre}} </span>
+							   				<i class="glyphicon glyphicon-chevron-right"></i>
+							   			</div>	
 						   		</div>
 						    </div>
 						    <a href="#/profile">Agregar Unidades</a>
@@ -34,12 +36,12 @@
 							<button class="btn btn-primary adv" ng-click="startTest($event)">Avanzado</button> -->
 							
 							
-							<!-- Button trigger modal -->
+							<!-- Button trigger history modal -->
 								<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#history" ng-click="historialLaunch()">
 								  Calculos anteriores
 								</button>
 								
-								<!-- Modal -->
+								<!-- History Modal -->
 								<div class="modal fade" id="history" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 								  <div class="modal-dialog" role="document">
 								    <div class="modal-content">
@@ -51,14 +53,28 @@
 								        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
 									  <div class="panel panel-default" ng-repeat="roya in royaHistory">
 										    <div class="panel-heading" role="tab" id="{{ 'heading-' + $index }}">
-										      <h4 class="panel-title">
+										      <h5 class="panel-title">
 										        <a role="button" data-toggle="collapse" data-parent="#accordion" data-target="{{ '#collapse-' + $index }}" aria-expanded="false" aria-controls="{{ 'collapse-' + $index }}">
-										          {{ editUnit.lote[$index].nombre }}
+										         {{roya.unidad.nombre}} <small>{{ roya.createdAt | date : "MMM d, y h:mm:ss a" }}</small>
 										        </a>
-										      </h4>
+										      </h5>
 										    </div>
-										    <div id="{{ 'collapse-' + $index }}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="{{ 'collapse-' + $index }}">
+										    <div id="{{ 'collapse-' + $index }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="{{ 'collapse-' + $index }}">
 										      <div class="panel-body">
+											      	<ul class="list-group">
+												      <li class="list-group-item"><strong>Incidencia</strong> <span class="badge">{{ (roya.incidencia).toFixed(2) }}%</span></li>
+													  <li class="list-group-item" >bandolas <span ng-show="roya.bandolas" class="badge">2</span><span ng-hide="roya.bandolas" class="badge">1</span></li>
+													  <li class="list-group-item" ng-show="roya.advMode">Severidad Promedio <span class="badge">{{(roya.severidadPromedio).toFixed()}}%</span></li>
+													  <li class="list-group-item" ng-show="roya.advMode">Incidencia promedio por planta <span class="badge">{{roya.inideanciaPromedioPlanta}}</span></li>
+													  
+													</ul>
+									
+								<p><strong>Recomendación</strong><br>
+									<span ng-show="roya.incidencia < 11">{{methodsMonth.grade1}}</span>
+									<span ng-show="roya.incidencia > 10 && test.incidencia < 21 ">{{methodsMonth.grade2}}</span>
+									<span ng-show="roya.incidencia > 20 && test.incidencia < 51 ">{{methodsMonth.grade3}}</span>
+									<span ng-show="roya.incidencia > 50 ">{{methodsMonth.grade3}}</span>
+								</p>
 										        	 
 										      </div>
 										    </div>

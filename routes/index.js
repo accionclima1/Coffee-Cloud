@@ -17,6 +17,7 @@ var Method = mongoose.model('Method');
 var Campo = mongoose.model('Campo');
 var Roya = mongoose.model('Roya');
 var Gallo = mongoose.model('Gallo');
+var Variety = mongoose.model('Variety');
 // Load widget model
 var Widget = mongoose.model('Widget');
 var jwt = require('express-jwt');
@@ -824,6 +825,41 @@ router.get('/getAllUnits', function (req, res, next) {
         res.json(units);
     });
 });
+
+
+router.post('/varieties', auth, function(req, res, next) {
+	
+	
+  var varieties = new Variety(req.body);
+  	
+  //post.author = req.payload.username;
+  	 varieties.name = req.body.name;
+          
+  // console.log(req.user);
+  varieties.save(function(err){
+  	if(err){ return res.status(500).json({message: err}); }
+  		res.json(varieties);
+  	
+  });
+});
+
+router.get('/varieties', function(req, res, next) {
+  Variety.find(function(err, varieties){
+    if(err){ return next(err); }
+
+    res.json(varieties);
+  });
+});
+
+
+router.delete('/varieties', auth, function (req, res) {
+	Variety.findByIdAndRemove(req.headers.variid, function (err,varie){
+    if(err) { console.log(err); /*throw err;*/ }
+	    res.json({messageUnit: "variedad eliminada!"});
+	});
+  
+});
+
 
 /* */
 module.exports = router;
