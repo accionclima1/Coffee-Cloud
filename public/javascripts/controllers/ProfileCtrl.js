@@ -17,9 +17,11 @@ function($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, online
     });
     
     varieties.getAll().then(function(varids){
-				variedades = varids;
-				console.log(variedades);
+				variedades = varids.data;
+				variedades.push({name: "otro"},{name:"cual?"});
+				$scope.variedades = variedades;
 	});
+    
     
     
 	$scope.newUnit = {
@@ -476,7 +478,7 @@ $scope.resetFungicidasSelection=function(type,isResetfungicidasContactoOptions,i
     $( ".date-field" ).datepicker(spanishDateTimePickerOption);
     
      $scope.update = function(){
-	     user.update($scope.userO).error(function(error){
+	     user.update($scope.userO7).error(function(error){
 		     $scope.error = error;
 		   }).then(function(data){
 		     $scope.message = data.data.message;
@@ -485,7 +487,7 @@ $scope.resetFungicidasSelection=function(type,isResetfungicidasContactoOptions,i
 	 
 	 
 	 $scope.updated = function(){
-	 	user.update($scope.userO).error(function(error){
+	 	user.update($scope.userO7).error(function(error){
 		     $scope.error = error;
 		   }).then(function(data){
 		     $scope.message = data.data.message;
@@ -531,13 +533,16 @@ $scope.resetFungicidasSelection=function(type,isResetfungicidasContactoOptions,i
 		//Commented out as we need to update data from pouchDB only,that will be sync to server
 		if ($scope.remoteMode) {
 		 unit.get(auth.userId(),id).then(function(unitD){
+			 
 		 	$scope.editUnit = unitD;
-		 	$('#myModal3').on('show.bs.modal', function (e) {
+		 	
+		 	console.log($scope.editUnit);
+		 	$('#myModal3').on('shown.bs.modal', function (e) {
 				$('.collapse').collapse('hide');
 			});
 		 	$scope.prependItem = function (newItem) {
 			 		
-				    $scope.editUnit.unshift(newItem);
+				    $scope.editUnit.lote.unshift(newItem);
 				};
 				
 		 	$scope.updateUnitForm = function(){
@@ -639,7 +644,7 @@ $scope.resetFungicidasSelection=function(type,isResetfungicidasContactoOptions,i
 	
 	
 	$scope.saveUnit = function(){
-
+		
 		if ($scope.newunitForm.$valid) {
 		/*For sync fied ,as new record will always have sync property false until it is' sync by local db' */
 		
@@ -655,7 +660,7 @@ $scope.resetFungicidasSelection=function(type,isResetfungicidasContactoOptions,i
 		if ($scope.remoteMode) {
 			
 		$scope.newUnit.isSync=true;	
-		 unit.create($scope.newUnit,auth.userId()).error(function(error){
+		unit.create($scope.newUnit,auth.userId()).error(function(error){
 	       $scope.error = error;
 	     }).then(function(data){
 			 	console.log("mongoDB written data="+JSON.stringify(data.data));

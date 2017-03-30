@@ -569,7 +569,6 @@ app.factory('user', ['$http', 'auth', function($http, auth){
 		};
 		
 		o.update = function(user){
-			/*console.log(user)*/
 	  return $http.put('https://coffeecloud.centroclima.org/users/' + user._id, user, {
     headers: {Authorization: 'Bearer '+auth.getToken()}
   }).success(function(data){
