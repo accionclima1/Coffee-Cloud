@@ -4,11 +4,13 @@ app.controller('UnitCtrl', [
 '$state',
 'unit',
 'auth',
-'PouchDB','onlineStatus','user',
-function($scope, $state, unit, auth, PouchDB, onlineStatus, user){
+'PouchDB','onlineStatus','user','$rootScope',
+function ($scope, $state, unit, auth, PouchDB, onlineStatus, user, $rootScope) {
 	$scope.user_Ided = auth.userId();
   $scope.newUnit = {
-		PouchDBId:'',
+      PouchDBId: '',
+      EntityType: 'Unit',
+      LastUpdatedDateTime: '',
 		isSync:false,
 		isDeleted:false,
 	  sombra: true,
@@ -475,14 +477,28 @@ $scope.resetFungicidasSelection=function(type,isResetfungicidasContactoOptions,i
 	   
     	
 		if ($scope.remoteMode) {
-			
-		$scope.newUnit.isSync=true;	
-		 unit.create($scope.newUnit,auth.userId()).error(function(error){
+	    
+		    
+		    $scope.newUnit.isSync = true;
+		    var dt = new Date();
+		    var documentId = dt.getFullYear().toString() + dt.getMonth().toString() + dt.getDate().toString() + dt.getHours().toString() + dt.getMinutes().toString() + dt.getSeconds().toString() + dt.getMilliseconds().toString();
+		    $scope.newUnit.PouchDBId = documentId;
+		    $scope.newUnit.LastUpdatedDateTime = Number(dt);
+		    unit.create($scope.newUnit,auth.userId()).error(function(error){
 	       $scope.error = error;
 	     }).then(function(data){
 			 	console.log("mongoDB written data="+JSON.stringify(data.data));
 			 	$scope.userO7.units.push(data.data);
-			 	$state.go('home');
+			 	if ($rootScope.IsInternetOnline) {
+			 	    PouchDB.SynServerDataAndLocalData().then(function () {
+			 	        console.log("sync successfully.");
+			 	        $state.go('home');
+			 	    }).catch(function (err) {
+			 	        console.log("Not able to sync" + error);
+			 	        $state.go('home');
+			 	    });
+			 	}
+			 	
 		    });
 		} else {
 			console.log('savelocal');

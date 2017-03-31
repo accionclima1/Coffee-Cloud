@@ -49,7 +49,8 @@ app.factory('PouchDB', ['$http', 'unit', 'auth', '$q', '$rootScope', '$window', 
         var deferred = $q.defer();
         if (userData.data != undefined && userData.data.dataList) {
             if (userData.data.dataList.length > 0) {
-                for (var i = 0; i < userData.data.dataList; i++) {
+                var totalElement = 0;
+                for (var i = 0; i < userData.data.dataList.length; i++) {
                     console.log("inside foreach loop");
                     var element = userData.data.dataList[i];
                     delete element["__v"];
@@ -81,12 +82,18 @@ app.factory('PouchDB', ['$http', 'unit', 'auth', '$q', '$rootScope', '$window', 
                                 });
                             }
                         }
+                    }).catch(function (err) {
+                        console.log("Error while inserting Data to poch Db=" + JSON.stringify(err));
                     });
+                    totalElement++;
                 }
-                result.status = 'success';
-                result.data = [];
-                result.message = 'Data Sync Successfully...';
-                deferred.resolve(result);
+                if (totalElement == userData.data.dataList.length) {
+                    result.status = 'success';
+                    result.data = [];
+                    result.message = 'Data Sync Successfully...';
+                    deferred.resolve(result);
+                }
+                
             }
             else {
                 result.status = 'success';
@@ -116,6 +123,7 @@ app.factory('PouchDB', ['$http', 'unit', 'auth', '$q', '$rootScope', '$window', 
         lastSynDateTimeSpan = pouchDbFactory.GetLastSyncDateTime();
         unit.SyncUserServerDataToLocalPouchDb(lastSynDateTimeSpan, auth.userId()).then(function (data) {
             if (data && data.dataList && data.dataList.length > 0) {
+                var totalElement = 0;
                 for (var i = 0; i < data.dataList.length; i++) {
                     console.log("inside foreach loop");
                     var element = data.dataList[i];
@@ -151,11 +159,14 @@ app.factory('PouchDB', ['$http', 'unit', 'auth', '$q', '$rootScope', '$window', 
                             }
                         }
                     });
+                    totalElement++;
                 }
-                result.status = 'success';
-                result.data = [];
-                result.message = 'Data Sync Successfully...';
-                deferred.resolve(result);
+                if (totalElement == data.dataList.length) {
+                    result.status = 'success';
+                    result.data = [];
+                    result.message = 'Data Sync Successfully...';
+                    deferred.resolve(result);
+                }
             }
             else {
                 result.status = 'success';
@@ -244,6 +255,7 @@ app.factory('PouchDB', ['$http', 'unit', 'auth', '$q', '$rootScope', '$window', 
 
     //for server to local and local to servr
     pouchDbFactory.SynServerDataAndLocalData = function () {
+        var deferred = $q.defer();
         var isServerToLocalSync = false;
         var isLocalToServerSync = false;
         pouchDbFactory.SynServerDataToLocalDb().then(function (serverResult) {
@@ -255,15 +267,21 @@ app.factory('PouchDB', ['$http', 'unit', 'auth', '$q', '$rootScope', '$window', 
                     if (localResult.status == 'success') {
                         isLocalToServerSync = true;
                         if (isLocalToServerSync && isServerToLocalSync) {
-                            PouchDB.SetLastSyncDateTime(Number(new Date()));
+                            pouchDbFactory.SetLastSyncDateTime(Number(new Date()));
+                            deferred.resolve(true);
                         }
                     }
                     else {
                         console.log("data not sync")
+                        deferred.resolve(true);
                     }
                 });
             }
+            else {
+                deferred.resolve(true);
+            }
         });
+        return deferred.promise;
     }
 
     //for getting user data from pouchDB
@@ -946,7 +964,7 @@ app.factory('unit', ['$http', 'auth', '$window', function ($http, auth, $window)
     };
     //sync Server data to pouchDb;
     o.SyncUserServerDataToLocalPouchDb = function (lastSyncDateTime, id) {
-        return $http.post('https://coffeecloud.centroclima.org/SyncUserServerData/' + id + '/lastSyncDateTime', lastSyncDateTime, {
+        return $http.post('https://coffeecloud.centroclima.org/SyncUserServerData/' + id + "/"+ lastSyncDateTime, {
             headers: { Authorization: 'Bearer ' + auth.getToken() }
         }).success(function (data) {
             return data;

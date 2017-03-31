@@ -483,6 +483,13 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
             unit.deleteUnit(id, auth.userId()).then(function (user) {
                 $scope.userO.units.splice(index, 1);
                 $scope.units.splice(index, 1);
+                if ($rootScope.IsInternetOnline) {
+                    PouchDB.SynServerDataAndLocalData().then(function () {
+                        console.log("sync successfully.");
+                    }).catch(function (err) {
+                        console.log("Not able to sync" + error);
+                    });
+                }
             });
         } else {
             //region to delete units in local PouchDB instead of server
@@ -505,8 +512,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
     }
 
     $scope.updateUnit = function (e, id) {
-		
-		console.log($scope.editUnit)
+
 
 
         $scope.sucMsg = null;
@@ -578,6 +584,13 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                     console.log("return  updated data=" + JSON.stringify(unitN.data));
                     $scope.editUnit = unitN.data;
                     $scope.sucMsg = '¡Unidad Actualizada exitosamente!';
+                    if ($rootScope.IsInternetOnline) {
+                        PouchDB.SynServerDataAndLocalData().then(function () {
+                            console.log("sync successfully.");
+                        }).catch(function (err) {
+                            console.log("Not able to sync" + error);
+                        });
+                    }
                 });
 
 
@@ -609,8 +622,6 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 
 
     $scope.saveUnit = function () {
-	    
-	    
 
         if ($scope.newunitForm.$valid) {
             /*For sync fied ,as new record will always have sync property false until it is' sync by local db' */
@@ -633,6 +644,13 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                     $scope.userO7.units.push(data.data);
                     $('#myModal2').modal('hide');
                     $scope.ResetNewUnit();
+                    if ($rootScope.IsInternetOnline) {
+                        PouchDB.SynServerDataAndLocalData().then(function () {
+                            console.log("sync successfully.");
+                        }).catch(function (err) {
+                            console.log("Not able to sync" + error);
+                        });
+                    }
                 });
             } else {
                 console.log('savelocal');
@@ -647,6 +665,14 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                         $('#myModal2').modal('hide');
                         $scope.ResetNewUnit();
                         //PouchDB.CreatePouchDB();
+
+                        if ($rootScope.IsInternetOnline) {
+                            PouchDB.SynServerDataAndLocalData().then(function () {
+                                console.log("sync successfully.");
+                            }).catch(function (err) {
+                                console.log("Not able to sync" + error);
+                            });
+                        }
                     }
                 });
                 //endregion

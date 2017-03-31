@@ -210,17 +210,20 @@ router.post('/login', function (req, res, next) {
             if (req.body.lastSyncDateTime) {
                 lastSyncDateTime = req.body.lastSyncDateTime;
             }
+            console.log("lastSyncDateTime=" + lastSyncDateTime);
             //getting user units that are not syn in local , do same for other entity
             Unit.find({ LastUpdatedDateTime: { $gt: lastSyncDateTime }, user: user._id }, function (err, units) {
+                console.log("inside Unit.find");
                 if (!err) {
+                    console.log("Length="+units.length);
                     for (var x = 0; x < units.length; x++) {
                         dataList.push(units[x]);
                     }
+                    console.log("dataList=" + dataList.length);
+                    //if(err){ return res.json({token: user.generateJWT(),units:[],userData:user}); }
+                    return res.json({ token: user.generateJWT(), dataList: dataList, userData: user });
                 }
-            });
-            //if(err){ return res.json({token: user.generateJWT(),units:[],userData:user}); }
-            
-            return res.json({ token: user.generateJWT(), dataList: dataList, userData: user });
+            })
         } else {
             return res.status(401).json(info);
         }
@@ -433,6 +436,7 @@ router.post('/users/:user/units', auth, function (req, res, next) {
     unit.isDeleted = req.body.isDeleted;
     unit.PouchDBId = req.body.PouchDBId;
     unit.LastUpdatedDateTime = req.body.LastUpdatedDateTime;
+    unit.EntityType = 'Unit';
     unit.user = req.user;
 
     // console.log(req.user);
@@ -536,6 +540,7 @@ router.put('/users/:user/units/:unit', auth, function (req, res, next) {
             unit.isDeleted = req.body.isDeleted;
             unit.PouchDBId = req.body.PouchDBId;
             unit.LastUpdatedDateTime = req.body.LastUpdatedDateTime;
+            unit.EntityType = 'Unit';
             unit.save(function (err) {
                 if (err)
                     console.log('error');
@@ -819,108 +824,115 @@ router.get('/getWidgets', function (req, res, next) {
 
 
 
-router.get('/SyncUserServerData/:user/lastSyncDateTime', function (req, res, next) {
+router.post('/SyncUserServerData/:user/:lastSyncDateTime', function (req, res, next) {
     var dataList = [];
     var lastSyncDateTime = 0;
-    if (req.body.lastSyncDateTime) {
-        lastSyncDateTime = req.body.lastSyncDateTime;
+    if (req.lastSyncDateTime) {
+        lastSyncDateTime = req.lastSyncDateTime;
     }
-    Unit.find({ LastUpdatedDateTime: { $gt: lastSyncDateTime }, user: user._id }, function (err, units) {
+    Unit.find({ LastUpdatedDateTime: { $gt: lastSyncDateTime }, user: req.user }, function (err, units) {
         if (!err) {
             for (var x = 0; x < units.length; x++) {
                 dataList.push(units[x]);
             }
+            return res.json({ dataList: dataList });
         }
     });
-    return res.json({ dataList: dataList });
 });
 
 router.post('/SyncUserLocalData/:user/datalist', auth, function (req, res, next) {
-    console.log(req.body.length);// --> output is undefined
-    body.req.forEach(function (item) {
+    
+    req.body.forEach(function (item) {
         if (item.EntityType == 'Unit') {
-            Unit.remove({ 'PouchDBId': item.PouchDBId }, function (err) {
-            })
-            var unit = new Unit();
-            unit.nombre = item.nombre;
-            unit.altitud = item.altitud;
-            unit.departamento = item.departamento;
-            unit.municipio = item.municipio;
-            unit.ubicacion = item.ubicacion;
-            unit.areaTotal = item.areaTotal;
-            unit.areaCafe = item.areaCafe;
-            unit.lote = item.lote;
-            unit.variedad = item.variedad;
-            unit.distanciamiento = item.distanciamiento;
-            unit.sombra = item.sombra;
-            unit.muestreo = item.muestreo;
-            unit.muestreoMes = item.muestreoMes;
-            unit.fertilizaSuelo = item.fertilizaSuelo;
-            unit.fertilizaSueloMes = item.fertilizaSueloMes;
-            unit.fertilizaFollaje = item.fertilizaFollaje;
-            unit.fertilizaFollajeMes = item.fertilizaFollajeMes;
-            unit.enmiendasSuelo = item.enmiendasSuelo;
-            unit.enmiendasSueloMes = item.enmiendasSueloMes;
-            unit.manejoTejido = item.manejoTejido;
-            unit.manejoTejidoMes = item.manejoTejidoMes;
-            unit.fungicidasRoya = item.fungicidasRoya;
-            unit.fungicidas = item.fungicidas;
-            unit.fungicidasFechas = item.fungicidasFechas;
-            unit.verificaAguaTipo = item.verificaAguaTipo;
-            unit.verificaAgua = item.verificaAgua;
-            unit.rendimiento = item.rendimiento;
-            unit.floracionPrincipal = item.floracionPrincipal;
-            unit.inicioCosecha = item.inicioCosecha;
-            unit.finalCosecha = item.finalCosecha;
-            unit.epocalluviosa = item.epocalluviosa;
-            unit.FinEpocalluviosa = item.FinEpocalluviosa;
-            unit.recomendaciontecnica = item.recomendaciontecnica;
-            unit.tipoCafe = item.tipoCafe;
-            unit.nitrogeno = item.nitrogeno;
-            unit.nitrorealiza = item.nitrorealiza;
-            unit.sacos = item.sacos;
-            unit.realizapoda = item.realizapoda;
-            unit.realizamonth = item.realizamonth;
-            unit.quetipo = item.quetipo;
-            unit.enfermedades = item.enfermedades;
-            unit.cyprosol = item.cyprosol;
-            unit.cyprosoldate = item.cyprosoldate;
-            unit.atemi = item.atemi;
-            unit.atemidate = item.atemidate;
-            unit.esfera = item.esfera;
-            unit.esferadate = item.esferadate;
-            unit.opera = item.opera
-            unit.operadate = item.operadate;
-            unit.opus = item.opus;
-            unit.opusdate = item.opusdate;
-            unit.soprano = item.soprano;
-            unit.sopranodate = item.sopranodate;
-            unit.hexalon = item.hexalon;
-            unit.hexalondate = item.hexalondate;
-            unit.propicon = item.propicon;
-            unit.propicondate = item.propicondate;
-            unit.hexil = item.hexil;
-            unit.hexildate = item.hexildate;
-            unit.otros = item.otros;
-            unit.otrosdate = item.otrosdate;
-            unit.fungicidasmonth = item.fungicidasmonth;
-            unit.produccionhectarea = item.produccionhectarea;
-            unit.typeOfCoffeProducessOptionSelected = item.typeOfCoffeProducessOptionSelected;
-            unit.isSync = item.isSync;
-            unit.isDeleted = item.isDeleted;
-            unit.PouchDBId = item.PouchDBId;
-            unit.LastUpdatedDateTime = item.LastUpdatedDateTime;
-            unit.user = req.user;
-            unit.save(function (err) {
-                if (err) {
-                    return res.status(500).json({ message: err });
-                }
-                req.user.units.push(unit);
-                req.user.save(function (err, post) {
+            Unit.remove({ 'PouchDBId': item.PouchDBId })
+            .then(function () {
+                var unit = new Unit();
+                unit.nombre = item.nombre;
+                unit.altitud = item.altitud;
+                unit.departamento = item.departamento;
+                unit.municipio = item.municipio;
+                unit.ubicacion = item.ubicacion;
+                unit.areaTotal = item.areaTotal;
+                unit.areaCafe = item.areaCafe;
+                unit.lote = item.lote;
+                unit.variedad = item.variedad;
+                unit.distanciamiento = item.distanciamiento;
+                unit.sombra = item.sombra;
+                unit.muestreo = item.muestreo;
+                unit.muestreoMes = item.muestreoMes;
+                unit.fertilizaSuelo = item.fertilizaSuelo;
+                unit.fertilizaSueloMes = item.fertilizaSueloMes;
+                unit.fertilizaFollaje = item.fertilizaFollaje;
+                unit.fertilizaFollajeMes = item.fertilizaFollajeMes;
+                unit.enmiendasSuelo = item.enmiendasSuelo;
+                unit.enmiendasSueloMes = item.enmiendasSueloMes;
+                unit.manejoTejido = item.manejoTejido;
+                unit.manejoTejidoMes = item.manejoTejidoMes;
+                unit.fungicidasRoya = item.fungicidasRoya;
+                unit.fungicidas = item.fungicidas;
+                unit.fungicidasFechas = item.fungicidasFechas;
+                unit.verificaAguaTipo = item.verificaAguaTipo;
+                unit.verificaAgua = item.verificaAgua;
+                unit.rendimiento = item.rendimiento;
+                unit.floracionPrincipal = item.floracionPrincipal;
+                unit.inicioCosecha = item.inicioCosecha;
+                unit.finalCosecha = item.finalCosecha;
+                unit.epocalluviosa = item.epocalluviosa;
+                unit.FinEpocalluviosa = item.FinEpocalluviosa;
+                unit.recomendaciontecnica = item.recomendaciontecnica;
+                unit.tipoCafe = item.tipoCafe;
+                unit.nitrogeno = item.nitrogeno;
+                unit.nitrorealiza = item.nitrorealiza;
+                unit.sacos = item.sacos;
+                unit.realizapoda = item.realizapoda;
+                unit.realizamonth = item.realizamonth;
+                unit.quetipo = item.quetipo;
+                unit.enfermedades = item.enfermedades;
+                unit.cyprosol = item.cyprosol;
+                unit.cyprosoldate = item.cyprosoldate;
+                unit.atemi = item.atemi;
+                unit.atemidate = item.atemidate;
+                unit.esfera = item.esfera;
+                unit.esferadate = item.esferadate;
+                unit.opera = item.opera
+                unit.operadate = item.operadate;
+                unit.opus = item.opus;
+                unit.opusdate = item.opusdate;
+                unit.soprano = item.soprano;
+                unit.sopranodate = item.sopranodate;
+                unit.hexalon = item.hexalon;
+                unit.hexalondate = item.hexalondate;
+                unit.propicon = item.propicon;
+                unit.propicondate = item.propicondate;
+                unit.hexil = item.hexil;
+                unit.hexildate = item.hexildate;
+                unit.otros = item.otros;
+                unit.otrosdate = item.otrosdate;
+                unit.fungicidasmonth = item.fungicidasmonth;
+                unit.produccionhectarea = item.produccionhectarea;
+                unit.typeOfCoffeProducessOptionSelected = item.typeOfCoffeProducessOptionSelected;
+                unit.isSync = item.isSync;
+                unit.isDeleted = item.isDeleted;
+                unit.PouchDBId = item.PouchDBId;
+                unit.LastUpdatedDateTime = item.LastUpdatedDateTime;
+                unit.EntityType = 'Unit';
+                unit.user = req.user;
+
+                unit.save(function (err) {
                     if (err) {
-                        return next(err);
+                        return res.status(500).json({ message: err });
                     }
+                    req.user.units.push(unit);
+                    req.user.save(function (err, post) {
+                        if (err) {
+                            return next(err);
+                        }
+                    });
                 });
+                
+            })
+            .catch(function (err) {
+                console.log(err);
             });
         }
     });
