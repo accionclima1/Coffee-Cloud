@@ -505,7 +505,8 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
     }
 
     $scope.updateUnit = function (e, id) {
-
+		
+		console.log($scope.editUnit)
 
 
         $scope.sucMsg = null;
@@ -608,6 +609,8 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 
 
     $scope.saveUnit = function () {
+	    
+	    
 
         if ($scope.newunitForm.$valid) {
             /*For sync fied ,as new record will always have sync property false until it is' sync by local db' */

@@ -179,9 +179,14 @@
 														<div class="row">
 														<label class="col-xs-12">Variedad</label>
 															<div class="col-xs-6" ng-repeat="variedad in variedades">
-													          <label>
-													            <input type="checkbox" ng-model="editUnit.variedad[0][variedad.name]"> {{variedad.name}} 
+													          <label ng-hide="variedad.name == 'cual?'">
+													            <input type="checkbox" ng-model="editUnit.variedad[variedad.name]"> {{variedad.name}} 
 													          </label>
+													          
+													           <input type="text"
+														      class="form-control"
+														      placeholder="¿cual?"
+														      ng-model="editUnit.variedad['cual?']" ng-show="editUnit.variedad['otro'] && variedad.name == 'cual?'"></input>
 													        </div>
 													        
 														</div>
@@ -1003,9 +1008,16 @@
 														<div class="row">
 														<label class="col-xs-12">Variedad</label>
 															<div class="col-xs-6" ng-repeat="variedad in variedades">
-													          <label>
-													            <input type="checkbox" ng-model="newUnit.variedad[variedad.name]"> {{variedad.name}} 
+													          <label ng-hide="variedad.name == 'cual?'">
+													            <input type="checkbox" ng-model="newUnit.variedad[variedad.name]" > {{variedad.name}} 
 													          </label>
+													          
+													          <input type="text"
+														      class="form-control"
+														      placeholder="¿cual?"
+														      ng-model="newUnit.variedad['cual?']" ng-show="newUnit.variedad['otro'] && variedad.name == 'cual?'"></input>
+													          
+													          
 													        </div>
 													        
 														</div>
