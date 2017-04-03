@@ -194,6 +194,9 @@
                     <li ng-class="{ active: isActive('/reportesdecampo') }">
                         <a href="/admin#/reportesdecampo"><i class="fa fa-fw fa-file-image-o"></i> Reportes de Campo  </a>
                     </li>
+                     <li ng-class="{ active: isActive('/varieties') }">
+                        <a href="/admin#/varieties"><i class="fa fa-fw fa-lemon-o"></i> Variedades de Cafe</a>
+                    </li>
                     <li ng-class="{ active: isActive('/noticias') }">
                         <a href="/admin#/noticias"><i class="fa fa-fw fa-newspaper-o"></i> Noticias</a>
                     </li>
@@ -1851,6 +1854,42 @@
                 </div>
          </div>
  </script>
+    <script type="text/ng-template" id="/varieties.html">
+	     <div class="container-fluid roya-wrap">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Variedades de Cafe
+                        </h1>
+                        
+						<div class="col-md-6">
+							<form ng-submit="addNew()">
+							  <div class="form-group">
+							<p class="text-center" ng-hide="varieties">
+							    <i class="fa fa-circle-o-notch fa-spin"></i>
+							</p>
+							    <ul class="list-group">
+									  <li class="list-group-item" ng-repeat="variety in varieties">{{ variety.name }} <a class="btn btn-danger pull-right btn-xs" ng-click="deleteVariety(variety._id, $index)">X</a></li>
+									  
+								</ul>
+							    							  
+							  </div>
+							  <div class="form-group">
+							    
+							    <input type="text" class="form-control" id="exampleInputName2" placeholder="Variedad" ng-model="newVariety">
+							  </div>
+							  <button type="submit" class="btn btn-default">Agregar nueva</button>
+							</form>
+						</div>
+						        
+						
+            
+            </div>
+                </div>
+        </div>
+    </script>
 
     
 
