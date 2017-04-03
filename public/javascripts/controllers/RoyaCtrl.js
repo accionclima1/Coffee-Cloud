@@ -1,4 +1,5 @@
 app.controller('RoyaCtrl', [
+'$rootScope',
 '$scope',
 '$state',
 'auth',
@@ -10,7 +11,7 @@ app.controller('RoyaCtrl', [
 'roya',
 'PouchDB',
 'onlineStatus',
-function($scope, $state, auth, localStorageService, socket, unit, user, methods, roya, PouchDB, onlineStatus){
+function($rootScope, $scope, $state, auth, localStorageService, socket, unit, user, methods, roya, PouchDB, onlineStatus){
   $scope.currentUser = auth.currentUser;
   var currentId = auth.currentUser();
   var testInStore = localStorageService.get('localTest');
@@ -26,10 +27,12 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 	
 	
 	
-	$scope.$watch('onlineStatus.isOnline()', function(online) {
+	 $scope.onlineStatus = onlineStatus;
+
+    $scope.$watch('onlineStatus.isOnline()', function (online) {
         $scope.online_status_string = online ? 'online' : 'offline';
         onlineStatus = $scope.online_status_string
-        
+
     });
 
   $scope.ClearTest = function(){
@@ -51,60 +54,74 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
   };
 		$scope.affect = "";
 		
-    if (onlineStatus) {
-	    	
-	    	user.get($scope.user_Ided).then(function(user){
-				$scope.userO7 = user;
-				
-				
-				
-					//region to  get user unit from local PouchDB instead of server
-			PouchDB.GetAllUserUnit(auth.userId()).then(function(result){
-							if(result.status=='fail')
-							{
-									$scope.error = result.message;
-							}
-							else if(result.status=='success')
-							{
-								
-								
-								if($scope.userO7.units.length === result.data.length){
-									
-									$scope.units = result.data;
-									console.log('local mode:',result.data);
-									
-								} else {
-									console.log('server mode:', $scope.userO7.units);
-									$scope.units = $scope.userO7.units;
-									$scope.remoteMode = true;
-								}
-								
-								
-							}
-					});
-			//endregion
-				
-			}); 
-    	} else {
-	    	
-					//region to  get user unit from local PouchDB instead of server
-			PouchDB.GetAllUserUnit(auth.userId()).then(function(result){
-							if(result.status=='fail')
-							{
-									$scope.error = result.message;
-							}
-							else if(result.status=='success')
-							{
-								
-								
-									$scope.units = result.data;
-									console.log('local mode:',result.data);
-																
-								
-							}
-					});
-			//endregion
-    	}
+    PouchDB.GetUserDataFromPouchDB(auth.userId()).then(function (result) {
+        if (result.status == 'fail') {
+            $scope.error = result.message;
+        }
+        else if (result.status == 'success') {
+            $scope.userO7 = result.data;
+
+        }
+    });
+
+    //console.log("Is INTERNET AVAILABLE=" + $rootScope.IsInternetOnline);
+    if ($rootScope.IsInternetOnline) {
+	    
+	    console.log('app online');
+	    
+        user.get($scope.user_Ided).then(function (user) {
+            $scope.userO7 = user;
+
+
+
+            //region to  get user unit from local PouchDB instead of server
+            PouchDB.GetAllUserUnit(auth.userId()).then(function (result) {
+                if (result.status == 'fail') {
+                    $scope.error = result.message;
+                }
+                else if (result.status == 'success') {
+
+                    $scope.units = result.data;
+                    //if($scope.userO7.units.length === result.data.length){
+
+                    //	$scope.units = result.data;
+                    //	console.log('local mode:',result.data);
+
+                    //} else {
+                    //	console.log('server mode:', $scope.userO7.units);
+                    //	$scope.units = $scope.userO7.units;
+                    //	$scope.remoteMode = true;
+                    //}
+
+
+                }
+            });
+            //endregion
+
+        });
+    } else {
+	    
+	    console.log('app offline');
+	    
+	    
+	    
+        
+        //region to  get user unit from local PouchDB instead of server
+        PouchDB.GetAllUserUnit(auth.userId()).then(function (result) {
+            if (result.status == 'fail') {
+                $scope.error = result.message;
+            }
+            else if (result.status == 'success') {
+
+
+                $scope.units = result.data;
+                console.log('local mode:', result.data);
+
+
+            }
+        });
+        //endregion
+    }
     
     
      $scope.test = testInStore || {
@@ -419,13 +436,22 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
     
     var usrid = auth.userId();;
     
-    $scope.historialLaunch = function() {
+    var historialLaunchFunc = function() {
+	    
+	    if ($rootScope.IsInternetOnline) {
+		    
 			  roya.getUser($scope.user_Ided).then(function(userhistory){
 				  $scope.royaHistory = userhistory.data;
+				  localStorageService.set('royaHistory',userhistory.data);
 				  console.log($scope.royaHistory);
 			  });
+			  
+		} else {
+			$scope.royaHistory = localStorageService.get('royaHistory');	  
+		}
     };
-    
+    historialLaunchFunc();
+    $scope.historialLaunch = historialLaunchFunc();
     
     
 }]);

@@ -50,6 +50,7 @@
 								        <h4 class="modal-title" id="myModalLabel">Calculos anteriores</h4>
 								      </div>
 								      <div class="modal-body">
+									      <h6 ng-show="royaHistory.length == 0">¡No hay cálculos todavía!</h6>
 								        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
 									  <div class="panel panel-default" ng-repeat="roya in royaHistory">
 										    <div class="panel-heading" role="tab" id="{{ 'heading-' + $index }}">

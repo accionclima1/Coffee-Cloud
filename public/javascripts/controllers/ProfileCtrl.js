@@ -1,5 +1,5 @@
-app.controller('ProfileCtrl', ['$http', '$scope', 'auth', 'unit', 'varieties', 'user', 'PouchDB', '$rootScope', 'onlineStatus',
-function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlineStatus) {
+app.controller('ProfileCtrl', ['$http', '$scope', 'auth', 'unit', 'varieties', 'user', 'PouchDB', '$rootScope', 'localStorageService', 'onlineStatus',
+function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, localStorageService, onlineStatus) {
     var map;
     $scope.isLoggedIn = auth.isLoggedIn;
     $scope.currentUser = auth.currentUser;
@@ -17,11 +17,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 
     });
 
-    varieties.getAll().then(function (varids) {
-        variedades = varids.data;
-        variedades.push({ name: "otro" }, { name: "cual?" });
-        $scope.variedades = variedades;
-    });
+    
 
     $scope.newUnit = {
         PouchDBId: '',
@@ -390,13 +386,22 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
             $scope.error = result.message;
         }
         else if (result.status == 'success') {
-            $scope.userO = result.data;
+            $scope.userO7 = result.data;
 
         }
     });
 
-
-    if (onlineStatus) {
+    //console.log("Is INTERNET AVAILABLE=" + $rootScope.IsInternetOnline);
+    if ($rootScope.IsInternetOnline) {
+	    
+	    console.log('app online');
+	    
+	    varieties.getAll().then(function (varids) {
+	        variedades = varids.data;
+	        variedades.push({ name: "otro" }, { name: "cual?" });
+	        $scope.variedades = variedades;
+	        localStorageService.set('localVarieties',variedades);
+	    });
 
         console.log('app online');
         user.get($scope.user_Ided).then(function (user) {
@@ -430,7 +435,12 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 
         });
     } else {
-        console.log('app offline');
+	    
+	    console.log('app offline');
+	    
+	     $scope.variedades = localStorageService.get('localVarieties');
+	    
+        
         //region to  get user unit from local PouchDB instead of server
         PouchDB.GetAllUserUnit(auth.userId()).then(function (result) {
             if (result.status == 'fail') {

@@ -31,18 +31,18 @@
 		<script>
 		$(document).ready(function() {
 			
-			var country = geoplugin_countryName();
+			/*var country = geoplugin_countryName();
 			var zone = geoplugin_region();
 			decoded = $("<textarea/>").html(zone).text();
 			if(decoded == "San José") {
 				decoded = "sanjose"
-			}
+			}*/
 			
 			$('.weather-wrapper').EasyWeather({
 				language: 'sp',
-				providerId: 'owm',
+				providerId: 'wug',
 				providerSequence: false,
-				geoProviderId:'geopl',
+				geoProviderId:'fgip',
 				geoProviderSequence: false,
 				refreshLink: false,
 				todayLabel: 'Hoy',

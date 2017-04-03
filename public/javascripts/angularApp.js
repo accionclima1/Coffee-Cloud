@@ -48,52 +48,63 @@ app.factory('PouchDB', ['$http', 'unit', 'auth', '$q', '$rootScope', '$window', 
         };
         var deferred = $q.defer();
         if (userData.data != undefined && userData.data.dataList) {
+            var dataArray = [];
             if (userData.data.dataList.length > 0) {
                 var totalElement = 0;
-                for (var i = 0; i < userData.data.dataList.length; i++) {
-                    console.log("inside foreach loop");
-                    var element = userData.data.dataList[i];
-                    delete element["__v"];
-                    console.log(element._id + " pouch " + element.PouchDBId);
-                    if (element.PouchDBId && element.PouchDBId != null && element.PouchDBId != undefined) {
-                        element._id = element.PouchDBId;
-                    }
-                    if (element._id == undefined) {
-                        var dt = new Date();
-                        var documentId = dt.getFullYear().toString() + dt.getMonth().toString() + dt.getDate().toString() + dt.getHours().toString() + dt.getMinutes().toString() + dt.getSeconds().toString() + dt.getMilliseconds().toString();
-                        element._id = documentId;
-                    }
-                    if (element.LastUpdatedDateTime == undefined || element.LastUpdatedDateTime == null) {
-                        var dt = new Date();
-                        element.LastUpdatedDateTime = Number(dt);
-                    }
-                    localPouchDB.get(element._id, function (err, doc) {
-                        if (err) {
-                            if (err.status = '404') { // if the document does not exist
-                                localPouchDB.put(element).then(function () {
-                                }).catch(function (err) {
-                                    console.log("Error while inserting Data to poch Db=" + JSON.stringify(err));
-                                });
+                Promise.all(userData.data.dataList.map(function (row) {
+                        console.log(row);
+                        console.log("inside foreach loop");
+                        var element = row;
+                        delete element["__v"];
+                        console.log(element._id + " pouch " + element.PouchDBId);
+                        if (element.PouchDBId && element.PouchDBId != null && element.PouchDBId != undefined) {
+                            element._id = element.PouchDBId;
+                        }
+                        if (element._id == undefined) {
+                            var dt = new Date();
+                            var documentId = dt.getFullYear().toString() + dt.getMonth().toString() + dt.getDate().toString() + dt.getHours().toString() + dt.getMinutes().toString() + dt.getSeconds().toString() + dt.getMilliseconds().toString();
+                            element._id = documentId;
+                        }
+                        if (element.LastUpdatedDateTime == undefined || element.LastUpdatedDateTime == null) {
+                            var dt = new Date();
+                            element.LastUpdatedDateTime = Number(dt);
+                        }
+                        localPouchDB.get(element._id, function (err, doc) {
+                            if (err) {
+                                if (err.status = '404') { // if the document does not exist
+                                    console.log(element);
+                                    localPouchDB.put(element).then(function () {
+                                        console.log("Doc inserted to poch Db\n");
+                                    }).catch(function (err) {
+                                        console.log("Error while inserting Data to poch Db\n");
+                                        console.log(err);
+                                    });
+                                }
                             }
                             else {
+                                console.log(element);
+                                var existDocument = doc;
                                 doc = element;
-                                localPouchDB.put(doc).then(function () { }).catch(function (err) {
-                                    console.log("Error while updating Data to poch Db=" + JSON.stringify(err));
+                                doc._rev = existDocument._rev;
+                                localPouchDB.put(doc).then(function () {
+                                    console.log("Doc updated in poch Db\n");
+                                }).catch(function (err) {
+                                    console.log("Error while updating Data to poch Db\n");
+                                    console.log(err);
                                 });
                             }
-                        }
-                    }).catch(function (err) {
-                        console.log("Error while inserting Data to poch Db=" + JSON.stringify(err));
-                    });
-                    totalElement++;
-                }
-                if (totalElement == userData.data.dataList.length) {
-                    result.status = 'success';
-                    result.data = [];
-                    result.message = 'Data Sync Successfully...';
-                    deferred.resolve(result);
-                }
-                
+                        }).catch(function (err) {
+                            console.log("Error while inserting Data to poch Db\n" + JSON.stringify(err));
+                        });
+                        totalElement++;
+                })).then(function () {
+                    if (totalElement == userData.data.dataList.length) {
+                        result.status = 'success';
+                        result.data = [];
+                        result.message = 'Data Sync Successfully...';
+                        deferred.resolve(result);
+                    }
+                });
             }
             else {
                 result.status = 'success';
@@ -124,9 +135,11 @@ app.factory('PouchDB', ['$http', 'unit', 'auth', '$q', '$rootScope', '$window', 
         unit.SyncUserServerDataToLocalPouchDb(lastSynDateTimeSpan, auth.userId()).then(function (data) {
             if (data && data.dataList && data.dataList.length > 0) {
                 var totalElement = 0;
-                for (var i = 0; i < data.dataList.length; i++) {
+                var totalElement = 0;
+                Promise.all(data.dataList.map(function (row) {
+                    console.log(row);
                     console.log("inside foreach loop");
-                    var element = data.dataList[i];
+                    var element = row;
                     delete element["__v"];
                     console.log(element._id + " pouch " + element.PouchDBId);
                     if (element.PouchDBId && element.PouchDBId != null && element.PouchDBId != undefined) {
@@ -145,28 +158,37 @@ app.factory('PouchDB', ['$http', 'unit', 'auth', '$q', '$rootScope', '$window', 
                         if (err) {
                             if (err.status = '404') { // if the document does not exist
                                 localPouchDB.put(element).then(function () {
+                                    console.log("Doc inserted to poch Db\n");
                                 }).catch(function (err) {
-                                    console.log("Error while inserting Data to poch Db");
-                                    console.log(err);
-                                });
-                            }
-                            else {
-                                doc = element;
-                                localPouchDB.put(doc).then(function () { }).catch(function (err) {
-                                    console.log("Error while updating Data to poch Db");
+                                    console.log("Error while inserting Data to poch Db\n");
                                     console.log(err);
                                 });
                             }
                         }
+                        else {
+                          
+                            var existDocument = doc;
+                            doc = element;
+                            doc._rev = existDocument._rev;
+                            localPouchDB.put(doc).then(function () {
+                                console.log("Doc updated in poch Db\n");
+                            }).catch(function (err) {
+                                console.log("Error while updating Data to poch Db\n");
+                                console.log(err);
+                            });
+                        }
+                    }).catch(function (err) {
+                        console.log("Error while inserting Data to poch Db\n" + JSON.stringify(err));
                     });
                     totalElement++;
-                }
-                if (totalElement == data.dataList.length) {
-                    result.status = 'success';
-                    result.data = [];
-                    result.message = 'Data Sync Successfully...';
-                    deferred.resolve(result);
-                }
+                })).then(function () {
+                    if (totalElement == userData.data.dataList.length) {
+                        result.status = 'success';
+                        result.data = [];
+                        result.message = 'Data Sync Successfully...';
+                        deferred.resolve(result);
+                    }
+                });
             }
             else {
                 result.status = 'success';
