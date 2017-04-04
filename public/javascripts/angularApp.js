@@ -1118,6 +1118,11 @@ app.factory('gallo', ['$http', 'auth', function ($http, auth) {
             return data;
         });
     };
+    o.getUser = function (userID) {
+        return $http.get('https://coffeecloud.centroclima.org/gallo/' + userID).success(function (data) {
+            return data;
+        });
+    };
     o.create = function (gallo) {
         return $http.post('https://coffeecloud.centroclima.org/gallo', gallo, {
             headers: { Authorization: 'Bearer ' + auth.getToken() }

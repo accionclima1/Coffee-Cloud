@@ -697,6 +697,14 @@ router.get('/gallo', function (req, res, next) {
     });
 });
 
+router.get('/gallo/:user', function (req, res, next) {
+    Gallo.find({ 'unidad.user': req.params.user }, function (err, gallosUser) {
+        if (err) { return next(err); }
+
+        res.json(gallosUser);
+    });
+});
+
 router.delete('/roya/:test', auth, function (req, res) {
     Roya.findByIdAndRemove(req.params.test, function (err, test) {
         if (err) { throw err; }

@@ -1,4 +1,5 @@
 app.controller('GalloCtrl', [
+'$rootScope',
 '$scope',
 '$state',
 'auth',
@@ -10,7 +11,7 @@ app.controller('GalloCtrl', [
 'gallo',
 'PouchDB',
 'onlineStatus',
-function($scope, $state, auth, localStorageService, socket, unit, user, methods, roya, PouchDB, onlineStatus){
+function($rootScope, $scope, $state, auth, localStorageService, socket, unit, user, methods, gallo, PouchDB, onlineStatus){
   $scope.currentUser = auth.currentUser;
   var currentId = auth.currentUser();
   var testInStore = localStorageService.get('localTestgallo');
@@ -48,60 +49,77 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 		$scope.affect = 1;
 	  $('#plantModal').modal('show');
   };
-    if (onlineStatus) {
-	    	
-	    	user.get($scope.user_Ided).then(function(user){
-				$scope.userO7 = user;
-				
-				
-				
-					//region to  get user unit from local PouchDB instead of server
-			PouchDB.GetAllUserUnit(auth.userId()).then(function(result){
-							if(result.status=='fail')
-							{
-									$scope.error = result.message;
-							}
-							else if(result.status=='success')
-							{
-								
-								
-								if($scope.userO7.units.length === result.data.length){
-									
-									$scope.units = result.data;
-									console.log('local mode:',result.data);
-									
-								} else {
-									console.log('server mode:', $scope.userO7.units);
-									$scope.units = $scope.userO7.units;
-									$scope.remoteMode = true;
-								}
-								
-								
-							}
-					});
-			//endregion
-				
-			}); 
-    	} else {
-	    	
-					//region to  get user unit from local PouchDB instead of server
-			PouchDB.GetAllUserUnit(auth.userId()).then(function(result){
-							if(result.status=='fail')
-							{
-									$scope.error = result.message;
-							}
-							else if(result.status=='success')
-							{
-								
-								
-									$scope.units = result.data;
-									console.log('local mode:',result.data);
-																
-								
-							}
-					});
-			//endregion
-    	}
+  
+  
+    PouchDB.GetUserDataFromPouchDB(auth.userId()).then(function (result) {
+        if (result.status == 'fail') {
+            $scope.error = result.message;
+        }
+        else if (result.status == 'success') {
+            $scope.userO7 = result.data;
+
+        }
+    });
+
+    //console.log("Is INTERNET AVAILABLE=" + $rootScope.IsInternetOnline);
+    if ($rootScope.IsInternetOnline) {
+	    
+	    console.log('app online');
+	    
+        user.get($scope.user_Ided).then(function (user) {
+            $scope.userO7 = user;
+
+
+
+            //region to  get user unit from local PouchDB instead of server
+            PouchDB.GetAllUserUnit(auth.userId()).then(function (result) {
+                if (result.status == 'fail') {
+                    $scope.error = result.message;
+                }
+                else if (result.status == 'success') {
+
+                    $scope.units = result.data;
+                    //if($scope.userO7.units.length === result.data.length){
+
+                    //	$scope.units = result.data;
+                    //	console.log('local mode:',result.data);
+
+                    //} else {
+                    //	console.log('server mode:', $scope.userO7.units);
+                    //	$scope.units = $scope.userO7.units;
+                    //	$scope.remoteMode = true;
+                    //}
+
+
+                }
+            });
+            //endregion
+
+        });
+    } else {
+	    
+	    console.log('app offline');
+	    
+	    
+	    
+        
+        //region to  get user unit from local PouchDB instead of server
+        PouchDB.GetAllUserUnit(auth.userId()).then(function (result) {
+            if (result.status == 'fail') {
+                $scope.error = result.message;
+            }
+            else if (result.status == 'success') {
+
+
+                $scope.units = result.data;
+                console.log('local mode:', result.data);
+
+
+            }
+        });
+        //endregion
+    }
+
     
      $scope.test = testInStore || {
 	  	advMode : false,
@@ -115,6 +133,8 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
 		avgplntDmgPct : 0,
 		incidencia : 0
 	  };
+	  
+	  
 	methods.get().then(function(methods){
 		 var meth = methods.data[0];
 		 var date = new Date();
@@ -414,5 +434,25 @@ function($scope, $state, auth, localStorageService, socket, unit, user, methods,
         
         
     };
+    
+    
+    var historialLaunchFunc = function() {
+	    
+	    if ($rootScope.IsInternetOnline) {
+		    
+			  gallo.getUser($scope.user_Ided).then(function(userhistory){
+				  $scope.galloHistory = userhistory.data;
+				  localStorageService.set('galloHistory',userhistory.data);
+				  console.log($scope.galloHistory);
+			  });
+			  
+		} else {
+			$scope.galloHistory = localStorageService.get('galloHistory');	  
+		}
+    };
+    historialLaunchFunc();
+    $scope.historialLaunch = historialLaunchFunc();
+    
+    
     
 }]);
