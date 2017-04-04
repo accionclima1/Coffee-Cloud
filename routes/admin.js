@@ -27,6 +27,17 @@ router.get('/chats', function(req, res, next) {
   });
 });
 
+router.param('user', function (req, res, next, id) {
+    var query = User.findById(id);
+    query.exec(function (err, user) {
+        if (err) { return next(err); }
+        if (!user) { return next(new Error('can\'t find user')); }
+
+        req.user = user;
+        return next();
+    });
+});
+
 /* Methods routes */
 
 router.post('/methods', auth, function(req, res, next) {
@@ -152,6 +163,15 @@ router.get('/campo', function(req, res, next) {
          res.json(methods);
     });
 });
+
+router.get('/campo/:user', function (req, res, next) {
+    Campos.find({ 'unidad.user': req.params.user }, function (err, camposUser) {
+        if (err) { return next(err); }
+
+        res.json(camposUser);
+    });
+});
+
 /* Campo routes */
 
 /* Widget Route*/

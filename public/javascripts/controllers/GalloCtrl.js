@@ -179,7 +179,8 @@ function($rootScope, $scope, $state, auth, localStorageService, socket, unit, us
 	  $('.results').show();
   }
 	
-  $scope.startTest = function(selectedUnit) {
+  $scope.startTest = function(userid, selectedUnit) {
+	  selectedUnit["user"] = userid;
 	  $scope.test.unidad = selectedUnit;
 	  $('.roya-wrap').addClass('initiated');
    }
@@ -414,20 +415,18 @@ function($rootScope, $scope, $state, auth, localStorageService, socket, unit, us
     $scope.getHelp = function(currentUser) { 
 	    
 	    
-	    roya.create(testInStore).success(function(data){
+	    gallo.create(testInStore).success(function(data){
 		    
 		    
 		    
-		     var msg = 'Calculo De Roya Enviado: ID: ' + data._id + '.' ;
+		     var msg = 'Calculo De Gallo Enviado: ID: ' + data._id + '.' ;
 		  	 var data_server={
 	            message:msg,
 	            to_user:'admin',
 	            from_id:currentUser
 	        };
 	        socket.emit('get msg',data_server);
-
-		    
-	        localStorageService.remove('localTestgallo');
+			localStorageService.remove('localTestgallo');
         });
 	    
 	           
