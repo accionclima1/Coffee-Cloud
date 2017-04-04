@@ -165,7 +165,7 @@ router.get('/campo', function(req, res, next) {
 });
 
 router.get('/campo/:user', function (req, res, next) {
-    Campos.find({ 'unidad.user': req.params.user }, function (err, camposUser) {
+    Campo.find({ 'unidad.user': req.params.user }, function (err, camposUser) {
         if (err) { return next(err); }
 
         res.json(camposUser);

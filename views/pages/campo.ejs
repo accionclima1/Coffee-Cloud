@@ -15,22 +15,80 @@
 								<h4 class="clearfix">Seleccione la Unidad para Iniciar</h4>
 								
 								<div class="unidades-wrap">
-						   			<div class="unidad" ng-repeat="unit in units" id="{{unit._id}}" ng-click="startTest(unit)">
-						
-							   			<span ng-show="unit.lote.nombre">{{unit.lote.nombre}}</span>
-					   				
-						   			<span ng-hide="unit.lote.nombre">{{unit.nombre}}</span>
-							   			
-							   			<i class="glyphicon glyphicon-chevron-right"></i>
-							   			
-							   		</div>
-							    </div>
-							    <a href="#/profile">Agregar Unidades</a>
+					   			<div class="unidad-wrap" ng-repeat="unit in units" id="{{unit._id}}">
+					   				<h3 ng-hide="unit.lote.nombre">{{unit.nombre}}</h3>
+					   					<a class="unidad" ng-show="unit.lote == 0" href="#/profile">
+						   					<span>Agregar Lotes</span>
+							   				<i class="glyphicon glyphicon-chevron-right"></i>
+					   					</a>
+					   					<div class="unidad" ng-repeat="lote in unit.lote" id="{{unit._id + $index}}" ng-click="startTest(unit.user, unit.lote[$index])">
+								   			<span>{{lote.nombre}} </span>
+							   				<i class="glyphicon glyphicon-chevron-right"></i>
+							   			</div>	
+						   		</div>
+						    </div>
+						    <a href="#/profile">Agregar Unidades</a>
+							
+							<!-- <button class="btn btn-primary" ng-click="startTest($event)">Basico</button>
+							<button class="btn btn-primary adv" ng-click="startTest($event)">Avanzado</button> -->
+							
+							
+							<!-- Button trigger history modal -->
+								<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#history" ng-click="historialLaunch()">
+								  Calculos anteriores
+								</button>
 								
-								<!-- <button class="btn btn-primary" ng-click="startTest($event)">Basico</button>
-								<button class="btn btn-primary adv" ng-click="startTest($event)">Avanzado</button> -->
+								<!-- History Modal -->
+								<div class="modal fade" id="history" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								  <div class="modal-dialog" role="document">
+								    <div class="modal-content">
+								      <div class="modal-header">
+								        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								        <h4 class="modal-title" id="myModalLabel">Calculos anteriores</h4>
+								      </div>
+								      <div class="modal-body">
+									      <h6 ng-show="campoHistory.length == 0">¡No hay cálculos todavía!</h6>
+								        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
+									  <div class="panel panel-default" ng-repeat="campo in campoHistory">
+										    <div class="panel-heading" role="tab" id="{{ 'heading-' + $index }}">
+										      <h5 class="panel-title">
+										        <a role="button" data-toggle="collapse" data-parent="#accordion" data-target="{{ '#collapse-' + $index }}" aria-expanded="false" aria-controls="{{ 'collapse-' + $index }}">
+										         {{campo.unidad.nombre}} <small>{{ campo.createdAt | date : "MMM d, y h:mm:ss a" }}</small>
+										        </a>
+										      </h5>
+										    </div>
+										    <div id="{{ 'collapse-' + $index }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="{{ 'collapse-' + $index }}">
+										      <div class="panel-body">
+											      	<ul class="list-group">
+												      <li class="list-group-item"><strong>Incidencia</strong> <span class="badge">{{ (campo.incidencia).toFixed(2) }}%</span></li>
+													  <li class="list-group-item" >bandolas <span ng-show="roya.bandolas" class="badge">2</span><span ng-hide="roya.bandolas" class="badge">1</span></li>
+													  <li class="list-group-item" ng-show="roya.advMode">Severidad Promedio <span class="badge">{{(campo.severidadPromedio).toFixed()}}%</span></li>
+													  <li class="list-group-item" ng-show="roya.advMode">Incidencia promedio por planta <span class="badge">{{campo.inideanciaPromedioPlanta}}</span></li>
+													  
+													</ul>
+									
+								<p><strong>Recomendación</strong><br>
+									<span ng-show="campo.incidencia < 11">{{methodsMonth.grade1}}</span>
+									<span ng-show="campo.incidencia > 10 && campo.incidencia < 21 ">{{methodsMonth.grade2}}</span>
+									<span ng-show="campo.incidencia > 20 && campo.incidencia < 51 ">{{methodsMonth.grade3}}</span>
+									<span ng-show="campo.incidencia > 50 ">{{methodsMonth.grade3}}</span>
+								</p>
+										        	 
+										      </div>
+										    </div>
+									  </div>
+									</div>
+								      </div>
+								      <div class="modal-footer">
+								        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+								        
+								      </div>
+								    </div>
+								  </div>
+								</div>
 								
-							</div>
+								
+								</div>
 						</div>
 						<div class="row test">
 							<div class="col-lg-6 col-lg-offset-3">
