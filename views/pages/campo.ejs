@@ -15,6 +15,7 @@
 								<h4 class="clearfix">Seleccione la Unidad para Iniciar</h4>
 								
 								<div class="unidades-wrap">
+								<h6 ng-hide="units" class="textloader">Cargando Unidades <i class="fa fa-spinner fa-spin"></i> </h6>
 					   			<div class="unidad-wrap" ng-repeat="unit in units" id="{{unit._id}}">
 					   				<h3 ng-hide="unit.lote.nombre">{{unit.nombre}}</h3>
 					   					<a class="unidad" ng-show="unit.lote == 0" href="#/profile">

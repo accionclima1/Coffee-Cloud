@@ -52,9 +52,10 @@
 			   	<div class="row">
 				   	<div class="col-md-6 col-md-offset-3">
 				   			<h4>Unidades Productivas</h4>
-				   			
+				   			<h6 ng-hide="units" class="textloader">Cargando Unidades <i class="fa fa-spinner fa-spin"></i> </h6>
+
 				   			<div class="unidades-wrap">
-					   			<div class="unidad" ng-repeat="unit in units" id="{{unit._id}}">
+				   								   			<div class="unidad" ng-repeat="unit in units" id="{{unit._id}}">
 					
 						   			<span>{{unit.nombre}}</span>
 						   			<button class="btn btn-danger" ng-click="deleteUnit($event, unit._id, $index)">X</button>
