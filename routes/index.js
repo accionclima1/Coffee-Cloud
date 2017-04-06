@@ -220,8 +220,16 @@ router.post('/login', function (req, res, next) {
                         dataList.push(units[x]);
                     }
                     console.log("dataList=" + dataList.length);
-                    //if(err){ return res.json({token: user.generateJWT(),units:[],userData:user}); }
-                    return res.json({ token: user.generateJWT(), dataList: dataList, userData: user });
+                    Variety.find(function (err, varieties) {
+                        console.log(varieties);
+                        console.log(varieties.length);
+                        if (!err) {
+                            return res.json({ token: user.generateJWT(), dataList: dataList, varieties: varieties, userData: user });
+                        }
+                        else {
+                            return res.json({ token: user.generateJWT(), dataList: dataList, varieties: [], userData: user });
+                        }
+                    });
                 }
             })
         } else {
@@ -697,14 +705,6 @@ router.get('/gallo', function (req, res, next) {
     });
 });
 
-router.get('/gallo/:user', function (req, res, next) {
-    Gallo.find({ 'unidad.user': req.params.user }, function (err, gallosUser) {
-        if (err) { return next(err); }
-
-        res.json(gallosUser);
-    });
-});
-
 router.delete('/roya/:test', auth, function (req, res) {
     Roya.findByIdAndRemove(req.params.test, function (err, test) {
         if (err) { throw err; }
@@ -843,7 +843,15 @@ router.post('/SyncUserServerData/:user/:lastSyncDateTime', function (req, res, n
             for (var x = 0; x < units.length; x++) {
                 dataList.push(units[x]);
             }
-            return res.json({ dataList: dataList });
+            Variety.find(function (err, varieties) {
+                if (!err) {
+                    return res.json({ dataList: dataList, varieties: varieties });
+                }
+                else {
+                    return res.json({ dataList: dataList});
+                }
+            });
+           
         }
     });
 });
