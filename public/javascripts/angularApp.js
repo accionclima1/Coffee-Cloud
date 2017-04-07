@@ -9,6 +9,7 @@ app.config(function ($httpProvider) {
     $httpProvider.defaults.useXDomain = true;
 });
 
+
 app.factory('PouchDB', ['$http', 'unit', 'auth', '$q', '$rootScope', '$window', function ($http, unit, auth, $q, $rootScope, $window) {
     var pouchDbFactory = {};
     var localPouchDB = undefined;
@@ -1260,6 +1261,18 @@ app.factory('gallo', ['$http', 'auth', function ($http, auth) {
 
 //pre loader animation controller
 app.run(function ($rootScope, $window) {
+	
+	$rootScope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
+        // Select open modal(s)
+        var $openModalSelector = $(".modal.fade.in"); 
+        if( ($openModalSelector.data('bs.modal') || {}).isShown == true){
+            // Close open modal(s)
+            $openModalSelector.modal("hide");
+            // Prevent page transition
+            event.preventDefault();
+        }
+    });
+
 
     $rootScope
         .$on('$stateChangeStart',

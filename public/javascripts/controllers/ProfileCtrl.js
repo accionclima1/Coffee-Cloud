@@ -6,7 +6,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
     $scope.userId = auth.userId;
     $scope.user_Ided = auth.userId();
     var userO = {};
-    $scope.units = [];
+    //$scope.units = [];
     //PouchDB.CreatePouchDB();
 
     $scope.onlineStatus = onlineStatus;
@@ -526,24 +526,28 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
         //    });
         //    //endregion
         //}
-
-        PouchDB.DeleteUnit(id, auth.userId()).then(function (result) {
-            console.log("\n result deleted=" + JSON.stringify(result));
-            if (result.status == 'fail') {
-                $scope.error = result.message;
-                console.log($scope.error);
-            }
-            else if (result.status == 'success') {
-                $scope.units.splice(index, 1);
-                if ($rootScope.IsInternetOnline) {
-                    PouchDB.SynServerDataAndLocalData().then(function () {
-                        console.log("sync successfully.");
-                    }).catch(function (err) {
-                        console.log("Not able to sync" + error);
-                    });
-                }
-            }
-        });
+		
+		if (confirm('¿Esta seguro que desea eliminar esta unidad?')) {
+		    PouchDB.DeleteUnit(id, auth.userId()).then(function (result) {
+	            
+	            if (result.status == 'fail') {
+	                $scope.error = result.message;
+	                console.log($scope.error);
+	            }
+	            else if (result.status == 'success') {
+	                $scope.units.splice(index, 1);
+	                if ($rootScope.IsInternetOnline) {
+	                    PouchDB.SynServerDataAndLocalData().then(function () {
+	                        console.log("sync successfully.");
+	                    }).catch(function (err) {
+	                        console.log("Not able to sync" + error);
+	                    });
+	                }
+	            }
+	        });
+		}
+		
+        
 
 
     }
@@ -795,12 +799,15 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
         }
     }
 
-    function initialize() {
+    function initialize(index) {
         var myLatlng, myLat, myLng;
         var x;
         var ax = [];
         var infoWindow = new google.maps.InfoWindow({ map: map });
+        console.log('function loaded root');
         if (!document.getElementById('latlongid').value) {
+	        console.log('function loaded 1');
+	        
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function (position) {
                     var pos = {
@@ -821,6 +828,8 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                     map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
 
                     map1 = new google.maps.Map(document.getElementById("map-canvas1"), myOptions);
+                    
+                    
 
                     var marker = new google.maps.Marker({
                         draggable: true,
@@ -835,6 +844,8 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                         map: map1,
                         title: "Your location"
                     });
+                    
+                    
 
 
                     google.maps.event.addListener(marker, 'dragend', function (event) {
@@ -849,10 +860,31 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 
                         placeMarker(event.latLng);
                         $scope.editUnit.ubicacion = '(' + event.latLng.lat() + ' , ' + event.latLng.lng() + ')';
-                        document.getElementById('latlongid').value = event.latLng.lat() + ',' + event.latLng.lng();
+                        document.getElementById('latlongid1').value = event.latLng.lat() + ',' + event.latLng.lng();
                         console.log("this is marker info", event.latLng.lat() + ' , ' + event.latLng.lng());
 
                     });
+                   if (!isNaN(index)) {
+	                   var indString = index.toString();
+	                   var map2 = new google.maps.Map(document.getElementById("map-canvas" + indString), myOptions);
+	                   var marker2 = new google.maps.Marker({
+	                        draggable: true,
+	                        position: myLatlng,
+	                        map: map2,
+	                        title: "Your location"
+	                    });
+	                    google.maps.event.addListener(marker2, 'dragend', function (event) {
+							
+	                    
+					                placeMarker(event.latLng);
+					                $scope.editUnit.lote[index].georeferenciacion = '(' + event.latLng.lat() + ' , ' + event.latLng.lng() + ')';
+					                document.getElementById('latlongid' + indString).value = event.latLng.lat() + ',' + event.latLng.lng();
+					                console.log("this is marker info", event.latLng.lat() + ' , ' + event.latLng.lng());
+				                
+	
+	                    });
+                    }
+                    
                     google.maps.event.addDomListener(window, 'load', initialize);
 
                 }, function () {
@@ -861,12 +893,13 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                 console.log("this is positon", myLat);
             } else {
                 // Browser doesn't support Geolocation
-                handleLocationError(false, infoWindow, map.getCenter());
+                handleLocationError(false, infoWindow, map.getCenter());0
             }
             //myLatlng = new google.maps.LatLng(42.94033923363181 , -10.37109375); 
 
         }
         else {
+	        console.log('function loaded 2');
             x = document.getElementById('latlongid').value;
             x = x.replace(/[{()}]/g, '');
             ax = x.split(",");
@@ -881,6 +914,8 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
             map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
 
             map1 = new google.maps.Map(document.getElementById("map-canvas1"), myOptions);
+            
+            
 
             var marker = new google.maps.Marker({
                 draggable: true,
@@ -895,7 +930,6 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                 map: map1,
                 title: "Your location"
             });
-
 
             google.maps.event.addListener(marker, 'dragend', function (event) {
 
@@ -913,7 +947,27 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                 console.log("this is marker info", event.latLng.lat() + ' , ' + event.latLng.lng());
 
             });
-
+            	
+            if (!isNaN(index)) {
+	            
+	            var indString = index.toString();
+	            var map2 = new google.maps.Map(document.getElementById("map-canvas" + indString), myOptions);
+	            var marker2 = new google.maps.Marker({
+	                draggable: true,
+	                position: myLatlng,
+	                map: map2,
+	                title: "Your location"
+	            });
+	            google.maps.event.addListener(marker2, 'dragend', function (event) {
+					
+					    placeMarker(event.latLng);
+					    $scope.editUnit.lote[index].georeferenciacion = '(' + event.latLng.lat() + ' , ' + event.latLng.lng() + ')';
+					    document.getElementById('latlongid' + indString).value = event.latLng.lat() + ',' + event.latLng.lng();
+					    console.log("this is marker info", event.latLng.lat() + ' , ' + event.latLng.lng());
+				                
+	
+	            });
+			}
             // double click event
             /*   google.maps.event.addListener(map1, 'dblclick', function(e) {
                  var positionDoubleclick = e.latLng;
@@ -937,13 +991,24 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 
         map.setCenter(location);
     }
-
+	$scope.toggle = false;
+	
+	
     // Initialize map
-    $scope.mapInit = function () {
+    $scope.mapInit = function (index) {
         $('.map').collapse('toggle');
-        console.log($rootScope.IsInternetOnline)
+        
         if ($rootScope.IsInternetOnline) {
-            initialize();
+            initialize(index);
+            console.log('map online');
+            $('#myModal, #myModal2').on('hidden.bs.modal', function (e) {
+			  $scope.toggle = false;
+			  $('.map').collapse('hide');
+			 })
+            
+        } else {
+	        $('#map-canvas > div, #map-canvas > div').remove();
+	        console.log('map offline');
         }
 
     }
@@ -956,5 +1021,5 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                             console.log("Not able to sync" + error);
                         });
                     }
-					console.log($scope.units);
+					
 }]);
