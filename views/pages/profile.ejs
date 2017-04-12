@@ -543,10 +543,15 @@
 																					</select>
 																			</div>
 													        </div>
-																	<!--	<div class="col-xs-6">
+																<div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-change="CheckboxBasedMonthChange('editUnit','contactoOptions.otrocual')" value="Otro ¿Cuál" ng-model="editUnit.fungicidas.contactoOptions.otrocual"> Otro ¿Cuál 
+													            <input type="checkbox" ng-change="CheckboxBasedMonthChange('editUnit','contactoOptions.otrocual')" value="Otro" ng-model="editUnit.fungicidas.contactoOptions.otrocual"> Otro ¿Cuál 
 													          </label>
+													          
+													          <label>
+													            <input type="text" placeholder="¿Cuál?" ng-show="editUnit.fungicidas.contactoOptions.otrocual" ng-model="editUnit.fungicidas.contactoOptions.cual">
+													          </label>
+													          
 													           <div class="form-group" ng-if="editUnit.fungicidas.contactoOptions.otrocual">
 																			<label>¿Cuando lo aplica?</label>
 																					<select class="form-control" multiple="true" ng-model="editUnit.fungicidas.contactoOptionsMonths.otrocual">
@@ -564,7 +569,7 @@
 																						<option>Diciembre</option>
 																					</select>
 																			</div>
-													        </div> -->
+													        </div> 
 																	<div class="clearfix" ></div>
 															 </div>
 													</div>
@@ -788,6 +793,9 @@
 													          <label>
 													            <input type="checkbox" ng-change="CheckboxBasedMonthChange('editUnit','sistemicoOptions.otro')" value="Otro" ng-model="editUnit.fungicidas.sistemicoOptions.otro">Otro
 													          </label>
+													          <label>
+													            <input type="text" placeholder="¿cual?" ng-show="editUnit.fungicidas.sistemicoOptions.otro" ng-model="editUnit.fungicidas.sistemicoOptions.cual">
+													          </label>
 																		<div  ng-if="editUnit.fungicidas.sistemicoOptions.otro">
 													          <div class="form-group" >
 																			<label>¿Cuando lo aplica?</label>
@@ -868,8 +876,13 @@
 													        </div>
 															<div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-change="CheckboxBasedMonthChange('editUnit','biologicalOptions.otrocual')" value="Otro ¿Cuál" ng-model="editUnit.fungicidas.biologicalOptions.otrocual"> Otro ¿Cuál
+													            <input type="checkbox" ng-change="CheckboxBasedMonthChange('editUnit','biologicalOptions.otrocual')" value="Otro ¿Cuál" ng-model="editUnit.fungicidas.biologicalOptions.otrocual"> Otro
 													          </label>
+													          
+													          <label>
+													            <input type="text" placeholder="¿Cuál?" ng-show="editUnit.fungicidas.biologicalOptions.otrocual" ng-model="editUnit.fungicidas.biologicalOptions.cual"> 
+													          </label>
+													          
 																		<div  ng-if="editUnit.fungicidas.biologicalOptions.otrocual">
 													          <div class="form-group" >
 																			<label>¿Cuando lo aplica?</label>
@@ -1385,7 +1398,10 @@
 													        </div>
 																		<div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','contactoOptions.otrocual')" value="Otro ¿Cuál" ng-model="newUnit.fungicidas.contactoOptions.otrocual"> Otro ¿Cuál 
+													            <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','contactoOptions.otrocual')" value="Otro" ng-model="newUnit.fungicidas.contactoOptions.otrocual"> Otro ¿Cuál 
+													          </label>
+													          <label>
+													            <input type="text" ng-show="newUnit.fungicidas.contactoOptions.otrocual" placeholder="¿Cuál?" ng-model="newUnit.fungicidas.contactoOptions.cual">   
 													          </label>
 													           <div class="form-group" ng-if="newUnit.fungicidas.contactoOptions.otrocual">
 																			<label>¿Cuando lo aplica?</label>
@@ -1657,6 +1673,11 @@
 													          <label>
 													            <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','sistemicoOptions.otro')" value="Otro" ng-model="newUnit.fungicidas.sistemicoOptions.otro">Otro
 													          </label>
+													          
+													          <label>
+													            <input type="text"  placeholder="¿Otro?" ng-show="newUnit.fungicidas.sistemicoOptions.otro" ng-model="newUnit.fungicidas.sistemicoOptions.cual">
+													          </label>
+													          
 																		<div  ng-if="newUnit.fungicidas.sistemicoOptions.otro">
 													          <div class="form-group" >
 																			<label>¿Cuando lo aplica?</label>
@@ -1680,6 +1701,7 @@
 														 </div>
 														</div>
 											</div>
+												
 											 <div class="col-xs-12" ng-show="newUnit.fungicidas.biologico">
 													<div class="form-group">
 													  <div class="row">
@@ -1737,7 +1759,10 @@
 													        </div>
 															<div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','biologicalOptions.otrocual')" value="Otro ¿Cuál" ng-model="newUnit.fungicidas.biologicalOptions.otrocual"> Otro ¿Cuál
+													            <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','biologicalOptions.otrocual')" value="Otro" ng-model="newUnit.fungicidas.biologicalOptions.otrocual"> Otro
+													          </label>
+													           <label>
+													            <input type="text" placeholder="¿Cuál?" ng-show="newUnit.fungicidas.biologicalOptions.otrocual" ng-model="newUnit.fungicidas.biologicalOptions.cual"> 
 													          </label>
 																		<div  ng-if="newUnit.fungicidas.biologicalOptions.otrocual">
 													          <div class="form-group" >

@@ -51,8 +51,14 @@
 														<input type="text"
 														      class="form-control"
 														      placeholder="Geo Referencia"
-														      ng-model="newUnit.ubicacion" ng-click="mapInit()" id="latlongid" data-error="Campo requerido" required>
-														      <div class="help-block with-errors"></div></input>
+														      ng-model="newUnit.ubicacion" id="latlongid" data-error="Campo requerido" required>
+														      <div class="help-block with-errors"></div></input> 
+														      <span class="input-group-btn">
+														        <button class="btn btn-default" type="button" ng-click="toggle = !toggle; mapInit()">
+																        <i class="fa fa-map-marker" aria-hidden="true" ng-show="!toggle"></i>
+																        <i class="fa fa-times" aria-hidden="true" ng-show="toggle"></i>
+														        </button>
+														      </span>
 													</div>
 												</div>
 												<div class="col-xs-6">
@@ -67,7 +73,8 @@
 												<div class="clearfix"></div>
 												<div class="col-xs-12">
 													<div class="collapse map" >
-														<div id="map-canvas" style="height:200px;width:100%;" ></div>
+														<i class="fa fa-spinner fa-spin"></i>
+														<div id="map-canvas" style="height:200px;width:100%;" ng-class="{ offline: !IsInternetOnline }"></div>
 													</div>
 												</div>
 												<div class="clearfix"></div>
@@ -125,7 +132,7 @@
 													<div class="form-group">
 														<input type="text"
 														      class="form-control"
-														      placeholder="Distanciamiento"
+														      placeholder="Distanciamiento Ej: 2x1"
 														      ng-model="newUnit.distanciamiento"></input>
 														      (Metros)
 													</div>
@@ -455,7 +462,10 @@
 													        </div>
 																		<div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','contactoOptions.otrocual')" value="Otro ¿Cuál" ng-model="newUnit.fungicidas.contactoOptions.otrocual"> Otro ¿Cuál 
+													            <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','contactoOptions.otrocual')" value="Otro" ng-model="newUnit.fungicidas.contactoOptions.otrocual"> Otro ¿Cuál 
+													          </label>
+													          <label>
+													            <input type="text" ng-show="newUnit.fungicidas.contactoOptions.otrocual" placeholder="¿Cuál?" ng-model="newUnit.fungicidas.contactoOptions.cual">   
 													          </label>
 													           <div class="form-group" ng-if="newUnit.fungicidas.contactoOptions.otrocual">
 																			<label>¿Cuando lo aplica?</label>
@@ -727,6 +737,11 @@
 													          <label>
 													            <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','sistemicoOptions.otro')" value="Otro" ng-model="newUnit.fungicidas.sistemicoOptions.otro">Otro
 													          </label>
+													          
+													          <label>
+													            <input type="text"  placeholder="¿Otro?" ng-show="newUnit.fungicidas.sistemicoOptions.otro" ng-model="newUnit.fungicidas.sistemicoOptions.cual">
+													          </label>
+													          
 																		<div  ng-if="newUnit.fungicidas.sistemicoOptions.otro">
 													          <div class="form-group" >
 																			<label>¿Cuando lo aplica?</label>
@@ -750,6 +765,7 @@
 														 </div>
 														</div>
 											</div>
+												
 											 <div class="col-xs-12" ng-show="newUnit.fungicidas.biologico">
 													<div class="form-group">
 													  <div class="row">
@@ -807,7 +823,10 @@
 													        </div>
 															<div class="col-xs-6">
 													          <label>
-													            <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','biologicalOptions.otrocual')" value="Otro ¿Cuál" ng-model="newUnit.fungicidas.biologicalOptions.otrocual"> Otro ¿Cuál
+													            <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','biologicalOptions.otrocual')" value="Otro" ng-model="newUnit.fungicidas.biologicalOptions.otrocual"> Otro
+													          </label>
+													           <label>
+													            <input type="text" placeholder="¿Cuál?" ng-show="newUnit.fungicidas.biologicalOptions.otrocual" ng-model="newUnit.fungicidas.biologicalOptions.cual"> 
 													          </label>
 																		<div  ng-if="newUnit.fungicidas.biologicalOptions.otrocual">
 													          <div class="form-group" >
@@ -837,6 +856,7 @@
 																								<!-- new questions ends --> 
 										  <input type="submit" class="btn btn-primary" submit="newunitForm" form="newunitForm" value="Guardar nueva"/>
 										  </form>
+				 
 				  </div>
 			</div>
 		</div>

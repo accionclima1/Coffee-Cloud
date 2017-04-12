@@ -44,6 +44,7 @@ var UnitSchema = new mongoose.Schema({
             caldovicosa: Boolean,
             caldobordeles: Boolean,
             otrocual: Boolean,
+            cual: String,
         },
         biologicalOptionsMonths: {
             verticiliumlecanii: String,
@@ -54,6 +55,7 @@ var UnitSchema = new mongoose.Schema({
             verticiliumlecanii: Boolean,
             bacilussutillis: Boolean,
             otrocual: Boolean,
+            cual: String,
         },
 
         sistemicoOptionsMonths: {
@@ -92,7 +94,8 @@ var UnitSchema = new mongoose.Schema({
             halconextra: Boolean,
             beken: Boolean,
             estrobirulina: Boolean,
-            otro: Boolean
+            otro: Boolean,
+            cual: String,
         }
     },
     fungicidasFechas: String,
