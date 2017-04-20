@@ -14,6 +14,7 @@ require('./models/Users');
 require('./models/Units');
 require('./models/Chats');
 require('./models/Methods');
+require('./models/MethodsGallo');
 require('./models/Campo');
 require('./models/Messages');
 require('./models/Roya');
