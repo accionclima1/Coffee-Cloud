@@ -6,6 +6,7 @@ var Message = mongoose.model('Message');
 var passport = require('passport');
 var User = mongoose.model('User');
 var Method = mongoose.model('Method');
+var MethodGallo = mongoose.model('MethodGallo');
 var Campo = mongoose.model('Campo');
 // Load widget model
 var Widget = mongoose.model('Widget');
@@ -96,6 +97,69 @@ router.put('/methods', auth, function(req, res, next) {
       else
       	console.log(method);
         res.json(method);
+    });
+  }
+});
+});
+
+/* Methods Gallo routes */
+
+router.post('/methodsGallo', auth, function(req, res, next) {
+  var methodGallo = new MethodGallo(req.body);
+  methodGallo.caseInidence10.abrilJunio		   = req.body.caseInidence10.abrilJunio;
+  methodGallo.caseInidence10.julioSetiembre	   = req.body.caseInidence10.julioSetiembre 
+  methodGallo.caseInidence10.octubreDiciembre   = req.body.caseInidence10.octubreDiciembre; 
+  methodGallo.caseInidence1120.abrilJunio	   = req.body.caseInidence1120.abrilJunio;
+  methodGallo.caseInidence1120.julioSetiembre   = req.body.caseInidence1120.julioSetiembre;
+  methodGallo.caseInidence1120.octubreDiciembre = req.body.caseInidence1120.octubreDiciembre;
+  methodGallo.caseInidence2150.abrilJunio       = req.body.caseInidence2150.abrilJunio;
+  methodGallo.caseInidence2150.julioSetiembre   = req.body.caseInidence2150.julioSetiembre;
+  methodGallo.caseInidence2150.octubreDiciembre = req.body.caseInidence2150.octubreDiciembre;
+  methodGallo.caseInidence50.abrilJunio		   = req.body.caseInidence50.abrilJunio;
+  methodGallo.caseInidence50.julioSetiembre	   = req.body.caseInidence50.julioSetiembre;
+  methodGallo.caseInidence50.octubreDiciembre   = req.body.caseInidence50.octubreDiciembre;
+
+  methodGallo.save(function(err, methodGallo){
+    if(err){ return next(err); }
+	
+    res.json(methodGallo);
+  });
+});
+
+router.get('/methodsGallo', function(req, res, next) {
+  MethodGallo.find(function(err, methodsGallo){
+    if(err){ return next(err); }
+	     res.json(methodsGallo);
+  });
+});
+
+router.put('/methodsGallo', auth, function(req, res, next) {
+	
+   var update = req.body;
+  MethodGallo.findById(req.body._id, function(err, methodGallo ) {
+  if (!methodGallo)
+    return next(new Error('Could not load Document'));
+  else {
+    // do your updates here
+      methodGallo.caseInidence10.abrilJunio		   = req.body.caseInidence10.abrilJunio;
+	  methodGallo.caseInidence10.julioSetiembre	   = req.body.caseInidence10.julioSetiembre 
+	  methodGallo.caseInidence10.octubreDiciembre   = req.body.caseInidence10.octubreDiciembre; 
+	  methodGallo.caseInidence1120.abrilJunio	   = req.body.caseInidence1120.abrilJunio;
+	  methodGallo.caseInidence1120.julioSetiembre   = req.body.caseInidence1120.julioSetiembre;
+	  methodGallo.caseInidence1120.octubreDiciembre = req.body.caseInidence1120.octubreDiciembre;
+	  methodGallo.caseInidence2150.abrilJunio       = req.body.caseInidence2150.abrilJunio;
+	  methodGallo.caseInidence2150.julioSetiembre   = req.body.caseInidence2150.julioSetiembre;
+	  methodGallo.caseInidence2150.octubreDiciembre = req.body.caseInidence2150.octubreDiciembre;
+	  methodGallo.caseInidence50.abrilJunio		   = req.body.caseInidence50.abrilJunio;
+	  methodGallo.caseInidence50.julioSetiembre	   = req.body.caseInidence50.julioSetiembre;
+	  methodGallo.caseInidence50.octubreDiciembre   = req.body.caseInidence50.octubreDiciembre;
+	
+    methodGallo.save(function(err) {
+      if (err)
+        console.log('error');
+      else
+      	console.log(methodGallo);
+        res.json(methodGallo);
     });
   }
 });
