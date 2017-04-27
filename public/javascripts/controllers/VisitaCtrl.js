@@ -5,6 +5,6 @@ app.controller('VisitaCtrl', [
 'localStorageService',
 function($scope, $state, auth,localStorageService, socket){
    $scope.currentUser=auth.currentUser;
-   $scope.searchmode = "Cedula"
+   $scope.searchmode = "Id"
    
 }]);

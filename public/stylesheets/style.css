@@ -1323,7 +1323,6 @@ background-color: #3498db  !important;
     right: 0;
     background: #21aaf7;
     padding: 15px;
-    box-shadow: 1px -2px 1px -1px rgba(0, 0, 0, 0.27);
 }
 
 .visita-controls input[type=text] {
@@ -1373,4 +1372,4 @@ background-color: #3498db  !important;
 
 .visita-controls-opt input[type=radio]:checked + label {
     background: #fe852d;
-}}
+}

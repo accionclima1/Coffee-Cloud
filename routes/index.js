@@ -610,9 +610,13 @@ router.put('/users/:user', auth, function (req, res, next) {
             user.phone = req.body.phone;
             user.role = req.body.role;
 
+            user.cedula = req.body.cedula;
+
             user.nickname = req.body.nickname;
             //user.recomendaciontecnica = req.body.recomendaciontecnica;
             user.image = req.body.image;
+
+
 
             if (req.body.password) {
                 user.setPassword(req.body.password);
@@ -621,8 +625,10 @@ router.put('/users/:user', auth, function (req, res, next) {
             user.save(function (err) {
                 if (err)
                     console.log('error');
-                else
+                else {
+                    console.log(err);
                     res.json({ message: '¡Perfil Actualizado exitosamente!' });
+                }
             });
         }
     });
