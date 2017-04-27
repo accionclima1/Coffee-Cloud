@@ -126,7 +126,7 @@ a {
 
 .navbar-default.pull-left .navbar-nav li.active a {
   color:#fff;
-  background-color:#fe8515;
+  background-color: #fe8515 !important;
 }
 
 .navbar-default.pull-left .navbar-nav li a {
@@ -1313,3 +1313,64 @@ background-color: #3498db  !important;
     display: block;
     width: 100%;
 }
+
+/* visita module */
+
+.visita-controls {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #21aaf7;
+    padding: 15px;
+    box-shadow: 1px -2px 1px -1px rgba(0, 0, 0, 0.27);
+}
+
+.visita-controls input[type=text] {
+     background: transparent;
+     border: 0;
+     box-shadow: 0 0 0;
+     color: #fff;
+     border-radius: 0;
+     /* color: #fe852d; */
+}
+
+.visita-controls input::placeholder {
+  color: #fff;
+}
+
+.visita-controls input[type=text]:focus {
+  background: rgba(255, 255, 255, 0.21);
+}
+
+.visita-controls form {
+  margin-bottom: 0;
+}
+.visita-controls form button {
+  border-radius: 0;
+  border: 1px solid #fe852d;
+  background: #fe852d;
+  color: #fff;
+}
+.visita-controls .input-group {
+  border-bottom: 5px solid #fe852d;
+}
+.visita-controls-opt {
+    margin: 0;
+}
+
+.visita-controls-opt label {
+  padding: 0;
+  color: #fff;
+  background: #aaa;
+  display: block;
+  padding: 14px;
+}
+
+.visita-controls-opt input[type=radio] {
+    display: none;
+}
+
+.visita-controls-opt input[type=radio]:checked + label {
+    background: #fe852d;
+}}

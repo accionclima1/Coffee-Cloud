@@ -1052,7 +1052,7 @@ app.factory('auth', ['$http', '$state', '$window', function ($http, $state, $win
 
     return auth;
 }]);
-//units service
+//unit service
 app.factory('unit', ['$http', 'auth', '$window', function ($http, auth, $window) {
     var o = {};
     o.getAll = function (id) {
@@ -1433,6 +1433,16 @@ function ($stateProvider, $urlRouterProvider) {
           url: '/gallo',
           templateUrl: '/gallo.html',
           controller: 'GalloCtrl',
+          onEnter: ['$state', 'auth', function ($state, auth) {
+              if (!auth.isLoggedIn()) {
+                  $state.go('login');
+              }
+          }]
+      })
+      .state('visita', {
+          url: '/visita',
+          templateUrl: '/visita.html',
+          controller: 'VisitaCtrl',
           onEnter: ['$state', 'auth', function ($state, auth) {
               if (!auth.isLoggedIn()) {
                   $state.go('login');
