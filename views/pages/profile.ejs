@@ -65,14 +65,18 @@
 					
 						   			<span>{{unit.nombre}}</span>
 						   			<button class="btn btn-danger" ng-click="deleteUnit($event, unit._id, $index)">X</button>
-						   			<button class="btn btn-default" style="margin-left: 12px;" ng-click="updateUnit($event, unit._id, $index)" data-toggle="modal" data-target="#myModal">editar</button>
 						   			
+                                    <!--<button class="btn btn-default" style="margin-left: 12px;" ng-click="updateUnit($event, unit._id, $index)" data-toggle="modal" data-target="#myModal">editar_back</button>-->
+						   			
+                                    <button class="btn btn-default" style="margin-left: 12px;" ng-click="EditOldUnit(unit)" data-toggle="modal">editar</button>
+                                    
 						   			<button class="btn btn-default" ng-click="updateUnit($event, unit._id, $index)" data-toggle="modal" data-target="#myModal3">Lotes</button>
 						   			
 						   		</div>
 						    </div>
-						    <button class="btn btn-primary add-unit" data-toggle="modal" data-target="#myModal2">Agregar Nueva Unidad</button>
+						    <!--<button class="btn btn-primary add-unit" data-toggle="modal" data-target="#myModal2">Agregar Nueva Unidad</button>-->
 						    
+              <button class="btn btn-primary add-unit" data-toggle="modal" ng-click="AddNewUnit()">Agregar Nueva Unidad</button>
 							
 							<!-- Modals	 -->
 						
@@ -949,11 +953,11 @@
 							    <div class="modal-content">
 							      <div class="modal-header">
 							        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-							        <h4 class="modal-title" id="myModalLabel">Nueva Unidad</h4>
+							        <h4 class="modal-title" id="myModalLabel">{{modalText}}</h4>
 							      </div>
 							      <div class="modal-body">
 
-                      <add-Unit></add-Unit>
+                      <manage-Unit></manage-Unit>
                       <!--//directive here-->
                     
                   </div>

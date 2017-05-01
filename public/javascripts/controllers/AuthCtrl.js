@@ -8,6 +8,7 @@ app.controller('AuthCtrl', [
 function ($scope, $state, auth, $window, $timeout, PouchDB) {
     $scope.user = {};
     $scope.register = function () {
+        debugger;
         auth.register($scope.user).error(function (error) {
             $scope.error = error;
         }).then(function () {

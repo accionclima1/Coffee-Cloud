@@ -324,13 +324,16 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 
 
     $scope.updated = function () {
-
+        //auth.userId()
         //PouchDB.SaveUserDataToPouchDB($scope.userO7).then(function (result) {
         //    console.log("User updated");
         //});
-
+       
         user.update($scope.userO7).error(function (error) {
             $scope.error = error;
+            PouchDB.SaveUserToPouchDB($scope.userO7, auth.userId()).then(function (result) {
+                console.log("user updated");
+            });
         }).then(function (data) {
             $scope.message = data.data.message;
         });
@@ -583,6 +586,51 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
     }
     
     
+
+    $scope.AddNewUnit = function () {
+        $scope.modalText = "Nueva Unidad";
+        $scope.$broadcast('MANAGEUNIT', { unitId: -1 });
+        $("#myModal2").modal('show');
+    }
+
+    $scope.EditOldUnit = function (unit) {
+        $scope.modalText = "Editar: " + unit.nombre;
+        $scope.$broadcast('MANAGEUNIT', { unitId: unit._id });
+        $("#myModal2").modal('show');
+    }
+
+    $scope.$on('UNITADDED', function (e, args) {
+        $scope.units.push(args.unit);
+        if ($rootScope.IsInternetOnline) {
+            PouchDB.SynServerDataAndLocalData().then(function () {
+                console.log("sync successfully.");
+
+            }).catch(function (err) {
+                console.log("Not able to sync" + error);
+                //$scope.ResetNewUnit();
+            });
+        }
+        else {
+            //$scope.ResetNewUnit();
+        }
+    });
+
+    $scope.$on('UNITEDITED', function (e, args) {
+        for (var i = 0 ; i < $scope.units.length; i++) {
+            if ($scope.units[i]._id == args.unit._id) {
+                $scope.units[i] = args.unit;
+                break;
+            }
+        }
+        if ($rootScope.IsInternetOnline) {
+            PouchDB.SynServerDataAndLocalData().then(function () {
+                console.log("sync successfully.");
+            }).catch(function (err) {
+                console.log("Not able to sync" + error);
+            });
+        }
+    });
+
     if ($rootScope.IsInternetOnline) {
                         PouchDB.SynServerDataAndLocalData().then(function () {
                             console.log("sync successfully.");
