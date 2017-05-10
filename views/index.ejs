@@ -13,13 +13,10 @@
 	<link href="stylesheets/style.css" rel="stylesheet">
 	<link href="stylesheets/default.css" rel="stylesheet">
 	<link href="stylesheets/default.date.css" rel="stylesheet">
-	
 
 	<script src="javascripts/jquery-2.2.0.min.js"></script>
 	<script src="javascripts/bootstrap.min.js" ></script>
 	<script src="javascripts/angular.min.js"></script>
-	
-	
 	<script src="javascripts/angular-ui-router.js"></script>
 	<script src="bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
 	<script src="bower_components/angular-scroll-glue/src/scrollglue.js"></script>
@@ -48,15 +45,24 @@
 	<script src="javascripts/controllers/RoyaCtrl.js"></script>
 	<script src="javascripts/controllers/GalloCtrl.js"></script>
 	<script src="javascripts/controllers/DosageCtrl.js"></script>
+	<script src="javascripts/controllers/VisitaCtrl.js"></script>
 	<script src="javascripts/controllers/VulneCtrl.js"></script>
 	<script src="javascripts/controllers/SupportCtrl.js"></script>
 	<script src="javascripts/controllers/WeatherCtrl.js"></script>
 	<script src="javascripts/controllers/ProfileCtrl.js"></script>
 	<script src="javascripts/controllers/CampoCtrl.js"></script>
-	
+	<script src="javascripts/controllers/shared/UnitManagerCtrl.js"></script>
+	    <script src="javascripts/controllers/RegisterCtrl.js"></script>
+
+	<script src="javascripts/global.js"></script>
+
+    <link href="javascripts/plugins/SweetAlert/sweetalert.css" rel="stylesheet" type="text/css" />
+    <script src="javascripts/plugins/SweetAlert/sweetalert.min.js"></script>
+
 	<script src="javascripts/easy-weather-keys.js"></script>
 	<script src="javascripts/easy-weather.js"></script>
 	
+
 
 <script type="text/javascript">function setupGeo(o) {
         window.geoplugin_request = function() { return o.ip; };
@@ -78,14 +84,15 @@
 		<span>Cargando...</span>
 	</div>
 
+
 		<%- include partials/navigation.ejs %>
-	
-	
+
 	  <div class="pushbox" snap-content snap-opt-disable="'right'" id="snapbox">
 	  	<div class="nav-switch" ng-controller="NavCtrl"><button ng-show="isLoggedIn()" class="switch glyphicon glyphicon-menu-hamburger" type="button" snap-toggle></button></div>
 				<ui-view></ui-view>
 	  </div>
 		  
+
 		<%- include pages/home.ejs %>
 		
 		<%- include pages/posts.ejs %>   
@@ -113,6 +120,8 @@
 		<%- include pages/vulnerability.ejs %>
 		
 		<%- include pages/campo.ejs %>
+		
+		<%- include pages/visita.ejs %>
 		
 		<%- include pages/weather.ejs %>
 		

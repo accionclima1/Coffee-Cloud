@@ -1,5 +1,5 @@
 <script type="text/ng-template" id="/dosage.html">
-			<div class="roya-wrap">
+			<div class="roya-wrap dosage-wrap">
 						<h2 class="section-header">
 		  				CÁLCULO DE DOSIFICACION ADECUADA
 		  			</h2>
@@ -10,8 +10,8 @@
 									
 <div class="well">
 		<h6 style="margin-top:0;">Resultado</h6>
-									<strong> (cc/litros): <span class="badge" >{{ (dosage.resultado).toFixed(2) }}</span> </strong>	<br>
-								<strong	ng-show="dosage.resultadoS">Cepex (cc/litros): <span class="badge">{{ (dosage.resultadoS).toFixed(2) }}</span> </strong>
+									<strong> (cc/litros): <span class="badge" ng-bind="dosage.resultado"></span> </strong>	<br>
+								<strong	ng-show="dosage.resultadoS">Cepex (cc/litros): <span class="badge" ng-bind="dosage.resultadoS"></span> </strong>
 </div>	
 								
 								<form data-toggle="validator" name="dosageForm" novalidate class="form" role="form" ng-submit="calculateDosage()">

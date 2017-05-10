@@ -6,7 +6,7 @@ var crypto = require('crypto'),
     password = 'd6F3Efeq';
 
 
-var mail = require('../config/mail');
+var Mail = require('../config/mail');
 var mongoose = require('mongoose');
 var Post = mongoose.model('Post');
 var Unit = mongoose.model('Unit');
@@ -598,6 +598,58 @@ router.get('/users/:user', function (req, res, next) {
     });
 });
 
+router.post('/searchUserUnit', function (req, res, next) {
+    var searchObj = req.body;
+    console.log(searchObj);
+    var whereFilter = {};
+    if (searchObj.searchType == "Id")
+        whereFilter = { "cedula": searchObj.searchValue };
+    else
+        whereFilter = { "username": searchObj.searchValue };
+    //var query = 
+    User.findOne(whereFilter).populate('units').exec(function (err, user) {
+        console.log(user);
+        if (err) { return next(err); }
+        else {
+            if (user)
+                res.json(user);
+            else
+                res.send({ errorCODE: "USR001" })
+        }
+    });
+    //query.exec(function (err, user) {
+    //    //console.log(user);
+    //    //res.json(user);
+
+    //    User.populate('units', function (err, user) {
+    //        if (err) { return next(err); }
+    //        //console.log(user);
+    //        res.json(user);
+    //    });
+
+    //});
+})
+
+router.post('/mailer', function (req, res, next) {
+    //req.user.populate('units', function (err, user) {
+      //  if (err) { return next(err); }
+        //console.log(user);
+       // res.json(user);
+    //});
+    //var mailObj = new Mail();
+    //console.log(mailObj);
+    console.log(Mail);
+    console.log(req.body.mailRequest);
+    console.log("here");
+    Mail.sendEmail(req.body.mailRequest, function (data) {
+        console.log("in promise");
+        console.log(data);
+        res.json(data);
+    });
+    
+});
+
+
 router.put('/users/:user', auth, function (req, res, next) {
     var update = req.body;
 
@@ -610,9 +662,13 @@ router.put('/users/:user', auth, function (req, res, next) {
             user.phone = req.body.phone;
             user.role = req.body.role;
 
+            user.cedula = req.body.cedula;
+
             user.nickname = req.body.nickname;
             //user.recomendaciontecnica = req.body.recomendaciontecnica;
             user.image = req.body.image;
+
+
 
             if (req.body.password) {
                 user.setPassword(req.body.password);
@@ -621,8 +677,10 @@ router.put('/users/:user', auth, function (req, res, next) {
             user.save(function (err) {
                 if (err)
                     console.log('error');
-                else
+                else {
+                    console.log(err);
                     res.json({ message: '¡Perfil Actualizado exitosamente!' });
+                }
             });
         }
     });
@@ -992,7 +1050,6 @@ router.delete('/varieties', auth, function (req, res) {
 
 /* */
 module.exports = router;
-
 
 
 

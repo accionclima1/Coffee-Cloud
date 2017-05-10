@@ -228,6 +228,7 @@ router.get('/campo', function(req, res, next) {
     });
 });
 
+
 router.get('/campo/:user', function (req, res, next) {
     Campo.find({ 'unidad.user': req.params.user }, function (err, camposUser) {
         if (err) { return next(err); }
