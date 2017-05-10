@@ -328,25 +328,21 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
         //PouchDB.SaveUserDataToPouchDB($scope.userO7).then(function (result) {
         //    console.log("User updated");
         //});
-       
+        debugger;
         user.update($scope.userO7).error(function (error) {
             $scope.error = error;
-            PouchDB.SaveUserToPouchDB($scope.userO7, auth.userId()).then(function (result) {
-                console.log("user updated");
-            });
         }).then(function (data) {
             $scope.message = data.data.message;
         });
-
-        
+        console.log($scope.userO7);
+        PouchDB.SaveUserToPouchDB($scope.userO7, auth.userId()).then(function (result) {
+            console.log("user updated");
+        });
 
     };
 
          
-    $('#myModal2').on('shown.bs.modal', function (e) {
-            $('#newunitForm').validator();
-    });
-
+   
    
 
 
@@ -585,15 +581,19 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 
     }
     
-    
+    $scope.CloseUnit = function () {
+        $scope.$broadcast('CLOSEUNIT', { unitId: -1 });
+    }
 
     $scope.AddNewUnit = function () {
+        $scope.unitopmessage = null
         $scope.modalText = "Nueva Unidad";
         $scope.$broadcast('MANAGEUNIT', { unitId: -1 });
         $("#myModal2").modal('show');
     }
 
     $scope.EditOldUnit = function (unit) {
+        $scope.unitopmessage = null
         $scope.modalText = "Editar: " + unit.nombre;
         $scope.$broadcast('MANAGEUNIT', { unitId: unit._id });
         $("#myModal2").modal('show');
@@ -604,7 +604,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
         if ($rootScope.IsInternetOnline) {
             PouchDB.SynServerDataAndLocalData().then(function () {
                 console.log("sync successfully.");
-
+                $scope.unitopmessage = "Unit added successfully";
             }).catch(function (err) {
                 console.log("Not able to sync" + error);
                 //$scope.ResetNewUnit();
@@ -625,6 +625,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
         if ($rootScope.IsInternetOnline) {
             PouchDB.SynServerDataAndLocalData().then(function () {
                 console.log("sync successfully.");
+                $scope.unitopmessage = "Unit edited successfully";
             }).catch(function (err) {
                 console.log("Not able to sync" + error);
             });
@@ -639,6 +640,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                         });
                     }
 	
+    
     
     // Unit related code an it should be removed from here to have batter code
     var isunitrelatedcode = true;

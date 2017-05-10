@@ -8,11 +8,14 @@ app.controller('AuthCtrl', [
 function ($scope, $state, auth, $window, $timeout, PouchDB) {
     $scope.user = {};
     $scope.register = function () {
-        debugger;
         auth.register($scope.user).error(function (error) {
             $scope.error = error;
-        }).then(function () {
-            $state.go('register-profile');
+        }).then(function (data) {
+            $scope.user._id = auth.userId();
+            PouchDB.SaveUserToPouchDB($scope.user, auth.userId()).then(function (result) {
+                console.log("user updated");
+                $state.go('register-profile');
+            });            
         });
     };
 
@@ -30,6 +33,7 @@ function ($scope, $state, auth, $window, $timeout, PouchDB) {
         $scope.user.lastSyncDateTime = lastSyncDateTime;
         auth.logIn($scope.user).error(function (error) {
             $scope.error = error;
+            $scope.isFormSubmited = false;
         }).then(function (data) {
             //region added code for saving user data to pouchDB, after saving ***Note need to add code for sync all data too, move to home			
             PouchDB.SaveUserDataToPouchDB(data).then(function (result) {

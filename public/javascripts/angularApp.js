@@ -461,7 +461,7 @@ app.factory('PouchDB', ['$http', 'unit', 'auth', '$q', '$rootScope', '$window', 
             return $q.when(pouchPromise).then(function (doc) {
                 doc.email = element.email;
                 doc.image = element.image;
-                doc.phone = element.role;
+                doc.phone = element.phone;
                 doc.salt = element.salt;
                 doc.type = element.type;
                 doc.units = element.units;
@@ -499,7 +499,7 @@ app.factory('PouchDB', ['$http', 'unit', 'auth', '$q', '$rootScope', '$window', 
     }
 
 
-    pouchDbFactory.SaveUserToPouchDB = function (userData,userId) {
+    pouchDbFactory.SaveUserToPouchDB = function (userData, userId) {
         var result = {
             status: '',
             data: {},
@@ -508,14 +508,15 @@ app.factory('PouchDB', ['$http', 'unit', 'auth', '$q', '$rootScope', '$window', 
         if (userData) {
             var element = userData;
             var pouchPromise = localPouchDB.get(userId);
-                doc.email = element.email;
+                //doc.email = element.email;
             return $q.when(pouchPromise).then( function (doc) {
                 doc.image = element.image;
-                doc.phone = element.role;
+                doc.phone = element.phone;
                 doc.salt = element.salt;
                 doc.type = element.type;
                 doc.units = element.units;
                 doc.username = element.username;
+                doc.email = element.email;
                 doc.cedula = element.cedula;
                 var UpdatePouchPromise = localPouchDB.put(doc);
                 return $q.when(UpdatePouchPromise).then(function (res) {
@@ -1009,6 +1010,18 @@ app.factory('posts', ['$http', 'auth', function ($http, auth) {
     };
     return o;
 }]);
+
+app.factory('mailer', ['$http', 'auth', function ($http, auth) {
+    var o = {};
+    o.sendMail = function (mailRequest) {
+        var serviceURL = global.setting.getServiceUrl() + "mailer";
+        return $http.post(serviceURL, mailRequest).success(function (data) {
+            console.log(data);
+        });
+    }
+    return o;
+}]);
+
 // User profile service
 app.factory('user', ['$http', 'auth', function ($http, auth) {
     var o = {
@@ -1038,6 +1051,14 @@ app.factory('user', ['$http', 'auth', function ($http, auth) {
             headers: { Authorization: 'Bearer ' + auth.getToken() }
         }).success(function (data) {
             return data
+        });
+    };
+
+    o.searchUserUnit = function (searchObj) {
+        return $http.post(global.setting.getServiceUrl() + 'searchUserUnit', searchObj, {
+            headers: { Authorization: 'Bearer ' + auth.getToken() }
+        }).then(function (res) {
+            return res.data;
         });
     };
 
@@ -1494,7 +1515,8 @@ function ($stateProvider, $urlRouterProvider) {
       .state('register-profile', {
           url: '/register-profile',
           templateUrl: '/register-profile.html',
-          controller: 'UnitCtrl',
+          //controller: 'UnitCtrl',
+          controller:'RegisterCtrl',
           onEnter: ['$state', 'auth', function ($state, auth) {
               if (auth.isLoggedIn()) {
                   //$state.go('home');

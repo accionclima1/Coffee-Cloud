@@ -58,6 +58,11 @@
 			   	<div class="row">
 				   	<div class="col-md-6 col-md-offset-3">
 				   			<h4>Unidades Productivas</h4>
+              
+               <div ng-show="unitopmessage" class="bg-success row">
+					    <span>{{ unitopmessage }}</span>
+					  </div>
+              
 				   			<h6 ng-hide="units" class="textloader">Cargando Unidades <i class="fa fa-spinner fa-spin"></i> </h6>
 
 				   			<div class="unidades-wrap">
@@ -134,6 +139,7 @@
 														
 													</div>
 												</div>
+                          
 												<div class="col-xs-6">
 													<div class="form-group">
 														<input type="text"
@@ -952,7 +958,7 @@
 							  <div class="modal-dialog" role="document">
 							    <div class="modal-content">
 							      <div class="modal-header">
-							        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="CloseUnit()"><span aria-hidden="true">&times;</span></button>
 							        <h4 class="modal-title" id="myModalLabel">{{modalText}}</h4>
 							      </div>
 							      <div class="modal-body">

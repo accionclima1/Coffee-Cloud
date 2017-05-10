@@ -1,5 +1,5 @@
-app.controller('UnitManagerCtrl', ['$http', '$scope', 'auth', 'unit', 'varieties', 'user', 'PouchDB', '$rootScope', 'onlineStatus',
-function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlineStatus) {
+app.controller('UnitManagerCtrl', ['$http', '$scope', 'auth', 'unit', 'varieties', 'user', 'PouchDB', '$rootScope', 'onlineStatus','mailer',
+function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlineStatus, mailer) {
 
     console.log("Loading UnitManagerCtrl")
 
@@ -54,10 +54,37 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
     ]; 
     $scope.toggle = false;
 
+
+    if ($rootScope.IsInternetOnline) {
+        console.log("app online");
+        varieties.getAll().then(function (varids) {
+            variedades = varids.data;
+            variedades.push({ name: "otro" }, { name: "cual?" });
+            $scope.variedades = variedades;
+        });
+    }
+    else {
+        console.log("app offline");
+        PouchDB.GetVarietiesFromPouchDB().then(function (result) {
+            if (result.status == 'fail') {
+                $scope.error = result.message;
+            }
+            else if (result.status == 'success') {
+                var doc = result.data.rows[0].doc;
+                if (result.data.rows.length > 0) {
+                    var variedadesArray = [];
+                    for (var i = 0; i < doc.list.length; i++) {
+                        variedadesArray.push(doc.list[i]);
+                    }
+                    variedadesArray.push({ name: "otro" }, { name: "cual?" });
+                    $scope.variedades = variedadesArray;
+                }
+            }
+        });
+    }
+
     $(".date-field").pickadate(spanishDateTimePickerOption);
-    $('#myModal2').on('shown.bs.modal', function (e) {
-        $('#newunitForm').validator();
-    });
+   
     muni14.addDepts('departamentos');
 
     function wait(ms) {
@@ -243,6 +270,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 
 
                 });
+
             }
             // double click event
             /*   google.maps.event.addListener(map1, 'dblclick', function(e) {
@@ -489,7 +517,18 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 
     
     $scope.saveEditUnitForm = function () {
+        console.log($scope.newunitForm.$valid);
         if ($scope.newunitForm.$valid) {
+            
+            $scope.newUnit.departamento = $("#departamentos option:selected").text();
+            $scope.newUnit.municipio = $("#departamentos-munis option:selected").text();
+            $scope.newUnit.oficinaregional = $scope.oficinaregionalmodel.name;
+            $scope.newUnit.lat = $('[name="lat"]').val();
+            $scope.newUnit.lng = $('[name="lng"]').val();
+
+
+            
+           // document.getElementById("");
 
             PouchDB.EditUnit($scope.newUnit, auth.userId()).then(function (result) {
                 if (result.status == 'fail') {
@@ -499,14 +538,18 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                     //$scope.editUnit = result.data;
                     $scope.sucMsg = '¡Unidad Actualizada exitosamente!';
                     $scope.$emit('UNITEDITED', { unit: result.data });
+                 
                     $('#myModal2').modal('hide');
+
                 }
             });
+            
         }
     }
-    $scope.saveAddUnitForm = function () {
 
-       
+    $scope.RecommendationText = "";
+    $scope.saveAddUnitForm = function () {
+        console.log($scope.newunitForm.$valid);
         if ($scope.newunitForm.$valid) {
             /*For sync fied ,as new record will always have sync property false until it is' sync by local db' */
 
@@ -525,22 +568,65 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                 }
                 else if (result.status == 'success') {
                     delete result.data["type"];
+
+                    if ($scope.isRecommendationFieldRequired && $scope.RecommendationText != "") {
+                        $scope.isEmailing = true;
+                        console.log("sentRecommendation button hit");
+                        mailer.sendMail({
+                            mailRequest: {
+                                TO: $scope.currentUser.email,
+                                SUBJECT: "You recieved a recommendation  on unit",
+                                TEXT: "",
+                                HTML: "<b>You recieved a recommendation on one of the unit, This is dummy test and has to change </b>"
+                            }
+                        }).then(function (result) {
+                            if (result.data.success)
+                                swal({
+                                    title: "",
+                                    text: "Recommendation sent successfully",
+                                    type: "success",
+                                    confirmButtonText: "Cool"
+                                });
+                            else
+                                swal({
+                                    title: "",
+                                    text: "Error sending in recommendation",
+                                    type: "error",
+                                    confirmButtonText: "Cool"
+                                });
+                        });
+                    }
+
                     $scope.$emit('UNITADDED', { unit: result.data });
                     $scope.ResetNewUnit();
                     $('#myModal2').modal('hide');
                 }
             });
+            
+            
+
         } else {
         }
 
     };
 
-    $scope.onFormSubmit = function () {
 
+    $scope.ResetUnitForm = function () {
+        $scope.newunitForm.nombreInput.$setPristine();
+        $scope.newunitForm.nombreInput.$setUntouched();
+        $scope.newunitForm.$setPristine();
+        $scope.newunitForm.$setUntouched();
+        //$scope.initializeNewUnit();
+        $scope.newunitForm.submit();
+
+    }
+    $scope.onFormSubmit = function () {
         if ($scope.Mode == "ADD")
             $scope.saveAddUnitForm();
-        else
+        else if ($scope.Mode == "EDIT")
             $scope.saveEditUnitForm();
+        else
+            console.log("Close button clicked");
     }
 
     $scope.CancleForm = function () {
@@ -684,17 +770,34 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
             },
         };
         $scope.initNewUnit = angular.copy($scope.newUnit);
+        $("#departamentos option:selected").text(" ");
+        $("#departamentos-munis").hide()
         $scope.editUnit = angular.copy($scope.newUnit);
     }
 
+    
     $scope.initializeEditUnit = function (id) {
         $scope.sucMsg = null;
+        
         PouchDB.GetUnit(id, auth.userId()).then(function (result) {
             if (result.status == 'fail') {
                 $scope.error = result.message;
             }
             else if (result.status == 'success') {
+
+               
                 $scope.newUnit = result.data;
+                $scope.oficinaregionalmodel.name = $scope.newUnit.oficinaregional;
+
+     
+
+                $("#departamentos option:selected").text($scope.newUnit.departamento);
+                var dindex = muni14.getDeptId($scope.newUnit.departamento);
+                document.getElementById("departamentos").forcechange(dindex, $scope.newUnit.municipio);
+
+                //$("#departamentos-munis option:selected").text($scope.newUnit.municipio);
+
+                $scope.newUnit.oficinaregional = $scope.oficinaregionalmodel.name;
                 $('#myModal3').on('shown.bs.modal', function (e) {
                     $('.collapse').collapse('hide');
                 });
@@ -705,19 +808,65 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                     }
                     $scope.newUnit.lote.push(newItem);
                 };
+                //$scope.newUnit.nombre.$setUntouched();
+                $scope.newunitForm.nombreInput.$setPristine();
+                $scope.newunitForm.nombreInput.$setUntouched();
+                
+                //setTimeout(function () {
+                //    $('#newunitForm').validator('validate');
+                //}, 300);
             }
         });
     }
 
     $scope.Mode = "ADD";
+    $scope.isRecommendationFieldRequired = false;
+
+    $('#myModal2').on('shown.bs.modal', function (e) {
+        $('#newunitForm').validator();
+        if($scope.Mode == "EDIT") {
+			$('#newunitForm').validator('validate');	
+		}
+        $scope.newunitForm.nombreInput.$setPristine();
+        $scope.newunitForm.nombreInput.$setUntouched();
+    });
+
+    $scope.$on('CLOSEUNIT', function (e, args) {
+        $scope.newunitForm.nombreInput.$setPristine();
+        $scope.newunitForm.nombreInput.$setUntouched();
+        $scope.newunitForm.$setPristine();
+        $scope.newunitForm.$setUntouched();
+        $scope.initializeNewUnit();
+    });
+
     $scope.$on('MANAGEUNIT', function (e, args) {
+        console.log("manage unit called");
+        $scope.newunitForm.nombreInput.$setPristine();
+        $scope.newunitForm.nombreInput.$setUntouched();
         var unitId = args.unitId;
         if (unitId == -1) {
+            //$('#myModal2').on('shown.bs.modal', function (e) {
+            //    $('#newunitForm').validator();
+            //});
+            $('#newunitForm').validator();
             $scope.Mode = "ADD";
+            if (args.isRecommendationFieldRequired)
+                $scope.isRecommendationFieldRequired = args.isRecommendationFieldRequired;
             $scope.initializeNewUnit();
         } else {
+            //$scope.newunitForm.$setPristine();
+            //$scope.newunitForm.$setUntouched()
+            //$scope.newUnit.nombre.$setUntouched();
+            //$scope.addChallengeForm.challangeDes.$setUntouched();
+            $scope.newunitForm.nombreInput.$setPristine();
+            $scope.newunitForm.nombreInput.$setUntouched();
             $scope.Mode = "EDIT";
             $scope.initializeEditUnit(unitId);
         }
-    });    
+    });
+
+    //initlize with the default intial value
+    console.log("initialize with default value called");
+    $scope.initializeNewUnit();
+
 }]);
