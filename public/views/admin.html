@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -33,9 +33,10 @@
 	<script type="text/javascript" src="bower_components/tinymce-dist/tinymce.js"></script>
 	 <script type="text/javascript" src="bower_components/angular-ui-tinymce/src/tinymce.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+	
 
-    <script src="/javascripts/adminApp.js"></script>
-    <script src="/javascripts/admincontrollers/AdaptacionCtrl.js"></script>
+	<script src="/javascripts/adminApp.js"></script>
+	<script src="/javascripts/admincontrollers/AdaptacionCtrl.js"></script>
     <script src="/javascripts/admincontrollers/AdaptacionGalloCtrl.js"></script>
     <script src="/javascripts/admincontrollers/AuthCtrl.js"></script>
     <script src="/javascripts/admincontrollers/CampoCtrl.js"></script>
@@ -46,7 +47,8 @@
     <script src="/javascripts/admincontrollers/TechRecCtrl.js"></script>
     <script src="/javascripts/admincontrollers/UsersCtrl.js"></script>
     <script src="/javascripts/admincontrollers/VarietyCtrl.js"></script>
- 
+	
+
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesnt work if you view the page via file:// -->
@@ -287,7 +289,8 @@
 
     <!-- jQuery -->
     
-    <script type="text/ng-template" id="/home.html">
+	
+	 <script type="text/ng-template" id="/home.html">
 	     <div class="container-fluid">
 
                 <!-- Page Heading -->
@@ -439,7 +442,9 @@
                 </div>
             </div>
     </script>
-    <script type="text/ng-template" id="/register.html">
+      
+
+	<script type="text/ng-template" id="/register.html">
 	  <div class="login-wrap">
 		<div class="container-fluid">
 			<div class="row">
@@ -486,7 +491,9 @@
 		</div>
 	</div>
 	</script>
-    <script type="text/ng-template" id="/login.html">
+       
+
+	<script type="text/ng-template" id="/login.html">
 		<div class="login-wrap">
 		<div class="container-fluid">
 			<div class="row">
@@ -517,87 +524,11 @@
 		</div>
 	</div>
 	  </script>
-    <script type="text/ng-template" id="/messenger.html">
-	    <div class="container-fluid messenger" ng-controller="MessengerCtrl">
-		<!-- Modal -->
-			<div class="modal fade" id="myModalUserImage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-				<div class="modal-dialog" role="document">
-					<div class="modal-content">
-					
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-							<h4 class="modal-title" id="myModalLabel">Imagen de Usuario</h4>
-						</div>
-						<div class="modal-body">
-							<div ng-show="error" class="alert alert-danger row">
-								<span>{{ error.message }}</span>
-							</div>
-							<div class="form-group">
-								<label>Nombre:</label>
-								<input type="text" class="form-control" ng-model="UserName"/>
-							</div>	
-							<div class="form-group">
-								<label>Image:</label>
-								<input type="file" id="userImage" file-model="myFile" />
-							</div>	
-							<div class="form-group">
-								<div ng-show="message" class="bg-success ">
-									<span>{{ message }}</span>
-								</div>
-								<div ng-show="error" class="alert alert-danger ">
-									<span>{{ error.message }}</span>
-								</div>
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-							<button type="button" ng-click="uploadPhoto()" class="btn btn-primary">Save</button>
-						</div>
-						
-					</div>
-				</div>
-			</div>
-			<!-- Modal -->
+       
 
-		    <div class="row">
-			    <div class="col-md-3">
-				    <div class="chat-list">
-					    <div class="chat-item" ng-repeat="convo in chats" ng-click="loadChat($event,convo.sender)" ng-class="convo.sender==currentChat ? 'active' : ''">
-						    <h4>{{ convo.sender }}</h4>
-						    <p>{{ convo.messages.length }} mensajes</p>
-						    <a class="closeChat" ng-click="deleteChat(convo.chatid)">X</a>
-						</div>
-					</div>
-			    </div>
-			    <div class="col-md-9">
-				    	<div class="chat-head">
-					    	<strong>Conversacion:</strong> {{ currentChat }}
-					    </div>
-				    	<div class="chatbox" scroll-glue>
-							<div class="message" ng-repeat="message in chatLog">
-								<div>
-									<img class="userImage chat-image" ng-src="{{ message.imageurl }}" />&nbsp;<label class="chat-text" >{{ message.sender }}:</label>
-									<div class="message-body chat-Body" >{{ message.bodyMsg }}</div>
-								</div>
-							</div>
-						</div>
-						
-						<form class="type-sink form-inline" ng-submit="sendMessage()">
-								<div class="form-group">
-									<a ng-click="openImagePopup()"><img style="margin-top:0" class="userImage chat-image" src="{{ UserImageBottom }}" /></a>
-									<label class="chat-text-bottom">{{ nickname }}</label>
-									<label class="sr-only" for="chatMsg">Chat message</label>
-									<input type="text" class="form-control" style="float:right;width:75%" name="chatMsg" id="chatMsg">						
-									<input type="hidden" name="fromId" value="admin">
-									<input type="hidden" name="toId" value="">
-								</div>
-							<button type="submit" class="btn btn-default chat-button">Enviar</button>
-						</form>
-			    </div>
-			</div>
-		</div>
-	</script>
-    <script type="text/ng-template" id="/adaptacion.html">
+	   
+
+	<script type="text/ng-template" id="/adaptacion.html">
 	     <div class="container-fluid adaptacion-wrap">
 
                 <!-- Page Heading -->
@@ -657,7 +588,9 @@
 
             </div>
     </script>
-    <script type="text/ng-template" id="/adaptacionGallo.html">
+       
+
+	<script type="text/ng-template" id="/adaptacionGallo.html">
 	     <div class="container-fluid adaptacion-wrap">
 
                 <!-- Page Heading -->
@@ -717,7 +650,9 @@
 
             </div>
     </script>
-    <script type="text/ng-template" id="/users.html">
+       
+
+	<script type="text/ng-template" id="/users.html">
 	     <div class="container-fluid users-wrap">
 
                 <!-- Page Heading -->
@@ -900,7 +835,9 @@
 
             </div>
     </script>
-    <script type="text/ng-template" id="/noticias.html">
+       
+
+	<script type="text/ng-template" id="/noticias.html">
 	     <div class="container-fluid noticas-wrap">
 
                 <!-- Page Heading -->
@@ -997,7 +934,9 @@
 
             </div>
     </script>
-    <script type="text/ng-template" id="/tech_recom.html">
+       
+
+   <script type="text/ng-template" id="/tech_recom.html">
          <div class="container-fluid roya-wrap">
 
                 <!-- Page Heading -->
@@ -1336,7 +1275,9 @@
                 </div>
          </div>
     </script>
-    <script type="text/ng-template" id="/roya.html">
+       
+
+	<script type="text/ng-template" id="/roya.html">
 	     <div class="container-fluid roya-wrap">
 
                 <!-- Page Heading -->
@@ -1569,7 +1510,9 @@
                 </div>
         </div>
     </script>
-    <script type="text/ng-template" id="/campo.html">
+       
+   
+	<script type="text/ng-template" id="/campo.html">
 	     <div class="container-fluid adaptacion-wrap">
 
                 <!-- Page Heading -->
@@ -1764,6 +1707,8 @@
 
             </div>
     </script>
+      
+
     <script type="text/ng-template" id="/reportesdecampo.html">
           <div class="container-fluid roya-wrap">
 
@@ -1930,7 +1875,9 @@
                 </div>
          </div>
  </script>
-    <script type="text/ng-template" id="/varieties.html">
+      
+
+	<script type="text/ng-template" id="/varieties.html">
 	     <div class="container-fluid roya-wrap">
 
                 <!-- Page Heading -->
