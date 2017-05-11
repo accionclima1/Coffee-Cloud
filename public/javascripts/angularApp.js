@@ -466,7 +466,6 @@ app.factory('PouchDB', ['$http', 'unit', 'auth', '$q', '$rootScope', '$window', 
                 doc.type = element.type;
                 doc.units = element.units;
                 doc.username = element.username;
-                doc.cedula = element.cedula;
                 var UpdatePouchPromise = localPouchDB.put(doc);
                 return $q.when(UpdatePouchPromise).then(function (res) {
                     if (res && res.ok == true) {
@@ -517,7 +516,6 @@ app.factory('PouchDB', ['$http', 'unit', 'auth', '$q', '$rootScope', '$window', 
                 doc.units = element.units;
                 doc.username = element.username;
                 doc.email = element.email;
-                doc.cedula = element.cedula;
                 var UpdatePouchPromise = localPouchDB.put(doc);
                 return $q.when(UpdatePouchPromise).then(function (res) {
                     if (res && res.ok == true) {

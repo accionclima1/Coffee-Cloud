@@ -662,8 +662,6 @@ router.put('/users/:user', auth, function (req, res, next) {
             user.phone = req.body.phone;
             user.role = req.body.role;
 
-            user.cedula = req.body.cedula;
-
             user.nickname = req.body.nickname;
             //user.recomendaciontecnica = req.body.recomendaciontecnica;
             user.image = req.body.image;

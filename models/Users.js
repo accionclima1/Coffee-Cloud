@@ -8,7 +8,6 @@ var UserSchema = new mongoose.Schema({
 	phone: String,
 	hash: String,
 	salt: String,
-	cedula:{type: Number, default: 0},
 	role: { type: String, default: 'client' },
 	extemDepartamento: String,
   exteMunicipio: String,
