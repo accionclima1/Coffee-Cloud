@@ -1319,6 +1319,11 @@ background-color: #3498db  !important;
 
 /* visita module */
 
+.visita-wrapper {
+  height: 100vh;
+  overflow:auto;
+}
+
 .visita-controls {
     position: fixed;
     bottom: 0;
@@ -1357,8 +1362,16 @@ background-color: #3498db  !important;
 .visita-controls .input-group {
   border-bottom: 5px solid #fe852d;
 }
+
+.visita-controls-opt-wrap {
+  margin: 0;
+  padding: 0;
+  border-top: 5px solid #fe852d;
+}
+
 .visita-controls-opt {
     margin: 0;
+    padding: 0;
 }
 
 .visita-controls-opt label {

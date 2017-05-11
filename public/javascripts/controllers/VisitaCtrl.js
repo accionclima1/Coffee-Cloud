@@ -3,7 +3,7 @@ app.controller('VisitaCtrl', [
 function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlineStatus, localStorageService, socket, mailer) {
 
     $scope.currentUser = auth.currentUser;
-    $scope.searchmode = "Search By Id"
+    $scope.searchmode = "Cedula"
    
     $scope.unitsToShow = [];
     $scope.currentUnit = null;
