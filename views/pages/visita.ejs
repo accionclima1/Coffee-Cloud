@@ -1,5 +1,5 @@
 	<script type="text/ng-template" id="/visita.html">
-			<div class="roya-wrap">
+			<div class="visita-wrap">
 						<h2 class="section-header">
 		  				Visita Tecnica
 		  			</h2>
@@ -15,16 +15,28 @@
                       <h6 ng-show="isSearching" class="textloader">
                         Cargando Unidades <i class="fa fa-spinner fa-spin"></i>
                       </h6>
-                      <button type="button" class="list-group-item" ng-click="openUnit(unit)"  data-toggle="modal" ng-repeat="unit in unitsToShow">{{unit.nombre}}</button>
+                      
+                      <div class="unidades-wrap">
+				   					<div class="unidad" ng-repeat="unit in unitsToShow.units" id="{{unit._id}}" style="background-color: white;    padding: 10px;">
+						   			<span>{{unit.nombre}}</span>
+						   			<!--<button class="btn btn-danger" ng-click="deleteUnit($event, unit._id, $index)">X</button>-->
+                    <!--<button class="btn btn-default" style="margin-left: 12px;" ng-click="updateUnit($event, unit._id, $index)" data-toggle="modal" data-target="#myModal">editar_back</button>-->
+                    <button class="btn btn-default" style="margin-left: 12px;" ng-click="openUnit(unit)" data-toggle="modal">editar</button>
+						   			<button class="btn btn-default" ng-click="openLotes(unit)" data-toggle="modal" data-target="#myModal3">Lotes</button>
+						   		</div>
+                      
+                     <!--<button type="button" class="list-group-item" ng-click="openUnit(unit)"  data-toggle="modal" ng-repeat="unit in unitsToShow.units">{{unit.nombre}}</button>-->
 											  <!--<button type="button" class="list-group-item"  data-toggle="modal" data-target="#myModal">Another Unit Name</button>-->
-											</div>
 											
+                      </div>
+											
+                      
 											<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 											  <div class="modal-dialog" role="document">
 											    <div class="modal-content">
 											      <div class="modal-header">
 											        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-											        <h4 class="modal-title" id="myModalLabel">{{currentUnit.nombre}}</h4>
+											        <h4 class="modal-title" id="myModalLabel">{{modalText}}</h4>
 											      </div>
 											      <div class="modal-body">
 
@@ -32,32 +44,197 @@
 Sending Recommendation                              </h6>
                               
 												      <ul class="list-group">
+                                <li class="list-group-item">
+														   oficina Regional:  <span class="badge">Vella central</span>
+														  </li>
 													      <li class="list-group-item">
-														   Nombre:  <span class="badge">{{currentUnit.nombre}}</span>
+														   username:  <span class="badge">{{unitsToShow.username}}</span>
 														  </li>
 														  
 														  <li class="list-group-item">
-														   Municipio: <span class="badge">{{currentUnit.municipio}}</span>
+														   cedula: <span class="badge">{{unitsToShow.cedula}}</span>
 														  </li>
 														  
 														  <li class="list-group-item">
-														   Departamento: <span class="badge">{{currentUnit.departamento}}</span>
+														   email: <span class="badge">{{unitsToShow.email}}</span>
 														  </li>
 														</ul>
-												    
-														<h3>Recomendacion</h3>
+                              <manage-Unit></manage-Unit>
+                              
+														<!--<h3>Recomendacion</h3>-->
 													
-													<textarea class="form-control" rows="3" ng-model="currentUnit.recommendation"></textarea>
+													<!--<textarea class="form-control" rows="3" ng-model="currentUnit.recommendation"></textarea>-->
 											      </div>
-											      <div class="modal-footer">
+											      <!--<div class="modal-footer">
 											        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 											        <button type="button" class="btn btn-default" ng-click="sentRecommendation()">Sent recommendation</button>
-											      </div>
+											      </div>-->
 											    </div>
 											  </div>
 										</div>
+									
+                      
+                      <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+							  <div class="modal-dialog" role="document">
+							    <div class="modal-content">
+							      <div class="modal-header">
+							        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							        <h4 class="modal-title" id="myModalLabel">Editar Lotes: {{ editUnit.nombre }}</h4>
+							      </div>
+							      <div class="modal-body">
+								    <form name="updateunitFormlote" ng-submit="updateUnitForm($event,editUnit._id)" id="updateunitFormlote" >  
+								      
+								      <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
+									  <div class="panel panel-default" ng-repeat="lote in editUnit.lote">
+										    <div class="panel-heading" role="tab" id="{{ 'heading-' + $index }}">
+										      <h4 class="panel-title">
+										        <a role="button" data-toggle="collapse" data-parent="#accordion" data-target="{{ '#collapse-' + $index }}" aria-expanded="false" aria-controls="{{ 'collapse-' + $index }}">
+										         <span ng-bind="editUnit.lote[$index].nombre"></span> 
+										        </a>
+										      </h4>
+										    </div>
+										    <div id="{{ 'collapse-' + $index }}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="{{ 'collapse-' + $index }}">
+										      <div class="panel-body">
+										        	 <div class="row">
+													    <div class="col-xs-12">
+															<div class="form-group">
+																<input type="text"
+																      class="form-control"
+																      placeholder="Nombre del lote"
+																      ng-model="editUnit.lote[$index].nombre"	
+																      ></input>
+															</div>
+														</div>
+													
+														<div class="col-xs-12">
+													<div class="form-group">
+														<input type="text"
+														      class="form-control"
+														      placeholder="Geo Referencia"
+														      ng-model="editUnit.lote[$index].georeferenciacion" id="{{ 'latlongid' + $index }}" required></input>	
+														       <span class="input-group-btn">
+														        <button class="btn btn-default" type="button" ng-click="toggle = !toggle; mapInit($index)">
+																        <i class="fa fa-map-marker" aria-hidden="true" ng-show="!toggle"></i>
+																        <i class="fa fa-times" aria-hidden="true" ng-show="toggle"></i>
+														        </button>
+														      </span>
+													</div>
+												</div>
+												
+												<div class="clearfix"></div>
+												<div class="col-xs-12">
+													<div class="collapse map" >
+														<i class="fa fa-spinner fa-spin"></i>
+														<div id="{{ 'map-canvas' + $index }}" style="height:200px;width:100%;" ></div>
+													</div>
+												</div>
+												<div class="clearfix"></div>
+														
+														<div class="col-xs-12">
+															<div class="form-group">
+																<input type="text"
+																      class="form-control"
+																      placeholder="Altitud"
+																      ng-model="editUnit.lote[$index].altitud"	
+																      ></input>
+															</div>
+														</div>
+														<div class="col-xs-12">
+															<div class="form-group">
+																<input type="text"
+																      class="form-control"
+																      placeholder="Tamaño del lote (manzanas)"
+																      ng-model="editUnit.lote[$index].tamano"	
+																      ></input>
+															</div>
+														</div>
+														<div class="col-xs-12">
+															<div class="form-group">
+																<input type="text"
+																      class="form-control"
+																      placeholder="Edad del lote"
+																      ng-model="editUnit.lote[$index].edad"	
+																      ></input>
+															</div>
+														</div>
+														<div class="col-xs-12">
+															<div class="form-group">
+																<input type="text"
+																      class="form-control"
+																      placeholder="Variedad"
+																      ng-model="editUnit.lote[$index].variedad"	
+																      ></input>
+															</div>
+														</div>
+														<div class="col-xs-12">
+															<div class="form-group">
+																<p>¿Tiene sombra?</p>
+																<div class="radio">
+																  <label>
+																    <input type="radio" id="optionsRadios1" ng-value="true" ng-model="editUnit.lote[$index].sombra">
+																    Si
+																  </label>
+																</div>
+																<div class="radio">
+																  <label>
+																    <input type="radio" id="optionsRadios2" ng-value="false" ng-model="editUnit.lote[$index].sombra">
+																    No
+																  </label>
+																</div>
+															</div>
+														</div>
+														<div class="col-xs-12">
+															<div class="form-group">
+																<p>¿Tiene cobertura de suelo?</p>
+																<div class="radio">
+																  <label>
+																    <input type="radio" id="optionsRadios1" ng-value="true" ng-model="editUnit.lote[$index].cobertura">
+																    Si
+																  </label>
+																</div>
+																<div class="radio">
+																  <label>
+																    <input type="radio" id="optionsRadios2" ng-value="false" ng-model="editUnit.lote[$index].cobertura">
+																    No
+																  </label>
+																</div>
+															</div>
+														</div>
+
+
+                                 <div class="col-xs-12">
+                                   <div class="form-group">
+                                      <textarea class="form-control" rows="3" 
+                                                placeholder="recommendation text"
+                                                ng-model="editUnit.lote[$index].recommendation"
+                                   ></textarea>								   
+                                   </div>
+                                 </div>
+													</div>
+										      </div>
+										    </div>
+									  </div>
 									</div>
-                  <button type="btn btn-default add-unit" ng-click="AddNewUnit()" ng-show="NoUserUnit">Create new unit</button>
+							      
+                       </form>
+										  
+										  <button type="button" class="btn btn-default" ng-click="prependItem()">Agregar nuevo lote</button>
+							      </div>
+							      <div class="modal-footer">
+							        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+							        <button type="button" class="btn btn-primary" form="updateunitFormlote" ng-click="updateUnitForm($event,editUnit._id)">Salvar Cambios</button>
+							        <div ng-show="sucMsg" class="bg-success row">
+									    <span>{{ sucMsg }}</span>
+									  </div>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+
+
+                    
+                    </div>
+                  <button type="btn btn-primary add-unit" ng-click="AddNewUnit()" ng-show="NoUserUnit">Create new unit</button>
 									<div class="visita-controls">
 										<form class="form" id="search-units">
 										<div class="input-group" style="border-bottom:none;background: rgba(80, 188, 249, 1);">

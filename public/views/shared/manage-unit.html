@@ -858,17 +858,17 @@
 
 
     <!-- new questions ends -->
-    <input type="submit" class="btn btn-primary" submit="newunitForm" form="newunitForm" value="Guardar nueva" ng-show="Mode == 'ADD'" />
-
+    <input type="submit" class="btn btn-primary" submit="newunitForm" form="newunitForm" value="Guardar nueva" ng-show="Mode == 'ADD' && !isRecommendationFieldRequired" />
 
     <input type="submit" class="btn btn-primary" style="width: auto; line-height: 1.42857143; float: left;" submit="newunitForm" form="newunitForm"
-            value="Salvar Cambios" ng-show="Mode == 'EDIT'"/>
+            value="Salvar Cambios" ng-show="Mode == 'EDIT' && !isRecommendationFieldRequired"/>
     <!--ng-disabled="updateunitForm.$invalid" ng-click="updateUnitForm($event,editUnit._id)">-->
         
     <!--</input>-->
-    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="CancleForm()" ng-show="Mode == 'EDIT'">Cerrar</button>
-
-    
+    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="CancleForm()" ng-show="Mode == 'EDIT' && !isRecommendationFieldRequired">Cerrar</button>
+    <button type="button" class="btn btn-default" data-dismiss="modal" ng-show="isRecommendationFieldRequired">Close</button>
+    <!--<button type="button" class="btn btn-default" ng-show="isRecommendationFieldRequired" >Sent recommendation</button>-->
+    <input type="submit" class="btn btn-primary" submit="newunitForm" form="newunitForm" ng-show="isRecommendationFieldRequired" value="Sent Recommendation">
 
 
 </form>

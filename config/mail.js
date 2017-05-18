@@ -5,8 +5,18 @@ var configuration = {
     smtp_host: "smtp.gmail.com",
     smtp_user: "centroclimaorg@gmail.com", // your gmail id
     smtp_password: "Clima3!$", // your gmail password
-    mailadmin: 'centroclimaorg@gmail.com'
+    mailadmin: 'centroclimaorg@gmail.com',
+    display_name: 'Coffe Cloud Team'
   };
+
+//var configuration = {
+//    smtp_host: "smtp.gmail.com",
+//    smtp_user: "vishal.test123456@gmail.com", // your gmail id
+//    smtp_password: "vishal987654", // your gmail password
+//    mailadmin: 'vishal.test123456@gmail.com',
+//    display_name: 'Coffe Cloud Team'
+//};
+
 var config = configuration
 
 var smtpConfig = {
@@ -23,6 +33,7 @@ var smtpConfig = {
 var transporter = nodemailer.createTransport(smtpConfig);
 
 exports.sendEmail = function (mailRequest, cb) {
+	"use strict";
     let mailOptions = {
         from: configuration.display_name + '<' + configuration.smtp_user + '>', // sender address
         to: mailRequest.TO, // list of receivers

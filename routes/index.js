@@ -602,7 +602,7 @@ router.post('/searchUserUnit', function (req, res, next) {
     var searchObj = req.body;
     console.log(searchObj);
     var whereFilter = {};
-    if (searchObj.searchType == "Id")
+    if (searchObj.searchType == "Cedula")
         whereFilter = { "cedula": searchObj.searchValue };
     else
         whereFilter = { "username": searchObj.searchValue };

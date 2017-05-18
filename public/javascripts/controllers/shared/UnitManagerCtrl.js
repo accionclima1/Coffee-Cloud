@@ -526,24 +526,31 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
             $scope.newUnit.lat = $('[name="lat"]').val();
             $scope.newUnit.lng = $('[name="lng"]').val();
 
+            // document.getElementById("");
+            if ($scope.isOtherUser)
+            {
+                var userId = $scope.userId;
+                //update unit to server database
+                $scope.sucMsg = '¡Unidad Actualizada exitosamente!';
+                $scope.$emit('UNITEDITED', { unit: $scope.newUnit});
+            }
+            else {
+                PouchDB.EditUnit($scope.newUnit, auth.userId()).then(function (result) {
+                    if (result.status == 'fail') {
+                        $scope.error = result.message;
+                    }
+                    else if (result.status == 'success') {
+                        //$scope.editUnit = result.data;
+                        $scope.sucMsg = '¡Unidad Actualizada exitosamente!';
+                        $scope.$emit('UNITEDITED', { unit: result.data });
 
-            
-           // document.getElementById("");
+                        $('#myModal2').modal('hide');
 
-            PouchDB.EditUnit($scope.newUnit, auth.userId()).then(function (result) {
-                if (result.status == 'fail') {
-                    $scope.error = result.message;
-                }
-                else if (result.status == 'success') {
-                    //$scope.editUnit = result.data;
-                    $scope.sucMsg = '¡Unidad Actualizada exitosamente!';
-                    $scope.$emit('UNITEDITED', { unit: result.data });
-                 
-                    $('#myModal2').modal('hide');
-
-                }
-            });
-            
+                    }
+                });
+            }
+               
+                        
         }
     }
 
@@ -562,46 +569,26 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
             $scope.newUnit.lat = $('[name="lat"]').val();
             $scope.newUnit.lng = $('[name="lng"]').val();
 
-            PouchDB.AddUnit($scope.newUnit, auth.userId()).then(function (result) {
-                if (result.status == 'fail') {
-                    $scope.error = result.message;
-                }
-                else if (result.status == 'success') {
-                    delete result.data["type"];
-
-                    if ($scope.isRecommendationFieldRequired && $scope.RecommendationText != "") {
-                        $scope.isEmailing = true;
-                        console.log("sentRecommendation button hit");
-                        mailer.sendMail({
-                            mailRequest: {
-                                TO: $scope.currentUser.email,
-                                SUBJECT: "You recieved a recommendation  on unit",
-                                TEXT: "",
-                                HTML: "<b>You recieved a recommendation on one of the unit, This is dummy test and has to change </b>"
-                            }
-                        }).then(function (result) {
-                            if (result.data.success)
-                                swal({
-                                    title: "",
-                                    text: "Recommendation sent successfully",
-                                    type: "success",
-                                    confirmButtonText: "Cool"
-                                });
-                            else
-                                swal({
-                                    title: "",
-                                    text: "Error sending in recommendation",
-                                    type: "error",
-                                    confirmButtonText: "Cool"
-                                });
-                        });
+            // document.getElementById("");
+            if ($scope.isOtherUser) {
+                var userId = $scope.userId;
+                //save unit to server database
+                $scope.$emit('UNITADDED', { unit: $scope.newUnit });
+            }
+            else {
+                PouchDB.AddUnit($scope.newUnit, auth.userId()).then(function (result) {
+                    if (result.status == 'fail') {
+                        $scope.error = result.message;
                     }
-
-                    $scope.$emit('UNITADDED', { unit: result.data });
-                    $scope.ResetNewUnit();
-                    $('#myModal2').modal('hide');
-                }
-            });
+                    else if (result.status == 'success') {
+                        delete result.data["type"];
+                        $scope.$emit('UNITADDED', { unit: result.data });
+                        $scope.ResetNewUnit();
+                        $('#myModal2').modal('hide');
+                    }
+                });
+            }
+            
             
             
 
@@ -843,15 +830,18 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
         console.log("manage unit called");
         $scope.newunitForm.nombreInput.$setPristine();
         $scope.newunitForm.nombreInput.$setUntouched();
+        $scope.isOtherUser = args.isOtherUser;
+        if (args.isRecommendationFieldRequired) {
+            $scope.isRecommendationFieldRequired = args.isRecommendationFieldRequired;
+            $scope.userId = args.obj._id;
+        }
         var unitId = args.unitId;
         if (unitId == -1) {
             //$('#myModal2').on('shown.bs.modal', function (e) {
             //    $('#newunitForm').validator();
             //});
             $('#newunitForm').validator();
-            $scope.Mode = "ADD";
-            if (args.isRecommendationFieldRequired)
-                $scope.isRecommendationFieldRequired = args.isRecommendationFieldRequired;
+            $scope.Mode = "ADD";            
             $scope.initializeNewUnit();
         } else {
             //$scope.newunitForm.$setPristine();

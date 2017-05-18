@@ -611,7 +611,8 @@ a {
 /* roya calculador */
 
 .roya-wrap,
-.vul-wrap {
+.vul-wrap,
+.visita-wrap {
   background-color: #F0F3F2;
   min-height: 100%;
   padding-top: 60px;
