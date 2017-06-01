@@ -34,7 +34,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 
             var searchType = $("input:radio[name ='inlineRadioOptions']:checked").val();
             if (searchType == "Cedula" && isCharacterExist(searchVal)) {
-                $scope.CNTMSG = "Input only number for Cedula search";
+                $scope.CNTMSG = "Solo numeros en la cedula";
                 return;
             }
 
@@ -53,7 +53,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                 $scope.isSearching = false;
                 console.log(response);
                 if (response.errorCODE) {
-                    $scope.CNTMSG = "No user find with search criteria";
+                    $scope.CNTMSG = "nada!";
                 }
                 else {
                     $scope.searchedUserId = response._id;
@@ -74,7 +74,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
     }
 
     $scope.sendMail = function (mailRequest) {
-        mailRequest.TO = "vishal.kumar1145@gmail.com";
+        mailRequest.TO = "centroclimaorg@gmail.com";
         $scope.isEmailing = true;
         console.log("sentRecommendation button hit");
         mailer.sendMail({
@@ -98,7 +98,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
     }
     
 
-    $scope.CNTMSG = "Select search parameter and hit search button to search the user unit";
+    $scope.CNTMSG = "Busqueda de unidades por cedula o nombre de usuario";
     $scope.AddNewUnit = function () {
         console.log($("input:radio[name ='inlineRadioOptions']:checked").val());
         $scope.modalText = "Nueva Unidad";
@@ -154,6 +154,17 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
     });
     $scope.openLotes = function (unit) {
         $scope.editUnit = unit;
+
+        $scope.prependItem = function () {
+
+            var newItem = {
+                nombre: ""
+            }
+
+
+            $scope.editUnit.lote.push(newItem);
+
+        };
     }
 
     $scope.$on('UNITADDED', function (e, args) {

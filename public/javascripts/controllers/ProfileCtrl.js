@@ -328,7 +328,7 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
         //PouchDB.SaveUserDataToPouchDB($scope.userO7).then(function (result) {
         //    console.log("User updated");
         //});
-        debugger;
+         
         user.update($scope.userO7).error(function (error) {
             $scope.error = error;
         }).then(function (data) {
