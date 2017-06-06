@@ -274,10 +274,12 @@ router.post('/requestpasswordchange', function (req, res, next) {
                                   ` // html body
             }
             Mail.sendEmail(mailcontent, function (data) {
-		        res.json(data);
+		        console.log("in promise");
+		        console.log(data);
+		        res.json(data, { "success": true, data: { sec: secret.base32, use: userIde } });
 		    });
 
-            res.json({ "success": true, data: { sec: secret.base32, use: userIde } });
+            //res.json();
         }
     });
 });
