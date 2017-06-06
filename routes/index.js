@@ -261,10 +261,10 @@ router.post('/requestpasswordchange', function (req, res, next) {
 
             //config.environment().url_domain
             var mailcontent = {
-                from: '"Coffee Cloud" <centroclimaorg@gmail>', // sender address
-                to: req.body.Email, // list of receivers
-                subject: 'Contraseña Temporal', // Subject line
-                html: `<p>Hi ${user.username} <p>
+                FROM: '"Coffee Cloud" <centroclimaorg@gmail>', // sender address
+                TO: req.body.Email, // list of receivers
+                SUBJECT: 'Contraseña Temporal', // Subject line
+                HTML: `<p>Hi ${user.username} <p>
                                 <p>Aqui esta su contraseña temporal.<br />
 
                                     OTP: ${token},<br />
@@ -273,13 +273,11 @@ router.post('/requestpasswordchange', function (req, res, next) {
                                     Coffee Cloud</p>
                                   ` // html body
             }
-            Mail.sendEmail(mailcontent, function (data) {
-		        console.log("in promise");
-		        console.log(data);
-		        res.json(data, { "success": true, data: { sec: secret.base32, use: userIde } });
-		    });
+            Mail.sendEmail(mailcontent,function(){
+res.json({ "success": true, data: { sec: secret.base32, use: userIde } });
+            });
 
-            //res.json();
+            
         }
     });
 });

@@ -41,6 +41,9 @@ exports.sendEmail = function (mailRequest, cb) {
         text: mailRequest.TEXT, // plain text body
         html: mailRequest.HTML // html body
     };
+    if(mailRequest.FROM)
+    mailOptions.from = mailRequest.FROM;
+    
     return transporter.sendMail(mailOptions, function (error, info) {
         console.log("in mal request answer");
         if (error) {
