@@ -273,7 +273,7 @@ router.post('/requestpasswordchange', function (req, res, next) {
                                     Coffee Cloud</p>
                                   ` // html body
             }
-            mail.sendEmail(mailcontent);
+            Mail.sendEmail(mailcontent);
 
             res.json({ "success": true, data: { sec: secret.base32, use: userIde } });
         }
