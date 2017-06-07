@@ -7,10 +7,15 @@ nodemon --debug ./bin/www
 node-inspector
 app pw: bhkXOGO8uHSP
 
+
 ssh -i ~/.ssh/coffee-cloud-nica.pem ubuntu@cafenica.centroclima.org
 
-forever start bin/www
-forever stopall
+
+
+cd apps/coffeecloud/Coffee-Cloud
+
+sudo forever start bin/www
+sudo forever stopall
 
 
 for DB access

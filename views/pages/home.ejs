@@ -1,0 +1,65 @@
+<script type="text/ng-template" id="/home.html">
+		<div class="home-wrap">
+		 <div class="container">
+			   	<div class="row">
+			   		<div class="col-md-6 col-md-offset-3">
+			   		  <div class="page-header">
+				        <h2>¡Hola!</h2>
+				        <p>Bienvenido {{ currentUser() }}</p>
+				      </div>
+					  
+					  <div class="weather-wrapper">
+
+							
+						
+						</div>
+					  
+				      <div class="weather-module">
+					      
+					   
+				      </div>
+					  <br />
+				       <a href="#/weather" class="btn btn-primary">Mas Informacion</a> <br />
+				       <a href="#/forecast" class="btn btn-primary">Pronostico 10 dias</a> <br />
+				       <a href="#/moon" class="btn btn-primary">Astronomía</a><br />
+				       
+					</div>
+			   	</div>
+		   </div>
+		</div>
+		
+		<script>
+		$(document).ready(function() {
+			
+			/*var country = geoplugin_countryName();
+			var zone = geoplugin_region();
+			decoded = $("<textarea/>").html(zone).text();
+			if(decoded == "San José") {
+				decoded = "sanjose"
+			}*/
+			
+			$('.weather-wrapper').EasyWeather({
+				language: 'sp',
+				providerId: 'wug',
+				providerSequence: false,
+				geoProviderId:'fgip',
+				geoProviderSequence: false,
+				refreshLink: false,
+				todayLabel: 'Hoy',
+				detailLabels: {
+					humidity: 'Humedad: ',
+					precipitation: 'Precipitacion: ',
+					wind: 'Viento: ',
+					pressure: 'Presion: ',
+					visibility: 'Visibilidad: '
+				},
+				theme: 'ew-transparent',
+				
+			});
+			
+			
+		});
+		</script>
+		
+		
+	</script>
