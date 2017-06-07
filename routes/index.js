@@ -261,10 +261,10 @@ router.post('/requestpasswordchange', function (req, res, next) {
 
             //config.environment().url_domain
             var mailcontent = {
-                from: '"Coffee Cloud" <centroclimaorg@gmail>', // sender address
-                to: req.body.Email, // list of receivers
-                subject: 'Contraseña Temporal', // Subject line
-                html: `<p>Hi ${user.username} <p>
+                FROM: '"Coffee Cloud" <centroclimaorg@gmail>', // sender address
+                TO: req.body.Email, // list of receivers
+                SUBJECT: 'Contraseña Temporal', // Subject line
+                HTML: `<p>Hi ${user.username} <p>
                                 <p>Aqui esta su contraseña temporal.<br />
 
                                     OTP: ${token},<br />
@@ -273,9 +273,11 @@ router.post('/requestpasswordchange', function (req, res, next) {
                                     Coffee Cloud</p>
                                   ` // html body
             }
-            mail.sendEmail(mailcontent);
+            Mail.sendEmail(mailcontent,function(){
+res.json({ "success": true, data: { sec: secret.base32, use: userIde } });
+            });
 
-            res.json({ "success": true, data: { sec: secret.base32, use: userIde } });
+            
         }
     });
 });
@@ -602,7 +604,7 @@ router.post('/searchUserUnit', function (req, res, next) {
     var searchObj = req.body;
     console.log(searchObj);
     var whereFilter = {};
-    if (searchObj.searchType == "Id")
+    if (searchObj.searchType == "Cedula")
         whereFilter = { "cedula": searchObj.searchValue };
     else
         whereFilter = { "username": searchObj.searchValue };
@@ -661,6 +663,8 @@ router.put('/users/:user', auth, function (req, res, next) {
             user.email = req.body.email;
             user.phone = req.body.phone;
             user.role = req.body.role;
+
+            user.cedula = req.body.cedula;
 
             user.nickname = req.body.nickname;
             //user.recomendaciontecnica = req.body.recomendaciontecnica;

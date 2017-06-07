@@ -1,11 +1,12 @@
-﻿var nodemailer = require('nodemailer')
+var nodemailer = require('nodemailer')
 var smtpTransport =  require('nodemailer-smtp-transport');
 /**/
 var configuration = {
     smtp_host: "smtp.gmail.com",
     smtp_user: "centroclimaorg@gmail.com", // your gmail id
     smtp_password: "Clima3!$", // your gmail password
-    mailadmin: 'centroclimaorg@gmail.com'
+    mailadmin: 'centroclimaorg@gmail.com',
+    display_name: 'Coffe Cloud Team'
   };
 var config = configuration
 
@@ -31,6 +32,9 @@ exports.sendEmail = function (mailRequest, cb) {
         text: mailRequest.TEXT, // plain text body
         html: mailRequest.HTML // html body
     };
+    if(mailRequest.FROM)
+    mailOptions.from = mailRequest.FROM;
+    
     return transporter.sendMail(mailOptions, function (error, info) {
         console.log("in mal request answer");
         if (error) {
