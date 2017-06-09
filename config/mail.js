@@ -9,14 +9,6 @@ var configuration = {
     display_name: 'Coffe Cloud Team'
   };
 
-//var configuration = {
-//    smtp_host: "smtp.gmail.com",
-//    smtp_user: "vishal.test123456@gmail.com", // your gmail id
-//    smtp_password: "vishal987654", // your gmail password
-//    mailadmin: 'vishal.test123456@gmail.com',
-//    display_name: 'Coffe Cloud Team'
-//};
-
 var config = configuration
 
 var smtpConfig = {
