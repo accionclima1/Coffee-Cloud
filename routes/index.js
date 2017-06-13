@@ -1032,6 +1032,20 @@ router.post('/varieties', auth, function (req, res, next) {
     });
 });
 
+
+router.post('/varieties/update', auth, function (req, res, next) {
+    console.log(req.body);
+    Variety.findById(req.body._id, function (err, varie) {
+        console.log(varie);
+        varie.name = req.body.name;
+        varie.save(function (err, updatedvarie) {
+            if (err) return res.send({Success:false});
+            res.send({ Success: true });
+        });
+    });
+});
+
+
 router.get('/varieties', function (req, res, next) {
     Variety.find(function (err, varieties) {
         if (err) { return next(err); }

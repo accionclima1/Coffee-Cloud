@@ -99,17 +99,28 @@
             </div> -->
         <div class="col-xs-12">
             <div class="form-group">
-                <div class="row">
+                <div class="row" ng-show="variedades">
                     <label class="col-xs-12">Variedad</label>
                     <div class="col-xs-6" ng-repeat="variedad in variedades">
-                        <label ng-hide="variedad.name == 'cual?'">
+                        <!--<label ng-hide="variedad.name == 'cual?'">
                             <input type="checkbox" ng-model="newUnit.variedad[variedad.name]"> {{variedad.name}}
                         </label>
 
                         <input type="text"
                                class="form-control"
                                placeholder="¿cual?"
-                               ng-model="newUnit.variedad['cual?']" ng-show="newUnit.variedad['otro'] && variedad.name == 'cual?'"></input>
+                               ng-model="newUnit.variedad['cual?']" ng-show="newUnit.variedad['otro'] && variedad.name == 'cual?'"></input>-->
+
+
+                        <label ng-hide="variedad.name == 'cual?'">
+                            <input type="checkbox" ng-model="variedad.isSelected"> {{variedad.name}}
+                        </label>
+
+                        <!--<input type="text" 
+                               class="form-control"
+                               placeholder="¿cual?"
+                               ng-model="newUnit.variedad['cual?']" ng-show="newUnit.variedad['otro'] && variedad.name == 'cual?'"></input>-->
+
 
 
                     </div>
@@ -119,14 +130,14 @@
         </div>
 
 
-     <!--   <div class="col-xs-12">
+        <div class="col-xs-12">
             <div class="form-group">
                 <label for="selCoffeProducessOptions">Tipo de café que produce?</label>
                 <select class="form-control" id="selCoffeProducessOptions" multiple="true" ng-model="newUnit.typeOfCoffeProducessOptionSelected">
                     <option ng-repeat="option in typesOfCoffeSelectionOptions" value="{{option.name}}">{{option.displayValue}}</option>
                 </select>
             </div>
-        </div> -->
+        </div>
 
         <div class="col-xs-12">
             <div class="form-group">

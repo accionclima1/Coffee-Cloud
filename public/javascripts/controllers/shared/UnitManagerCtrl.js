@@ -526,6 +526,12 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
             $scope.newUnit.lat = $('[name="lat"]').val();
             $scope.newUnit.lng = $('[name="lng"]').val();
 
+            $scope.newUnit.variedad = [];
+            for (var vcounter = 0; vcounter < $scope.variedades.length; vcounter++) {
+                if ($scope.variedades[vcounter].isSelected)
+                    $scope.newUnit.variedad.push($scope.variedades[vcounter]._id);
+            }
+
             // document.getElementById("");
             if ($scope.isOtherUser)
             {
@@ -568,6 +574,12 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
             $scope.newUnit.oficinaregional = $scope.oficinaregionalmodel.name;
             $scope.newUnit.lat = $('[name="lat"]').val();
             $scope.newUnit.lng = $('[name="lng"]').val();
+
+            $scope.newUnit.variedad = [];
+            for (var vcounter = 0; vcounter < $scope.variedades.length; vcounter++) {
+                if ($scope.variedades[vcounter].isSelected)
+                    $scope.newUnit.variedad.push($scope.variedades[vcounter]._id);
+            }
 
             // document.getElementById("");
             if ($scope.isOtherUser) {
@@ -760,6 +772,13 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
         $("#departamentos option:selected").text(" ");
         $("#departamentos-munis").hide()
         $scope.editUnit = angular.copy($scope.newUnit);
+        console.log("here");
+        if ($scope.variedades) {
+            for (var vcounter = 0; vcounter < $scope.variedades.length; vcounter++) {
+                $scope.variedades[vcounter].isSelected = false;
+            }
+        }
+        console.log("here1");
     }
 
     
@@ -799,9 +818,18 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                 $scope.newunitForm.nombreInput.$setPristine();
                 $scope.newunitForm.nombreInput.$setUntouched();
                 
-                //setTimeout(function () {
-                //    $('#newunitForm').validator('validate');
-                //}, 300);
+                if ($scope.variedades && $scope.newUnit.variedad) {
+                    for (var vcounter = 0; vcounter < $scope.variedades.length; vcounter++) {
+                        var isSelected = false;                        
+                        for (var ecounter = 0; ecounter < $scope.newUnit.variedad.length; ecounter++) {
+                            if ($scope.newUnit.variedad[ecounter] == $scope.variedades[vcounter]._id) {
+                                //$scope.variedades[vcounter].isSelected = $scope.newUnit.variedad[ecounter].isSelected;
+                                isSelected = true;
+                            }
+                        }
+                        $scope.variedades[vcounter].isSelected = isSelected;
+                    }
+                }
             }
         });
     }
