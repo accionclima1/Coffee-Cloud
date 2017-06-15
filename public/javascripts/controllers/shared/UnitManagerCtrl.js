@@ -528,8 +528,19 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
 
             $scope.newUnit.variedad = [];
             for (var vcounter = 0; vcounter < $scope.variedades.length; vcounter++) {
-                if ($scope.variedades[vcounter].isSelected)
-                    $scope.newUnit.variedad.push($scope.variedades[vcounter]._id);
+                if ($scope.variedades[vcounter].isSelected) {
+                    if ($scope.variedades[vcounter].ISUDF) {
+                        $scope.newUnit.variedad.push({
+                            VAL: $scope.variedades[vcounter].VAL,
+                            ISUDF: true
+                        });
+                    } else {
+                        $scope.newUnit.variedad.push({
+                            VAL: $scope.variedades[vcounter]._id,
+                            ISUDF: false
+                        });
+                    }
+                }
             }
 
             // document.getElementById("");
@@ -559,7 +570,6 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                         
         }
     }
-
     $scope.RecommendationText = "";
     $scope.saveAddUnitForm = function () {
         console.log($scope.newunitForm.$valid);
@@ -578,7 +588,17 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
             $scope.newUnit.variedad = [];
             for (var vcounter = 0; vcounter < $scope.variedades.length; vcounter++) {
                 if ($scope.variedades[vcounter].isSelected)
-                    $scope.newUnit.variedad.push($scope.variedades[vcounter]._id);
+                    if ($scope.variedades[vcounter].ISUDF) {
+                        $scope.newUnit.variedad.push({
+                            VAL: $scope.variedades[vcounter].VAL,
+                            ISUDF: true
+                        });
+                    } else {
+                        $scope.newUnit.variedad.push({
+                            VAL: $scope.variedades[vcounter]._id,
+                            ISUDF: false
+                        });
+                    }
             }
 
             // document.getElementById("");
@@ -631,7 +651,6 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
     $scope.CancleForm = function () {
         $('#myModal2').modal('hide');
     }
-
     $scope.initializeNewUnit = function () {
         $scope.newUnit = {
             PouchDBId: '',
@@ -776,12 +795,17 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
         if ($scope.variedades) {
             for (var vcounter = 0; vcounter < $scope.variedades.length; vcounter++) {
                 $scope.variedades[vcounter].isSelected = false;
+                if ($scope.variedades[vcounter].name == "otro") {
+                    $scope.variedades[vcounter].ISUDF = true;
+                    $scope.variedades[vcounter].VAL="";
+                } else {
+                    $scope.variedades[vcounter].ISUDF = false;
+                }
             }
+            console.log($scope.variedades);
         }
         console.log("here1");
     }
-
-    
     $scope.initializeEditUnit = function (id) {
         $scope.sucMsg = null;
         
@@ -820,14 +844,24 @@ function ($http, $scope, auth, unit, varieties, user, PouchDB, $rootScope, onlin
                 
                 if ($scope.variedades && $scope.newUnit.variedad) {
                     for (var vcounter = 0; vcounter < $scope.variedades.length; vcounter++) {
-                        var isSelected = false;                        
-                        for (var ecounter = 0; ecounter < $scope.newUnit.variedad.length; ecounter++) {
-                            if ($scope.newUnit.variedad[ecounter] == $scope.variedades[vcounter]._id) {
-                                //$scope.variedades[vcounter].isSelected = $scope.newUnit.variedad[ecounter].isSelected;
-                                isSelected = true;
+                        if ($scope.variedades[vcounter].name == "otro") {//logic for udf
+                            $scope.variedades[vcounter].ISUDF = true;
+                            for (var ecounter = 0; ecounter < $scope.newUnit.variedad.length; ecounter++) {
+                                if ($scope.newUnit.variedad[ecounter].ISUDF) {
+                                    $scope.variedades[vcounter].isSelected = true;
+                                    $scope.variedades[vcounter].VAL = $scope.newUnit.variedad[ecounter].VAL;
+                                }
+                            }
+                        } else {//logic for non udf 
+                            $scope.variedades[vcounter].ISUDF = false;
+                            for (var ecounter = 0; ecounter < $scope.newUnit.variedad.length; ecounter++) {
+                                if (!$scope.newUnit.variedad[ecounter].ISUDF) {
+                                    if ($scope.newUnit.variedad[ecounter].VAL == $scope.variedades[vcounter]._id) {
+                                        $scope.variedades[vcounter].isSelected = true;
+                                    }
+                                }
                             }
                         }
-                        $scope.variedades[vcounter].isSelected = isSelected;
                     }
                 }
             }

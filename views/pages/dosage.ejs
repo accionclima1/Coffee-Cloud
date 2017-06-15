@@ -69,6 +69,24 @@
 										<strong>Litros Gastados:</strong> 
 										<input type="number" ng-model="dosage.litersWornOut" class="form-control"  value="1" required>
 									</span>
+									
+									<div class="row">
+										<div class="col-xs-12">
+											<strong>Distanciamiento en metros</strong>
+										</div>
+										<div class="col-xs-6">
+											<span>
+										<strong>Hileras:</strong> 
+										<input type="number" ng-model="dosage.hileras" class="form-control"  value="1" required>
+									</span>
+										</div>
+										<div class="col-xs-6">
+											<span>
+										<strong>Plantas:</strong> 
+										<input type="number" ng-model="dosage.plantas" class="form-control"  value="1" required>
+									</span>
+										</div>
+									</div>
 
 									<button type="submit" class="btn btn-primary" ng-disabled="!dosageForm.$valid">Calcular</button>
 									<button type="button" class="btn" ng-click="clear()" ng-disabled="!dosageForm.$valid">Limpiar</button>
