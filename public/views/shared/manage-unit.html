@@ -19,7 +19,7 @@
         </div>
         <div class="col-xs-12">
             <div class="form-group">
-                <input type="number" min="0" step="1"
+                <input type="number" min="0" step="any"
                        class="form-control"
                        placeholder="Altitud"
                        ng-model="newUnit.altitud"></input> (msnm)
@@ -57,7 +57,7 @@
         </div>
         <div class="col-xs-6">
             <div class="form-group">
-                <input type="number" min="0" step="1"
+                <input type="number" min="0" step="any"
                        class="form-control"
                        placeholder="Area total"
                        ng-model="newUnit.areaTotal"></input>
@@ -74,7 +74,7 @@
         <div class="clearfix"></div>
         <div class="col-xs-6">
             <div class="form-group">
-                <input type="number" min="0" step="1"
+                <input type="number" min="0" step="any"
                        class="form-control"
                        placeholder="Area con café"
                        ng-model="newUnit.areaCafe"></input>
@@ -136,14 +136,7 @@
         </div>
 
 
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label for="selCoffeProducessOptions">Tipo de café que produce?</label>
-                <select class="form-control" id="selCoffeProducessOptions" multiple="true" ng-model="newUnit.typeOfCoffeProducessOptionSelected">
-                    <option ng-repeat="option in typesOfCoffeSelectionOptions" value="{{option.name}}">{{option.displayValue}}</option>
-                </select>
-            </div>
-        </div>
+      
 
         <div class="col-xs-12">
             <div class="form-group">
