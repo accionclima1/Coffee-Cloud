@@ -32,7 +32,15 @@
         </div>
         <div class="col-xs-12">
             <div class="form-group munis">
-                <select ng-model="newUnit.departamentos" id="departamentos" class="form-control" data-error="Campo requerido" required></select>
+               
+                 <!--<select ng-model="newUnit.departamentos" id="departamentos" class="form-control" data-error="Campo requerido" required></select>-->
+
+                <select ng-model="selectedDepartment" class="form-control" 
+                        data-error="Campo requerido" ng-options="item for item in depsList" ng-change="onDepartmentoChange()" required></select>
+
+                <select ng-model="selectedMunicipio" class="form-control" ng-show="municipioList.length >0"
+                        data-error="Campo requerido" ng-options="item for item in municipioList"></select>
+
 
                 <div class="help-block with-errors"></div>
             </div>
