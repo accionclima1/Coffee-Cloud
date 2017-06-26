@@ -63,7 +63,7 @@ node ./bin/www to launch express app
 ssh -i ~/.ssh/coffee-cloud-nica.pem ubuntu@Cafenica.centroclima.org
 
 
-cd apps/coffeecloud/Coffee-Cloud
+cd apps/Coffee-Cloud
 
 sudo forever start bin/www
 sudo git pull
