@@ -24,7 +24,7 @@ require('./models/Variety');
 require('./config/passport');
 mongoose.connect('mongodb://cafenube:Sec03lP1nt0@cafenica.centroclima.org/dummyDB');
 
-//XR7vwshDKmKW
+//mbNKWiHZNrM9
 //{
 //      user: "admin",
 //      pwd: "Sec03lP1nt0",
