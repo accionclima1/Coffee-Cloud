@@ -81,7 +81,7 @@
 						    </div>
 						    <!--<button class="btn btn-primary add-unit" data-toggle="modal" data-target="#myModal2">Agregar Nueva Unidad</button>-->
 						    
-              <button class="btn btn-primary add-unit" data-toggle="modal" ng-click="AddNewUnit()">Agregar Nueva Unidad</button>
+              <button class="btn btn-primary add-unit" data-toggle="modal" ng-click="AddNewUnit()">Agregar Nueva Finca</button>
 							
 							<!-- Modals	 -->
 						
@@ -1055,15 +1055,7 @@
 																      ></input>
 															</div>
 														</div>
-														<div class="col-xs-12">
-															<div class="form-group">
-																<input type="text"
-																      class="form-control"
-																      placeholder="Variedad"
-																      ng-model="editUnit.lote[$index].variedad"	
-																      ></input>
-															</div>
-														</div>
+														
 									<div class="col-xs-12 text-center">
 										<p><strong>Distanciamiento en Metros</strong></p>
 									</div>
@@ -1086,7 +1078,750 @@
 															</div>
 														</div>
                                  
-                                   
+														
+														<!-- moved from manage unit directive --> 
+														
+														
+														<div class="col-xs-12">
+												            <div class="form-group">
+												                <div class="row" ng-show="variedades">
+												                    <label class="col-xs-12">Variedad</label>
+												                    <div class="col-xs-6" ng-repeat="variedad in variedades">
+												                        <!--<label ng-hide="variedad.name == 'cual?'">
+												                            <input type="checkbox" ng-model="editUnit.lote[$index].variedad[variedad.name]"> {{variedad.name}}
+												                        </label>
+												
+												                        <input type="text"
+												                               class="form-control"
+												                               placeholder="¿cual?"
+												                               ng-model="editUnit.lote[$index].variedad['cual?']" ng-show="editUnit.lote[$index].variedad['otro'] && variedad.name == 'cual?'"></input>-->
+												
+												                        
+												                      
+												
+												                        <label ng-hide="variedad.name == 'cual?'">
+												                            
+												                           
+												
+												
+												                            <input type="checkbox" ng-model="editUnit.lote[$index].variedad.isSelected"> {{variedad.name}}
+												                        </label>
+												
+												                        <input type="text" 
+												                               class="form-control"
+												                               placeholder="¿cual?"
+												                               ng-model="editUnit.lote[$index].variedad.VAL" ng-show="editUnit.lote[$index].variedad.isSelected && variedad.ISUDF"></input>
+												
+												
+												                         
+												                    </div>
+												
+												                </div>
+												            </div>
+												        </div>
+												
+												
+												      
+												
+												        <div class="col-xs-12">
+												            <div class="form-group">
+												                <!--<input type="text"
+												                       class="form-control"
+												                       placeholder="Distanciamiento Ej: 2x1"
+												                       ng-model="editUnit.lote[$index].distanciamiento"></input>-->
+												                (Metros)
+												            </div>
+												        </div>
+												        <div class="col-xs-12">
+												            <div class="form-group">
+												                <p>¿Tiene sombra?</p>
+												                <div class="radio">
+												                    <label>
+												                        <input type="radio" id="optionsRadios1" ng-value="true" ng-model="editUnit.lote[$index].sombra">
+												                        Si
+												                    </label>
+												                </div>
+												                <div class="radio">
+												                    <label>
+												                        <input type="radio" id="optionsRadios2" ng-value="false" ng-model="editUnit.lote[$index].sombra">
+												                        No
+												                    </label>
+												                </div>
+												            </div>
+												        </div>
+												        <div class="col-xs-12">
+												            <div class="form-group">
+												                <p>¿Realiza muestreo de suelos?</p>
+												                <div class="radio">
+												                    <label>
+												                        <input type="radio" ng-change=yesNomuestreoChange('newUnit') name="muestreo" ng-value="true" ng-model="editUnit.lote[$index].muestreo">
+												                        Si
+												                    </label>
+												                </div>
+												                <div class="radio">
+												                    <label>
+												                        <input type="radio" ng-change=yesNomuestreoChange('newUnit') name="muestreo" ng-value="false" ng-model="editUnit.lote[$index].muestreo" checked>
+												                        No
+												                    </label>
+												                </div>
+												            </div>
+												        </div>
+												        <div class="col-xs-12" ng-show="editUnit.lote[$index].muestreo">
+												            <div class="form-group">
+												                <label>¿En que mes lo realiza?</label>
+												                <select class="form-control" id="selmuestreoOptions" multiple="true" ng-model="editUnit.lote[$index].muestreoMes">
+												                    <option ng-repeat="option in MonthDropDownOptions" value="{{option.name}}">{{option.displayValue}}</option>
+												                </select>
+												            </div>
+												        </div>
+												        <div class="col-xs-12">
+												            <div class="form-group">
+												                <p>¿Fertiliza el suelo?</p>
+												                <div class="radio">
+												                    <label>
+												                        <input type="radio" ng-change=yesNofertilizaSueloChange('newUnit') name="fertilizaSuelo" ng-value="true" ng-model="editUnit.lote[$index].fertilizaSuelo">
+												                        Si
+												                    </label>
+												                </div>
+												                <div class="radio">
+												                    <label>
+												                        <input type="radio" ng-change=yesNofertilizaSueloChange('newUnit') name="fertilizaSuelo" ng-value="false" ng-model="editUnit.lote[$index].fertilizaSuelo" checked>
+												                        No
+												                    </label>
+												                </div>
+												            </div>
+												        </div>
+												        <div class="col-xs-12" ng-show="editUnit.lote[$index].fertilizaSuelo">
+												            <div class="form-group">
+												                <label>¿En que mes lo realiza?</label>
+												                <select class="form-control" id="selfertilizaOptions" multiple="true" ng-model="editUnit.lote[$index].fertilizaSueloMes">
+												                    <option ng-repeat="option in MonthDropDownOptions" value="{{option.name}}">{{option.displayValue}}</option>
+												                </select>
+												            </div>
+												        </div>
+												        <div class="col-xs-12">
+												            <div class="form-group">
+												                <p>¿Realiza aplicaciones de Boro y Zinc?</p>
+												                <div class="radio">
+												                    <label>
+												                        <input type="radio" ng-change=yesNofertilizaFollajeChange('newUnit') name="fertilizaFollaje" ng-value="true" ng-model="editUnit.lote[$index].fertilizaFollaje">
+												                        Si
+												                    </label>
+												                </div>
+												                <div class="radio">
+												                    <label>
+												                        <input type="radio" ng-change=yesNofertilizaFollajeChange('newUnit') name="fertilizaFollaje" ng-value="false" ng-model="editUnit.lote[$index].fertilizaFollaje" checked>
+												                        No
+												                    </label>
+												                </div>
+												            </div>
+												        </div>
+												        <div class="col-xs-12" ng-show="editUnit.lote[$index].fertilizaFollaje">
+												            <div class="form-group">
+												                <label>¿En que mes lo realiza?</label>
+												                <select class="form-control" id="selfertilizaFollajeOptions" multiple="true" ng-model="editUnit.lote[$index].fertilizaFollajeMes">
+												                    <option ng-repeat="option in MonthDropDownOptions" value="{{option.name}}">{{option.displayValue}}</option>
+												                </select>
+												            </div>
+												        </div>
+												        <div class="col-xs-12">
+												            <div class="form-group">
+												                <p>¿Realiza enmiendas de suelo (encalado)?</p>
+												                <div class="radio">
+												                    <label>
+												                        <input type="radio" ng-change=yesNoenmiendasSueloChange('newUnit') name="enmiendasSuelo" ng-value="true" ng-model="editUnit.lote[$index].enmiendasSuelo">
+												                        Si
+												                    </label>
+												                </div>
+												                <div class="radio">
+												                    <label>
+												                        <input type="radio" ng-change=yesNoenmiendasSueloChange('newUnit') ng-value="false" ng-model="editUnit.lote[$index].enmiendasSuelo" checked>
+												                        No
+												                    </label>
+												                </div>
+												            </div>
+												        </div>
+												        <div class="col-xs-12" ng-show="editUnit.lote[$index].enmiendasSuelo">
+												            <div class="form-group">
+												                <label>¿En que mes lo realiza?</label>
+												                <select class="form-control" id="enmiendasSueloOptions" multiple="true" ng-model="editUnit.lote[$index].enmiendasSueloMes">
+												                    <option ng-repeat="option in MonthDropDownOptions" value="{{option.name}}">{{option.displayValue}}</option>
+												                </select>
+												            </div>
+												        </div>
+												        <div class="col-xs-12">
+												            <div class="form-group">
+												                <p>¿Realiza manejo de tejido (poda)?</p>
+												                <div class="radio">
+												                    <label>
+												                        <input type="radio" ng-change=yesNomanejoTejidoChange('newUnit') name="manejoTejido" ng-value="true" ng-model="editUnit.lote[$index].manejoTejido">
+												                        Si
+												                    </label>
+												                </div>
+												                <div class="radio">
+												                    <label>
+												                        <input type="radio" ng-change=yesNomanejoTejidoChange('newUnit') name="manejoTejido" ng-value="false" ng-model="editUnit.lote[$index].manejoTejido" checked>
+												                        No
+												                    </label>
+												                </div>
+												            </div>
+												        </div>
+												        <div class="col-xs-12" ng-show="editUnit.lote[$index].manejoTejido">
+												            <div class="form-group">
+												                <label>¿En que mes lo realiza?</label>
+												                <select class="form-control" id="manejoTejidoOptions" multiple="true" ng-model="editUnit.lote[$index].manejoTejidoMes">
+												                    <option ng-repeat="option in MonthDropDownOptions" value="{{option.name}}">{{option.displayValue}}</option>
+												                </select>
+												            </div>
+												        </div>
+												
+												
+												        <div class="col-xs-12">
+												            <div class="form-group">
+												                <p>¿Verifica la calidad del Agua?</p>
+												                <div class="radio">
+												                    <label>
+												                        <input type="radio" ng-change=yesNoVerificiaAcquaChange('newUnit') name="verificaAgua" ng-value="true" ng-model="editUnit.lote[$index].verificaAgua">
+												                        Si
+												                    </label>
+												                </div>
+												                <div class="radio">
+												                    <label>
+												                        <input type="radio" ng-change=yesNoVerificiaAcquaChange('newUnit') name="verificaAgua" ng-value="false" ng-model="editUnit.lote[$index].verificaAgua" checked>
+												                        No
+												                    </label>
+												                </div>
+												            </div>
+												        </div>
+												        <div class="col-xs-12" ng-show="editUnit.lote[$index].verificaAgua">
+												            <div class="form-group">
+												                <div class="row">
+												                    <label class="col-xs-12">¿Que tipo de verificación?</label>
+												                    <div class="col-xs-6">
+												                        <label>
+												                            <input type="checkbox" ng-model="editUnit.lote[$index].verificaAguaTipo.ph"> pH
+												                        </label>
+												                    </div>
+												                    <div class="col-xs-6">
+												                        <label>
+												                            <input type="checkbox" ng-model="editUnit.lote[$index].verificaAguaTipo.dureza"> Dureza
+												                        </label>
+												                    </div>
+												
+												                </div>
+												
+												            </div>
+												        </div>
+												        <div class="col-xs-12">
+												            <div class="form-group">
+												                <input type="text"
+												                       class="form-control"
+												                       placeholder="Producción"
+												                       ng-model="editUnit.lote[$index].rendimiento"></input>
+												                (Fanegas/Hectáreas)
+												            </div>
+												        </div>
+												        <div class="col-xs-12">
+												            <div class="form-group">
+												
+												                <input type="text"
+												                       class="form-control date-field"
+												                       placeholder="Floracion principal"
+												                       ng-model="editUnit.lote[$index].floracionPrincipal"></input>
+												            </div>
+												        </div>
+														
+														<div class="col-xs-12">
+													        <div class="form-group">
+													            <p>¿Aplica fungicidas para el control de roya?</p>
+													            <div class="radio">
+													                <label>
+													                    <input type="radio" name="enfermedades" ng-change="yesNoSelectionChange('newUnit')" ng-value="true" ng-model="editUnit.lote[$index].enfermedades">
+													                    Si
+													                </label>
+													            </div>
+													            <div class="radio">
+													                <label>
+													                    <input type="radio" name="enfermedades" ng-change="yesNoSelectionChange('newUnit')" ng-value="false" ng-model="editUnit.lote[$index].enfermedades" checked>
+													                    No
+													                </label>
+													            </div>
+													        </div>
+													    </div>
+													    <div class="col-xs-12" ng-show="editUnit.lote[$index].enfermedades">
+													        <div class="form-group">
+													            <div class="row">
+													                <label class="col-xs-12">¿Que tipo de fungicidas aplica?</label>
+													                <div class="col-xs-6">
+													                    <label>
+													                        <input type="checkbox" value="Contacto" ng-change="FungicidOptionsChange('newUnit','contacto')" ng-model="editUnit.lote[$index].fungicidas.contacto"> Contacto
+													                    </label>
+													                </div>
+													                <div class="col-xs-6">
+													                    <label>
+													                        <input type="checkbox" value="Sistémico" ng-change="FungicidOptionsChange('newUnit','sistemico')" ng-model="editUnit.lote[$index].fungicidas.sistemico"> Sistémico
+													                    </label>
+													                </div>
+													                <div class="col-xs-6">
+													                    <label>
+													                        <input type="checkbox" value="Biológico" ng-change="FungicidOptionsChange('newUnit','biologico')" ng-model="editUnit.lote[$index].fungicidas.biologico"> Biológico
+													                    </label>
+													                </div>
+													            </div>
+													        </div>
+													    </div>
+													
+													    <div class="col-xs-12" ng-show="editUnit.lote[$index].fungicidas.contacto">
+													        <div class="form-group">
+													            <div class="row">
+													                <label class="col-xs-12">Fungicidas de Contacto </label>
+													                <div class="clearfix"></div>
+													                <div class="col-xs-6">
+													                    <label>
+													                        <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','contactoOptions.caldovicosa')" value=" Caldo Vicosa" ng-model="editUnit.lote[$index].fungicidas.contactoOptions.caldovicosa"> Caldo Vicosa
+													                    </label>
+													                    <div class="form-group" ng-if="editUnit.lote[$index].fungicidas.contactoOptions.caldovicosa">
+													                        <label>¿Cuando lo aplica?</label>
+													                        <select class="form-control" multiple="true" ng-model="editUnit.lote[$index].fungicidas.contactoOptionsMonths.caldovicosa">
+													                            <option>Enero</option>
+													                            <option>Febrero</option>
+													                            <option>Marzo</option>
+													                            <option>Abril</option>
+													                            <option>Mayo</option>
+													                            <option>Junio</option>
+													                            <option>Julio</option>
+													                            <option>Agosto</option>
+													                            <option>Septiembre</option>
+													                            <option>Octubre</option>
+													                            <option>Noviembre</option>
+													                            <option>Diciembre</option>
+													                        </select>
+													                    </div>
+													                </div>
+													                <div class="col-xs-6">
+													                    <label>
+													                        <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','contactoOptions.caldobordeles')" value="Caldo Bordeles" ng-model="editUnit.lote[$index].fungicidas.contactoOptions.caldobordeles"> Caldo Bordeles
+													                    </label>
+													                    <div class="form-group" ng-if="editUnit.lote[$index].fungicidas.contactoOptions.caldobordeles">
+													                        <label>¿Cuando lo aplica?</label>
+													                        <select class="form-control" multiple="true" ng-model="editUnit.lote[$index].fungicidas.contactoOptionsMonths.caldobordeles">
+													                            <option>Enero</option>
+													                            <option>Febrero</option>
+													                            <option>Marzo</option>
+													                            <option>Abril</option>
+													                            <option>Mayo</option>
+													                            <option>Junio</option>
+													                            <option>Julio</option>
+													                            <option>Agosto</option>
+													                            <option>Septiembre</option>
+													                            <option>Octubre</option>
+													                            <option>Noviembre</option>
+													                            <option>Diciembre</option>
+													                        </select>
+													                    </div>
+													                </div>
+													                <div class="col-xs-6">
+													                    <label>
+													                        <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','contactoOptions.otrocual')" value="Otro" ng-model="editUnit.lote[$index].fungicidas.contactoOptions.otrocual"> Otro ¿Cuál
+													                    </label>
+													                    <label>
+													                        <input type="text" ng-show="editUnit.lote[$index].fungicidas.contactoOptions.otrocual" placeholder="¿Cuál?" ng-model="editUnit.lote[$index].fungicidas.contactoOptions.cual">
+													                    </label>
+													                    <div class="form-group" ng-if="editUnit.lote[$index].fungicidas.contactoOptions.otrocual">
+													                        <label>¿Cuando lo aplica?</label>
+													                        <select class="form-control" multiple="true" ng-model="editUnit.lote[$index].fungicidas.contactoOptionsMonths.otrocual">
+													                            <option>Enero</option>
+													                            <option>Febrero</option>
+													                            <option>Marzo</option>
+													                            <option>Abril</option>
+													                            <option>Mayo</option>
+													                            <option>Junio</option>
+													                            <option>Julio</option>
+													                            <option>Agosto</option>
+													                            <option>Septiembre</option>
+													                            <option>Octubre</option>
+													                            <option>Noviembre</option>
+													                            <option>Diciembre</option>
+													                        </select>
+													                    </div>
+													                </div>
+													                <div class="clearfix"></div>
+													            </div>
+													        </div>
+													    </div>
+													
+													    <div class="col-xs-12" ng-show="editUnit.lote[$index].fungicidas.sistemico">
+													        <div class="form-group">
+													            <div class="row">
+													                <label class="col-xs-12">Fungicidas Sistémicos</label>
+													                <div class="clearfix"></div>
+													                <div class="col-xs-6">
+													                    <label>
+													                        <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','sistemicoOptions.opus')" value="Opus" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptions.opus"> Opus
+													                    </label>
+													                    <div ng-if="editUnit.lote[$index].fungicidas.sistemicoOptions.opus">
+													                        <div class="form-group">
+													                            <label>¿Cuando lo aplica?</label>
+													                            <select class="form-control" multiple="true" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptionsMonths.opus">
+													                                <option>Enero</option>
+													                                <option>Febrero</option>
+													                                <option>Marzo</option>
+													                                <option>Abril</option>
+													                                <option>Mayo</option>
+													                                <option>Junio</option>
+													                                <option>Julio</option>
+													                                <option>Agosto</option>
+													                                <option>Septiembre</option>
+													                                <option>Octubre</option>
+													                                <option>Noviembre</option>
+													                                <option>Diciembre</option>
+													                            </select>
+													                        </div>
+													                    </div>
+													                </div>
+													                <div class="col-xs-6">
+													                    <label>
+													                        <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','sistemicoOptions.opera')" value="Opera" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptions.opera">Opera
+													                    </label>
+													                    <div ng-if="editUnit.lote[$index].fungicidas.sistemicoOptions.opera">
+													                        <div class="form-group">
+													                            <label>¿Cuando lo aplica?</label>
+													                            <select class="form-control" multiple="true" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptionsMonths.opera">
+													                                <option>Enero</option>
+													                                <option>Febrero</option>
+													                                <option>Marzo</option>
+													                                <option>Abril</option>
+													                                <option>Mayo</option>
+													                                <option>Junio</option>
+													                                <option>Julio</option>
+													                                <option>Agosto</option>
+													                                <option>Septiembre</option>
+													                                <option>Octubre</option>
+													                                <option>Noviembre</option>
+													                                <option>Diciembre</option>
+													                            </select>
+													                        </div>
+													                    </div>
+													                </div>
+													
+													                <div class="col-xs-6">
+													                    <label>
+													                        <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','sistemicoOptions.esferamax')" value="Esfera Max" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptions.esferamax">Esfera Max
+													                    </label>
+													                    <div ng-if="editUnit.lote[$index].fungicidas.sistemicoOptions.esferamax">
+													                        <div class="form-group">
+													                            <label>¿Cuando lo aplica?</label>
+													                            <select class="form-control" multiple="true" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptionsMonths.esferamax">
+													                                <option>Enero</option>
+													                                <option>Febrero</option>
+													                                <option>Marzo</option>
+													                                <option>Abril</option>
+													                                <option>Mayo</option>
+													                                <option>Junio</option>
+													                                <option>Julio</option>
+													                                <option>Agosto</option>
+													                                <option>Septiembre</option>
+													                                <option>Octubre</option>
+													                                <option>Noviembre</option>
+													                                <option>Diciembre</option>
+													                            </select>
+													                        </div>
+													                    </div>
+													                </div>
+													
+													                <div class="col-xs-6">
+													                    <label>
+													                        <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','sistemicoOptions.amistarxtra')" value="Amistar Xtra" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptions.amistarxtra">Amistar Xtra
+													                    </label>
+													                    <div ng-if="editUnit.lote[$index].fungicidas.sistemicoOptions.amistarxtra">
+													                        <div class="form-group">
+													                            <label>¿Cuando lo aplica?</label>
+													                            <select class="form-control" multiple="true" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptionsMonths.amistarxtra">
+													                                <option>Enero</option>
+													                                <option>Febrero</option>
+													                                <option>Marzo</option>
+													                                <option>Abril</option>
+													                                <option>Mayo</option>
+													                                <option>Junio</option>
+													                                <option>Julio</option>
+													                                <option>Agosto</option>
+													                                <option>Septiembre</option>
+													                                <option>Octubre</option>
+													                                <option>Noviembre</option>
+													                                <option>Diciembre</option>
+													                            </select>
+													                        </div>
+													                    </div>
+													                </div>
+													
+													                <div class="col-xs-6">
+													                    <label>
+													                        <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','sistemicoOptions.alto10')" value="Alto 10" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptions.alto10">Alto 10
+													                    </label>
+													                    <div ng-if="editUnit.lote[$index].fungicidas.sistemicoOptions.alto10">
+													                        <div class="form-group">
+													                            <label>¿Cuando lo aplica?</label>
+													                            <select class="form-control" multiple="true" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptionsMonths.alto10">
+													                                <option>Enero</option>
+													                                <option>Febrero</option>
+													                                <option>Marzo</option>
+													                                <option>Abril</option>
+													                                <option>Mayo</option>
+													                                <option>Junio</option>
+													                                <option>Julio</option>
+													                                <option>Agosto</option>
+													                                <option>Septiembre</option>
+													                                <option>Octubre</option>
+													                                <option>Noviembre</option>
+													                                <option>Diciembre</option>
+													                            </select>
+													                        </div>
+													                    </div>
+													                </div>
+													
+													
+													                <div class="col-xs-6">
+													                    <label>
+													                        <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','sistemicoOptions.silvacur')" value="Silvacur" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptions.silvacur">Silvacur
+													                    </label>
+													                    <div ng-if="editUnit.lote[$index].fungicidas.sistemicoOptions.silvacur">
+													                        <div class="form-group">
+													                            <label>¿Cuando lo aplica?</label>
+													                            <select class="form-control" multiple="true" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptionsMonths.silvacur">
+													                                <option>Enero</option>
+													                                <option>Febrero</option>
+													                                <option>Marzo</option>
+													                                <option>Abril</option>
+													                                <option>Mayo</option>
+													                                <option>Junio</option>
+													                                <option>Julio</option>
+													                                <option>Agosto</option>
+													                                <option>Septiembre</option>
+													                                <option>Octubre</option>
+													                                <option>Noviembre</option>
+													                                <option>Diciembre</option>
+													                            </select>
+													                        </div>
+													                    </div>
+													                </div>
+													
+													                <div class="col-xs-6">
+													                    <label>
+													                        <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','sistemicoOptions.verdadero')" value="Verdadero" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptions.verdadero">Verdadero
+													                    </label>
+													                    <div ng-if="editUnit.lote[$index].fungicidas.sistemicoOptions.verdadero">
+													                        <div class="form-group">
+													                            <label>¿Cuando lo aplica?</label>
+													                            <select class="form-control" multiple="true" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptionsMonths.verdadero">
+													                                <option>Enero</option>
+													                                <option>Febrero</option>
+													                                <option>Marzo</option>
+													                                <option>Abril</option>
+													                                <option>Mayo</option>
+													                                <option>Junio</option>
+													                                <option>Julio</option>
+													                                <option>Agosto</option>
+													                                <option>Septiembre</option>
+													                                <option>Octubre</option>
+													                                <option>Noviembre</option>
+													                                <option>Diciembre</option>
+													                            </select>
+													                        </div>
+													                    </div>
+													                </div>
+													
+													
+													
+													
+													
+													
+													                <div class="col-xs-6">
+													                    <label>
+													                        <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','sistemicoOptions.caporal')" value="Caporal" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptions.caporal"> Caporal
+													                    </label>
+													                    <div ng-if="editUnit.lote[$index].fungicidas.sistemicoOptions.caporal">
+													                        <div class="form-group">
+													                            <label>¿Cuando lo aplica?</label>
+													                            <select class="form-control" multiple="true" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptionsMonths.caporal">
+													                                <option>Enero</option>
+													                                <option>Febrero</option>
+													                                <option>Marzo</option>
+													                                <option>Abril</option>
+													                                <option>Mayo</option>
+													                                <option>Junio</option>
+													                                <option>Julio</option>
+													                                <option>Agosto</option>
+													                                <option>Septiembre</option>
+													                                <option>Octubre</option>
+													                                <option>Noviembre</option>
+													                                <option>Diciembre</option>
+													                            </select>
+													                        </div>
+													                    </div>
+													                </div>
+													
+													
+													
+													
+													
+													
+													
+													
+													                <div class="col-xs-6">
+													                    <label>
+													                        <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','sistemicoOptions.estrobirulina')" value="Estrobirulina" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptions.estrobirulina"> Estrobirulina
+													                    </label>
+													                    <div ng-if="editUnit.lote[$index].fungicidas.sistemicoOptions.estrobirulina">
+													                        <div class="form-group">
+													                            <label>¿Cuando lo aplica?</label>
+													                            <select class="form-control" multiple="true" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptionsMonths.estrobirulina">
+													                                <option>Enero</option>
+													                                <option>Febrero</option>
+													                                <option>Marzo</option>
+													                                <option>Abril</option>
+													                                <option>Mayo</option>
+													                                <option>Junio</option>
+													                                <option>Julio</option>
+													                                <option>Agosto</option>
+													                                <option>Septiembre</option>
+													                                <option>Octubre</option>
+													                                <option>Noviembre</option>
+													                                <option>Diciembre</option>
+													                            </select>
+													                        </div>
+													                    </div>
+													                </div>
+													
+													
+													                <div class="col-xs-6" ng-class="editUnit.lote[$index].fungicidas.sistemicoOptions.otro ? 'col-xs-6' : 'col-xs-12'">
+													                    <label>
+													                        <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','sistemicoOptions.otro')" value="Otro" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptions.otro">Otro
+													                    </label>
+													
+													                    <label>
+													                        <input type="text" placeholder="¿Otro?" ng-show="editUnit.lote[$index].fungicidas.sistemicoOptions.otro" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptions.cual">
+													                    </label>
+													
+													                    <div ng-if="editUnit.lote[$index].fungicidas.sistemicoOptions.otro">
+													                        <div class="form-group">
+													                            <label>¿Cuando lo aplica?</label>
+													                            <select class="form-control" multiple="true" ng-model="editUnit.lote[$index].fungicidas.sistemicoOptionsMonths.otro">
+													                                <option>Enero</option>
+													                                <option>Febrero</option>
+													                                <option>Marzo</option>
+													                                <option>Abril</option>
+													                                <option>Mayo</option>
+													                                <option>Junio</option>
+													                                <option>Julio</option>
+													                                <option>Agosto</option>
+													                                <option>Septiembre</option>
+													                                <option>Octubre</option>
+													                                <option>Noviembre</option>
+													                                <option>Diciembre</option>
+													                            </select>
+													                        </div>
+													                    </div>
+													                </div>
+													            </div>
+													        </div>
+													    </div>
+													
+													    <div class="col-xs-12" ng-show="editUnit.lote[$index].fungicidas.biologico">
+													        <div class="form-group">
+													            <div class="row">
+													                <label class="col-xs-12">Fungicidas Biológicos </label>
+													                <div class="clearfix"></div>
+													                <div class="col-xs-6">
+													                    <label>
+													                        <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','biologicalOptions.verticiliumlecanii')" value="Verticilium Lecanii" ng-model="editUnit.lote[$index].fungicidas.biologicalOptions.verticiliumlecanii"> Verticilium Lecanii
+													                    </label>
+													                    <div ng-if="editUnit.lote[$index].fungicidas.biologicalOptions.verticiliumlecanii">
+													                        <div class="form-group">
+													                            <label>¿Cuando lo aplica?</label>
+													                            <select class="form-control" multiple="true" ng-model="editUnit.lote[$index].fungicidas.biologicalOptionsMonths.verticiliumlecanii">
+													                                <option>Enero</option>
+													                                <option>Febrero</option>
+													                                <option>Marzo</option>
+													                                <option>Abril</option>
+													                                <option>Mayo</option>
+													                                <option>Junio</option>
+													                                <option>Julio</option>
+													                                <option>Agosto</option>
+													                                <option>Septiembre</option>
+													                                <option>Octubre</option>
+													                                <option>Noviembre</option>
+													                                <option>Diciembre</option>
+													                            </select>
+													                        </div>
+													                    </div>
+													                </div>
+													
+													
+													                <div class="col-xs-6">
+													                    <label>
+													                        <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','biologicalOptions.bacilussutillis')" value="Bacilus Sutillis" ng-model="editUnit.lote[$index].fungicidas.biologicalOptions.bacilussutillis"> Bacilus Sutillis
+													                    </label>
+													                    <div ng-if="editUnit.lote[$index].fungicidas.biologicalOptions.bacilussutillis">
+													                        <div class="form-group">
+													                            <label>¿Cuando lo aplica?</label>
+													                            <select class="form-control" multiple="true" ng-model="editUnit.lote[$index].fungicidas.biologicalOptionsMonths.bacilussutillis">
+													                                <option>Enero</option>
+													                                <option>Febrero</option>
+													                                <option>Marzo</option>
+													                                <option>Abril</option>
+													                                <option>Mayo</option>
+													                                <option>Junio</option>
+													                                <option>Julio</option>
+													                                <option>Agosto</option>
+													                                <option>Septiembre</option>
+													                                <option>Octubre</option>
+													                                <option>Noviembre</option>
+													                                <option>Diciembre</option>
+													                            </select>
+													                        </div>
+													                    </div>
+													                </div>
+													                <div class="col-xs-6">
+													                    <label>
+													                        <input type="checkbox" ng-change="CheckboxBasedMonthChange('newUnit','biologicalOptions.otrocual')" value="Otro" ng-model="editUnit.lote[$index].fungicidas.biologicalOptions.otrocual"> Otro
+													                    </label>
+													                    <label>
+													                        <input type="text" placeholder="¿Cuál?" ng-show="editUnit.lote[$index].fungicidas.biologicalOptions.otrocual" ng-model="editUnit.lote[$index].fungicidas.biologicalOptions.cual">
+													                    </label>
+													                    <div ng-if="editUnit.lote[$index].fungicidas.biologicalOptions.otrocual">
+													                        <div class="form-group">
+													                            <label>¿Cuando lo aplica?</label>
+													                            <select class="form-control" multiple="true" ng-model="editUnit.lote[$index].fungicidas.biologicalOptionsMonths.otrocual">
+													                                <option>Enero</option>
+													                                <option>Febrero</option>
+													                                <option>Marzo</option>
+													                                <option>Abril</option>
+													                                <option>Mayo</option>
+													                                <option>Junio</option>
+													                                <option>Julio</option>
+													                                <option>Agosto</option>
+													                                <option>Septiembre</option>
+													                                <option>Octubre</option>
+													                                <option>Noviembre</option>
+													                                <option>Diciembre</option>
+													                            </select>
+													                        </div>
+													                    </div>
+													                </div>
+													                <div class="clearfix"></div>
+													            </div>
+													        </div>
+													    </div>
+														
+														
+														
+														
+														
+														
+														
+														
+														
+														
                                      
 														<div class="col-xs-12">
 															<div class="form-group">
