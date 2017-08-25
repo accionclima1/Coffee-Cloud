@@ -198,7 +198,7 @@ router.post('/register', function (req, res, next) {
 
 router.post('/login', function (req, res, next) {
     if (!req.body.username || !req.body.password) {
-        return res.status(400).json({ message: 'Por favor, llene todos los campos' });
+        return res.status(400).json({ message: 'Por favor, llene todos los campos correctamente' });
     }
     passport.authenticate('local', function (err, user, info) {
         if (err) { return next(err); }
