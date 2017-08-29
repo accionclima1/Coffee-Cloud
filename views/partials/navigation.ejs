@@ -7,7 +7,7 @@
 	      <li ng-class="{ active: isActive('/roya') }"><a href="#/roya" snap-toggle><i class="fa fa-leaf"></i> Cálculo de Roya</a></li>
 	      <li ng-class="{ active: isActive('/gallo') }"><a href="#/gallo" snap-toggle><i class="fa fa-leaf"></i> Cálculo de Ojo de Gallo</a></li>
 	      <li ng-class="{ active: isActive('/dosage') }"><a href="#/dosage" snap-toggle><i class="fa fa-cog"></i> Cálculo de Dosificación</a></li>
-	      <li ng-class="{ active: isActive('/campo') }"><a href="#/campo" snap-toggle><i class="fa fa-cog"></i> Hoja de enfermedad </a></li>
+	     
 	      <!-- <li ng-class="{ active: isActive('/vulnerability') }"><a href="#/vulnerability" snap-toggle><i class="fa fa-cog"></i> Vulnerabilidad</a></li> -->
 	      <!--<li><a href="#" snap-toggle><i class="fa fa-cog"></i> Cálculo de fertilizante</a></li>
 	      <li><a href="#" snap-toggle><i class="fa fa-calculator"></i> Cálculo de cosecha</a></li>
@@ -15,7 +15,10 @@
 	      <li ng-class="{ active: isActive('/news') }"><a href="#/news" snap-toggle><i class="fa fa-bell"></i> Noticias</a></li>
 	      <li ng-class="{ active: isActive('/support') }"><a href="#/support" snap-toggle><i class="fa fa-comment"></i> Comunicación</a></li>
 	      <li ng-class="{ active: isActive('/profile') }"><a href="#/profile" snap-toggle><i class="fa fa-user"></i> Perfil</a></li>
+	      <li ng-show="currentuserO.role == 'Admin' || currentuserO.role == 'Tecnico'" ng-class="{ active: isActive('/royatec') }"><a style="background-color: #00ABFF;color: #fff;" href="#/royatec" snap-toggle><i class="fa fa-leaf"></i> Cálculo de Roya(T)</a></li>
 	       <li ng-show="currentuserO.role == 'Admin' || currentuserO.role == 'Tecnico'" ng-class="{ active: isActive('/visita') }"><a href="#/visita" style="background-color: #00ABFF;color: #fff;" snap-toggle><i class="fa fa-cog"></i> Visita Tecnica</a></li>
+	       <li ng-show="currentuserO.role == 'Admin' || currentuserO.role == 'Tecnico'" ng-class="{ active: isActive('/campo') }"><a style="background-color: #00ABFF;color: #fff;" href="#/campo" snap-toggle><i class="fa fa-cog"></i> Hoja de enfermedad </a></li>
 	      <li><a href="#/login" ng-click="logOut()" snap-close><i class="fa fa-power-off"></i> Salir</a></li>
+	       
 	    </ul>
 	  </nav>
