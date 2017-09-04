@@ -59,6 +59,12 @@
 
     <link href="javascripts/plugins/SweetAlert/sweetalert.css" rel="stylesheet" type="text/css" />
     <script src="javascripts/plugins/SweetAlert/sweetalert.min.js"></script>
+    
+    
+    <script type="text/javascript" src="javascripts/plugins/chartist/chartist.min.js"></script>
+	<script type="text/javascript" src="javascripts/plugins/chartist/chartist-plugin-tooltip.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="stylesheets/plugins/chartist.min.css">
+	<link rel="stylesheet" type="text/css" href="stylesheets/plugins/chartist-plugin-tooltip.css">
 
 	<script src="javascripts/easy-weather-keys.js"></script>
 	<script src="javascripts/easy-weather.js"></script>
@@ -220,9 +226,10 @@
 
 				    <div class="form-group">
 				      <input type="text"
-				      class="form-control"
+				      class="form-control reg-username"
 				      placeholder="Nombre de usuario"
 				      ng-model="user.username" ng-keypress="checkchar($event)" ng-pattern="/^[a-zA-Z0-9]*$/" required></input>
+				      <span class="error-msg">no permite espacios ni caracteres especiales</span>
 				    </div>
 
             <div class="form-group">
@@ -273,7 +280,7 @@
 				  </div>
 
           <manage-Unit></manage-Unit>
-          
+          	<div id="map-canvas1"></div>
           <!--<form name="newunitForm" novalidate class="form" role="form" ng-submit="saveUnit()" id="newunitForm" data-toggle="validator">
 						
 										    <div class="row">
@@ -1113,6 +1120,7 @@
 																			</div>
 													        </div>
 													        </div>
+													        
 															<div class="clearfix" ></div>
 													</div>
 										 	</div>
@@ -1376,6 +1384,16 @@
 								      <div class="modal-body">
 									      <h6 ng-show="royaHistory.length == 0">¡No hay cálculos todavía!</h6>
 								        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
+									        
+									        <!-- historic graphic -->
+									        
+									        
+									         <div id="datagUnit" class="ct-chart ct-chart-line" style="width: 100%; height: 250px; display: none"></div>
+									        
+									        
+									        <!--- end graphic -->
+									        
+									        
 									  <div class="panel panel-default" ng-repeat="roya in royaHistory">
 										    <div class="panel-heading" role="tab" id="{{ 'heading-' + $index }}">
 										      <h5 class="panel-title">
@@ -1407,6 +1425,8 @@
 									</div>
 								      </div>
 								      <div class="modal-footer">
+									      
+									      <button type="button" class="btn btn-default" ng-click="graficarHitorial()" >Gráfica</button>
 								        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
 								        
 								      </div>
@@ -6303,7 +6323,7 @@ Sending Recommendation                              </h6>
 															<div class="form-group">
 																<input type="text"
 																      class="form-control"
-																      placeholder="Tamaño del lote (manzanas)"
+																      placeholder="Tamaño del lote (Hectáreas)"
 																      ng-model="editUnit.lote[$index].tamano"	
 																      ></input>
 															</div>
@@ -6312,7 +6332,7 @@ Sending Recommendation                              </h6>
 															<div class="form-group">
 																<input type="text"
 																      class="form-control"
-																      placeholder="Edad del lote"
+																      placeholder="Edad del lote(años)"
 																      ng-model="editUnit.lote[$index].edad"	
 																      ></input>
 															</div>
@@ -6392,23 +6412,6 @@ Sending Recommendation                              </h6>
 												                       placeholder="Distanciamiento Ej: 2x1"
 												                       ng-model="editUnit.lote[$index].distanciamiento"></input>-->
 												                (Metros)
-												            </div>
-												        </div>
-												        <div class="col-xs-12">
-												            <div class="form-group">
-												                <p>¿Tiene sombra?</p>
-												                <div class="radio">
-												                    <label>
-												                        <input type="radio" id="optionsRadios1" ng-value="true" ng-model="editUnit.lote[$index].sombra">
-												                        Si
-												                    </label>
-												                </div>
-												                <div class="radio">
-												                    <label>
-												                        <input type="radio" id="optionsRadios2" ng-value="false" ng-model="editUnit.lote[$index].sombra">
-												                        No
-												                    </label>
-												                </div>
 												            </div>
 												        </div>
 												        <div class="col-xs-12">
@@ -7074,14 +7077,6 @@ Sending Recommendation                              </h6>
 													            </div>
 													        </div>
 													    </div>
-														
-														
-														
-														
-														
-														
-														
-														
 														
 														
                                      
