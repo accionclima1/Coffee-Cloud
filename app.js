@@ -21,6 +21,7 @@ require('./models/Roya');
 require('./models/Gallo');
 require('./models/Widget');
 require('./models/Variety');
+require('./models/Chemicals');
 require('./config/passport');
 mongoose.connect('mongodb://cafenube:Sec03lP1nt0@icafe.centroclima.org/dummyDB');
 

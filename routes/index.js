@@ -18,6 +18,7 @@ var Campo = mongoose.model('Campo');
 var Roya = mongoose.model('Roya');
 var Gallo = mongoose.model('Gallo');
 var Variety = mongoose.model('Variety');
+var Chemicals = mongoose.model('Chemicals');
 // Load widget model
 var Widget = mongoose.model('Widget');
 var jwt = require('express-jwt');
@@ -1032,7 +1033,6 @@ router.post('/varieties', auth, function (req, res, next) {
     });
 });
 
-
 router.post('/varieties/update', auth, function (req, res, next) {
     console.log(req.body);
     Variety.findById(req.body._id, function (err, varie) {
@@ -1059,6 +1059,53 @@ router.delete('/varieties', auth, function (req, res) {
     Variety.findByIdAndRemove(req.headers.variid, function (err, varie) {
         if (err) { console.log(err); /*throw err;*/ }
         res.json({ messageUnit: "variedad eliminada!" });
+    });
+
+});
+
+
+router.post('/chemicals', auth, function (req, res, next) {
+
+
+    var chemicals = new Chemicals(req.body);
+
+    //post.author = req.payload.username;
+    chemicals.name = req.body.name;
+
+    // console.log(req.user);
+    chemicals.save(function (err) {
+        if (err) { return res.status(500).json({ message: err }); }
+        res.json(varieties);
+
+    });
+});
+
+router.post('/chemicals/update', auth, function (req, res, next) {
+    console.log(req.body);
+    Chemicals.findById(req.body._id, function (err, chem) {
+        console.log(chem);
+        chem.name = req.body.name;
+        chem.save(function (err, updatedchem) {
+            if (err) return res.send({Success:false});
+            res.send({ Success: true });
+        });
+    });
+});
+
+
+router.get('/chemicals', function (req, res, next) {
+    Chemicals.find(function (err, chemicals) {
+        if (err) { return next(err); }
+
+        res.json(chemicals);
+    });
+});
+
+
+router.delete('/chemicals', auth, function (req, res) {
+    Chemicals.findByIdAndRemove(req.headers.variid, function (err, varie) {
+        if (err) { console.log(err); /*throw err;*/ }
+        res.json({ messageUnit: "Agroquimico Eliminado!" });
     });
 
 });
