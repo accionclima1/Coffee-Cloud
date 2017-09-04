@@ -15,6 +15,7 @@ app.controller('ChemCtrl', [
 	            currentchemicals = chemicals.data;
 	            console.log(currentchemicals);
 	            $scope.chemicals = currentchemicals;
+	            $scope.newChemicalType = "contacto";
 
 	            for (var vcnt = 0; vcnt < $scope.chemicals.length; vcnt++) {
 	                $scope.chemicals[vcnt].original = angular.copy($scope.chemicals[vcnt].name);
@@ -27,14 +28,19 @@ app.controller('ChemCtrl', [
 	    loadAll();
 
 	    $scope.addNew = function () {
-	        if ($scope.newVariety) {
+		    console.log("engaged");
+	        if ($scope.newChemical) {
 	            newChemical = {}
 	            newChemical["name"] = $scope.newChemical;
+	            newChemical["type"] = $scope.newChemicalType;
+	            
+	            console.log(newChemical);
 
 	            chemicals.create(newChemical).then(function (newVar) {
 	                currentchemicals.push(newVar.data);
 	                $scope.chemicals = currentchemicals;
 	                $scope.newChemical = "";
+	                $scope.newChemicalType = "contacto";
 	            });
 	        }
 	    };
@@ -45,7 +51,7 @@ app.controller('ChemCtrl', [
 	        varIdObj = {}
 	        varIdObj["varId"] = varId;
 
-	        varieties.deleteVariety(varIdObj).then(function (newVar) {
+	        chemicals.deleteChemical(varIdObj).then(function (newVar) {
 	            currentchemicals.splice(index, 1);
 	            $scope.chemicals = currentchemicals;
 	        });
@@ -79,7 +85,7 @@ app.factory('chemicals', ['$http', 'auth', '$window', function ($http, auth, $wi
     };
     o.create = function (chemicals) {
         //localhost unit
-        return $http.post('/chemicals', varieties, {
+        return $http.post('/chemicals', chemicals, {
             headers: { Authorization: 'Bearer ' + auth.getToken() }
         }).success(function (data) {
             return data;
@@ -87,14 +93,14 @@ app.factory('chemicals', ['$http', 'auth', '$window', function ($http, auth, $wi
     };
 
     o.update = function (chemicals) {
-        return $http.post('/chemicals/update', varieties, {
+        return $http.post('/chemicals/update', chemicals, {
             headers: { Authorization: 'Bearer ' + auth.getToken() }
         }).success(function (data) {
             return data;
         });
     }
 
-    o.deleteVariety = function (Ided) {
+    o.deleteChemical = function (Ided) {
         console.log(Ided);
         return $http.delete('/chemicals', {
             headers: { Authorization: 'Bearer ' + auth.getToken(), variid: Ided.varId }

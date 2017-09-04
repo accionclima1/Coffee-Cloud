@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');
 
 var ChemicalsSchema = new mongoose.Schema({
-	name: String
+	name: String,
+	category: String
 });
 
 mongoose.model('Chemicals', ChemicalsSchema);

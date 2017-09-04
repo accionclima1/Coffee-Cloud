@@ -1071,11 +1071,12 @@ router.post('/chemicals', auth, function (req, res, next) {
 
     //post.author = req.payload.username;
     chemicals.name = req.body.name;
+    chemicals.category = req.body.type;
 
     // console.log(req.user);
     chemicals.save(function (err) {
         if (err) { return res.status(500).json({ message: err }); }
-        res.json(varieties);
+        res.json(chemicals);
 
     });
 });
