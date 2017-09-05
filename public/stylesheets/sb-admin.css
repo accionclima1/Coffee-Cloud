@@ -746,3 +746,15 @@ div.wpcf7 .form-inline .form-group {
 		background: transparent !important;
 	}
 }
+
+/* agroquimicos */
+
+.fungi-list {
+
+}
+ 
+.fungi-list li strong {
+	float: right;
+	opacity: 0.5;
+	margin-right: 12px;
+}

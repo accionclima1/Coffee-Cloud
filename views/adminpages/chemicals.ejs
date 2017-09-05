@@ -18,9 +18,9 @@
 							    <i class="fa fa-circle-o-notch fa-spin"></i>
 							</p>
                 
-							    <ul class="list-group">
+							    <ul class="list-group fungi-list">
 									  <li class="list-group-item" ng-repeat="chemical in chemicals">
-                      <span ng-show="!variety.isEditing">{{ chemical.name }}</span>  
+                      <span ng-show="!chemical.isEditing">{{ chemical.name }}</span>  
                       <a class="btn btn-danger pull-right btn-xs" ng-show="!chemical.isEditing" ng-click="deleteChemical(chemical._id, $index)">
                         <i class="fa fa-trash"></i>
                       </a>
@@ -37,7 +37,7 @@
                     <a class="btn btn-success pull-right btn-xs" ng-show="chemical.isEditing" ng-click="updateChemical(chemical)" style="margin-right: 10px;">
                         <i class="fa fa-check"></i>
                       </a>
-					  {{ chemical.category }}
+					  <strong ng-show="!chemical.isEditing">{{ chemical.category }}</strong>
                   </li>
 									  
 								</ul>
