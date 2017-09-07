@@ -42,6 +42,7 @@ router.param('user', function (req, res, next, id) {
 /* Methods routes */
 
 router.post('/methods', auth, function(req, res, next) {
+	console.log(req);
   var method = new Method(req.body);
   method.caseInidence10.abrilJunio		   = req.body.caseInidence10.abrilJunio;
   method.caseInidence10.julioSetiembre	   = req.body.caseInidence10.julioSetiembre 

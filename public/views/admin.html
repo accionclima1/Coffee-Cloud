@@ -47,6 +47,7 @@
     <script src="/javascripts/admincontrollers/TechRecCtrl.js"></script>
     <script src="/javascripts/admincontrollers/UsersCtrl.js"></script>
     <script src="/javascripts/admincontrollers/VarietyCtrl.js"></script>
+    <script src="/javascripts/admincontrollers/ChemCtrl.js"></script>
 	
 
 
@@ -214,6 +215,9 @@
                     </li>
                      <li ng-class="{ active: isActive('/varieties') }">
                         <a href="/admin#/varieties"><i class="fa fa-fw fa-lemon-o"></i> Variedades de Cafe</a>
+                    </li>
+                    <li ng-class="{ active: isActive('/chemicals') }">
+                        <a href="/admin#/chemicals"><i class="fa fa-fw fa-lemon-o"></i> Agroquimicos</a>
                     </li>
                     <li ng-class="{ active: isActive('/noticias') }">
                         <a href="/admin#/noticias"><i class="fa fa-fw fa-newspaper-o"></i> Noticias</a>
@@ -659,7 +663,7 @@
 						  </tr>
 						</table>
 	                    </div>
-	                    <button class="btn btn-primary">Guardar Camabios</button>
+	                    <button class="btn btn-primary">Guardar Cambios</button>
 	                   </form>
                     </div>
                 </div>
@@ -2004,6 +2008,76 @@
 							  <div class="form-group">
 							    
 							    <input type="text" class="form-control" id="exampleInputName2" placeholder="Variedad" ng-model="newVariety">
+							  </div>
+							  <button type="submit" class="btn btn-default">Agregar nueva</button>
+							</form>
+						</div>
+						        
+						
+            
+            </div>
+                </div>
+        </div>
+    </script>
+
+    
+	
+	<script type="text/ng-template" id="/chemicals.html">
+	     <div class="container-fluid roya-wrap">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Agroquimicos
+                        </h1>
+                        
+						<div class="col-md-6">
+							<form ng-submit="addNew()">
+							  <div class="form-group">
+							<p class="text-center" ng-hide="chemicals">
+							    <i class="fa fa-circle-o-notch fa-spin"></i>
+							</p>
+                  	<p class="text-center" ng-show="isprocessing">
+							    <i class="fa fa-circle-o-notch fa-spin"></i>
+							</p>
+                
+							    <ul class="list-group fungi-list">
+									  <li class="list-group-item" ng-repeat="chemical in chemicals">
+                      <span ng-show="!chemical.isEditing">{{ chemical.name }}</span>  
+                      <a class="btn btn-danger pull-right btn-xs" ng-show="!chemical.isEditing" ng-click="deleteChemical(chemical._id, $index)">
+                        <i class="fa fa-trash"></i>
+                      </a>
+                    <a class="btn btn-primary pull-right btn-xs" ng-show="!chemical.isEditing" ng-click="chemical.isEditing = true" style="margin-right: 10px;">
+                        <i class="fa fa-pencil"></i>
+                      </a>
+
+                      <input ng-show="chemical.isEditing" type="text" ng-model="chemical.name" style="width: 80%;"></input>
+
+                  <a class="btn btn-info pull-right btn-xs" ng-show="chemical.isEditing" ng-click="chemical.isEditing = false;chemical.name = chemical.original;">
+                    <i class="fa fa-times"></i>
+                  </a>
+                    
+                    <a class="btn btn-success pull-right btn-xs" ng-show="chemical.isEditing" ng-click="updateChemical(chemical)" style="margin-right: 10px;">
+                        <i class="fa fa-check"></i>
+                      </a>
+					  <strong ng-show="!chemical.isEditing">{{ chemical.category }}</strong>
+                  </li>
+									  
+								</ul>
+							    							  
+							  </div>
+							  <div class="form-group">
+							    <p>
+							    <input type="text" class="form-control" id="exampleInputName2" placeholder="Agroquimico" ng-model="newChemical">
+							    </p>
+							    <label>Tipo de fungicida</label>
+							    <select class="form-control" ng-model="newChemicalType">
+								  <option value="contacto">De Contacto</option>
+								  <option value="sistemicos">Sistemicos</option>
+								  <option value="biologicos">Biologicos</option>
+								</select>
+							    
 							  </div>
 							  <button type="submit" class="btn btn-default">Agregar nueva</button>
 							</form>

@@ -1321,19 +1321,6 @@ app.factory('gallo', ['$http', 'auth', function ($http, auth) {
 }]);
 
 
-app.filter('getById', function() {
-  return function(input, id) {
-    var i=0, len=input.length;
-    for (; i<len; i++) {
-      if (+input[i].category == +id) {
-        return input[i];
-      }
-    }
-    return null;
-  }
-});
-
-
 //pre loader animation controller
 app.run(function ($rootScope, $window,localStorageService) {
 	
@@ -1343,7 +1330,7 @@ app.run(function ($rootScope, $window,localStorageService) {
 	
 	if(typeof $cordovaAppVersion === 'undefined') {
 		
-		var appVersion = "115";
+		var appVersion = "117";
 		
 	} else {
 		
