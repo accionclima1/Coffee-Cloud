@@ -145,10 +145,13 @@ function ($scope, auth, socket, user,Upload,$base64) {
         data=JSON.parse(data);console.log("set msg", data);
         var usera = data.to_user;
         var userb = data.from_id;
+        
         if (usera == $scope.loggedUser || userb == $scope.loggedUser) {
             $scope.setCurrentUserImage(data.chat.messages);
-			      $scope.$apply();
-        }
+             $scope.$apply();
+	             
+			 
+			 }
         
     });
 	if (!$scope.IsCall) {

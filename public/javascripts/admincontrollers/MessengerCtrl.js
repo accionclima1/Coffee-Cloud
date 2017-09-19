@@ -1,6 +1,6 @@
 ﻿// Support Chat Controller 
-app.controller('MessengerCtrl', ['$scope', 'chats', 'auth', 'socket', 'user','fileupload',
-	function ($scope, chats, auth, socket, user, fileupload) {
+app.controller('MessengerCtrl', ['$scope', 'chats', 'auth', 'socket', 'user','fileupload', 'Notification',
+	function ($scope, chats, auth, socket, user, fileupload, Notification) {
 	    $scope.isLoggedIn = auth.isLoggedIn;
 	    $scope.currentUser = auth.currentUser;
 	    $scope.chats = chats.chats;
@@ -44,8 +44,8 @@ app.controller('MessengerCtrl', ['$scope', 'chats', 'auth', 'socket', 'user','fi
 	            }
 	            $scope.UserName = userObj.nickname || 'admin';
 	            $scope.nickname = userObj.nickname || 'admin';
-	            $scope.UserImage = userObj.image || '../images/ChatUser.png';
-	            $scope.UserImageBottom = userObj.image || '../images/ChatUser.png';
+	            $scope.UserImage = userObj.image || 'images/ChatUser.png';
+	            $scope.UserImageBottom = userObj.image || 'images/ChatUser.png';
 	        });
 	    }
 	    $scope.getUserImage();
@@ -96,11 +96,11 @@ app.controller('MessengerCtrl', ['$scope', 'chats', 'auth', 'socket', 'user','fi
 	                        messageList[i].imageurl = cuser[0].image;
 	                    }
 	                    else {
-	                        messageList[i].imageurl = '../images/ChatUser.png'
+	                        messageList[i].imageurl = 'images/ChatUser.png'
 	                    }
 	                }
 	                else {
-	                    messageList[i].imageurl = '../images/ChatUser.png'
+	                    messageList[i].imageurl = 'images/ChatUser.png'
 	                }
 	            }
 	        }
@@ -130,16 +130,30 @@ app.controller('MessengerCtrl', ['$scope', 'chats', 'auth', 'socket', 'user','fi
 	        data = JSON.parse(data);
 	        var usera = data.to_user;
 	        var userb = data.from_id;
+	        
+	        var messages = data.chat.messages
+	        var lastMessage = messages[messages.length-1].bodyMsg;
+	        
 	        currentchat = currentInput.val();
+	        
 	        if (usera == currentchat || userb == currentchat) {
 	            $scope.setCurrentUserImage(data.chat.messages);
+	            if(usera == "admin"){
+		            var msgImage = messages[messages.length-1].imageurl;
+			        Notification.initialize(msgImage);
+			        Notification.notify(lastMessage,userb);
+		        }
 	            $scope.$apply();
+	        } else if(usera == "admin") {
+		        
+		         	Notification.initialize('images/icon.png');
+			        Notification.notify(lastMessage,userb);
 	        }
 	    });
 
 	    socket.on('set msg only', function (data) {
 	        data = JSON.parse(data);
-	        $scope.setCurrentUserImage(data.messages);
+	        //$scope.setCurrentUserImage(data.messages);
 	        $scope.$apply();
 	    });
 	    socket.on('push chats', function (data) {

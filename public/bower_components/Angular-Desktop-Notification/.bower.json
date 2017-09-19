@@ -1,0 +1,41 @@
+{
+  "name": "Angular Desktop Notification",
+  "main": "./dist/angular-desktop-notification.js",
+  "description": "Desktop Notifications using Notification Api.",
+  "homepage": "https://github.com/kaushiksamanta/angular-desktop-notification",
+  "private": false,
+  "authors": [
+    "Kaushik Samanta"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kaushiksamanta/angular-desktop-notification.git"
+  },
+  "keywords": [
+    "angular"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "angular": "1.2.x",
+    "angular-mocks": "~1.2.x"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "build.conf.js",
+    "gulpfile.js",
+    "karma.conf.js",
+    "package.json"
+  ],
+  "_release": "8b41793a1e",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "8b41793a1ed03de8c37018d4a2530f7ed988829d"
+  },
+  "_source": "https://github.com/kaushiksamanta/angular-desktop-notification.git",
+  "_target": "*",
+  "_originalSource": "angular-desktop-notification",
+  "_direct": true
+}
