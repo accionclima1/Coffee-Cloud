@@ -44,8 +44,8 @@ app.controller('MessengerCtrl', ['$scope', 'chats', 'auth', 'socket', 'user','fi
 	            }
 	            $scope.UserName = userObj.nickname || 'admin';
 	            $scope.nickname = userObj.nickname || 'admin';
-	            $scope.UserImage = userObj.image || 'images/ChatUser.png';
-	            $scope.UserImageBottom = userObj.image || 'images/ChatUser.png';
+	            $scope.UserImage = userObj.image || '../images/ChatUser.png';
+	            $scope.UserImageBottom = userObj.image || '../images/ChatUser.png';
 	        });
 	    }
 	    $scope.getUserImage();
@@ -96,11 +96,11 @@ app.controller('MessengerCtrl', ['$scope', 'chats', 'auth', 'socket', 'user','fi
 	                        messageList[i].imageurl = cuser[0].image;
 	                    }
 	                    else {
-	                        messageList[i].imageurl = 'images/ChatUser.png'
+	                        messageList[i].imageurl = '../images/ChatUser.png'
 	                    }
 	                }
 	                else {
-	                    messageList[i].imageurl = 'images/ChatUser.png'
+	                    messageList[i].imageurl = '../images/ChatUser.png'
 	                }
 	            }
 	        }
