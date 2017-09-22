@@ -153,7 +153,20 @@ app.controller('MessengerCtrl', ['$scope', 'chats', 'auth', 'socket', 'user','fi
 
 	    socket.on('set msg only', function (data) {
 	        data = JSON.parse(data);
-	        //$scope.setCurrentUserImage(data.messages);
+	        var usera = data.to_user;
+	        var userb = data.from_id
+	        var currentchat = currentInput.val();
+	        console.log(data, currentchat);
+	        if (usera == currentchat || userb == currentchat) {
+	       
+				
+			
+			} else if(currentchat) {
+				$scope.setCurrentUserImage(data.messages);
+				console.log("set image: ", currentchat);
+			}
+			
+	        
 	        $scope.$apply();
 	    });
 	    socket.on('push chats', function (data) {
